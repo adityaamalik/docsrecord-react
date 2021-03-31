@@ -1,0 +1,19 @@
+Design (5-6 days)
+
+1. Landing Page    -   Aditya
+2. Login / Sign Up page - Altamash
+3. Payment Page / Pricing Page - Altamash
+4. Dashboard (Links) - Aditya
+5. Add new patient page
+6. Records with charts
+7. Profile
+8. Appointments
+9. Print Bill
+10. Print Prescription
+
+Process (10 days)
+
+1. Authentication
+2. Payment Gateway (build side by side)
+3. SMS updates (Fast2SMS)
+4. Email Updates
