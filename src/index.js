@@ -5,11 +5,11 @@ import "antd/dist/antd.css";
 import Router from "./router";
 import reportWebVitals from "./reportWebVitals";
 
-const App = () => {
+const App = () => (
   <BrowserRouter>
     <Router />
-  </BrowserRouter>;
-};
+  </BrowserRouter>
+);
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
