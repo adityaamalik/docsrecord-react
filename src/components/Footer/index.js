@@ -1,9 +1,5 @@
 const Footer = () => {
-  return (
-    <>
-      <h1>Docsrecord Footer</h1>
-    </>
-  );
+  return <></>;
 };
 
 export default Footer;
