@@ -4,7 +4,7 @@ const Styles = createGlobalStyle`
     body,
     html,
     a {
-        font-family: 'Ubuntu', sans-serif;
+        font-family: 'Noto Sans JP', sans-serif;
     }
 `;
 

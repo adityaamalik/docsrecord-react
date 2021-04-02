@@ -11,7 +11,10 @@ const Router = () => {
   return (
     <Suspense fallback={null}>
       <GlobalStyles />
-      <Header />
+
+      {window.location.pathname !== "/" &&
+        window.location.pathname !== "/landing" && <Header />}
+
       <Switch>
         {routes.map((routeItem) => {
           return (
@@ -24,7 +27,8 @@ const Router = () => {
           );
         })}
       </Switch>
-      <Footer />
+      {window.location.pathname !== "/" &&
+        window.location.pathname !== "/landing" && <Footer />}
     </Suspense>
   );
 };
