@@ -1,19 +1,30 @@
 import styled from "styled-components";
+import { MenuOutlined } from "@ant-design/icons";
 
 export const Header = styled.header`
   margin-top: 30px;
   text-align: center;
 `;
 
-export const CustomNavLinkSmall = styled.span`
-  font-size: 1rem;
-  color: #000000;
-  transition: color 0.2s ease-in;
-  margin: 0.25rem 2rem;
-
+export const Logo = styled.img`
+  height: 50px;
+  width: 50px;
   @media only screen and (max-width: 768px) {
-    margin: 1.25rem 2rem;
+    height: 20px;
+    width: 20px;
   }
+`;
+
+export const Heading = styled.span`
+  font-size: 30px;
+  @media only screen and (max-width: 768px) {
+    font-size: 20px;
+  }
+`;
+
+export const DropdownIcon = styled(MenuOutlined)`
+  color: black;
+  font-size: 25px;
 `;
 
 export const Span = styled.a`
@@ -21,6 +32,7 @@ export const Span = styled.a`
   position: relative;
   transition: 0.2s ease-in;
   cursor: pointer;
+  text-transform: uppercase;
 
   &:hover {
     color: gray;

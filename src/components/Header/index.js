@@ -1,44 +1,63 @@
 import * as S from "./styles";
-import { Row, Col } from "antd";
+import { Row, Col, Menu, Dropdown } from "antd";
 import Logo from "../../img/doc.png";
 import { CaretRightOutlined } from "@ant-design/icons";
+
+const menu = (
+  <Menu>
+    <Menu.Item key="0">
+      <S.Span href="/records">
+        {window.location.pathname === "/records" && <CaretRightOutlined />}
+        records
+      </S.Span>
+    </Menu.Item>
+    <Menu.Item key="1">
+      <S.Span href="/addpatient">
+        {window.location.pathname === "/addpatient" && <CaretRightOutlined />}
+        add patient
+      </S.Span>
+    </Menu.Item>
+    <Menu.Item key="3">
+      <S.Span href="/appointments">
+        {window.location.pathname === "/appointments" && <CaretRightOutlined />}
+        appointments
+      </S.Span>
+    </Menu.Item>
+    <Menu.Item key="4">
+      <S.Span href="/myprofile">
+        {window.location.pathname === "/myprofile" && <CaretRightOutlined />}my
+        profile
+      </S.Span>
+    </Menu.Item>
+    <Menu.Item key="5">
+      <S.Span href="/logout">
+        {window.location.pathname === "/logout" && <CaretRightOutlined />}my
+        logout
+      </S.Span>
+    </Menu.Item>
+  </Menu>
+);
 
 const Header = () => {
   return (
     <S.Header>
       <Row align="middle">
         <Col span={6}>
-          <img src={Logo} alt="Logo" height="50px" width="50px" />
+          <S.Logo src={Logo} alt="Logo" />
         </Col>
         <Col span={12}>
-          <S.CustomNavLinkSmall>
-            {window.location.pathname === "/records" && <CaretRightOutlined />}
-            <S.Span href="/records">records</S.Span>
-          </S.CustomNavLinkSmall>
-          <S.CustomNavLinkSmall>
-            {window.location.pathname === "/addpatient" && (
-              <CaretRightOutlined />
-            )}
-            <S.Span href="/addpatient">add patient</S.Span>
-          </S.CustomNavLinkSmall>
-          <S.CustomNavLinkSmall>
-            {window.location.pathname === "/appointments" && (
-              <CaretRightOutlined />
-            )}
-            <S.Span href="/appointments">appointments</S.Span>
-          </S.CustomNavLinkSmall>
-          <S.CustomNavLinkSmall>
-            {window.location.pathname === "/myprofile" && (
-              <CaretRightOutlined />
-            )}
-            <S.Span href="/myprofile">my profile</S.Span>
-          </S.CustomNavLinkSmall>
-          <S.CustomNavLinkSmall>
-            {window.location.pathname === "/logout" && <CaretRightOutlined />}
-            <S.Span href="/logout">logout</S.Span>
-          </S.CustomNavLinkSmall>
+          <S.Heading>DOCSRECORD</S.Heading>
         </Col>
-        <Col span={6}></Col>
+        <Col span={6}>
+          <Dropdown overlay={menu} trigger={["click"]}>
+            <a
+              className="ant-dropdown-link"
+              onClick={(e) => e.preventDefault()}
+            >
+              <S.DropdownIcon />
+            </a>
+          </Dropdown>
+        </Col>
       </Row>
     </S.Header>
   );
