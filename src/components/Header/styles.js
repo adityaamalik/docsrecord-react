@@ -20,6 +20,7 @@ export const Span = styled.a`
   color: black;
   position: relative;
   transition: 0.2s ease-in;
+  cursor: pointer;
 
   &:hover {
     color: gray;
