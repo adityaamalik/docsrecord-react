@@ -1,4 +1,4 @@
-import { Row, Col, Space } from "antd";
+import { Row, Col } from "antd";
 import { useState } from "react";
 import Input from "../../common/Input";
 import * as S from "./styles";
