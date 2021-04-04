@@ -78,5 +78,5 @@ export const CustomButton = styled(Button)`
 
 export const FormSelects = styled(Select)`
   width: 100%;
-  border: 2px solid black;
+  border: 2px solid gray;
 `;
