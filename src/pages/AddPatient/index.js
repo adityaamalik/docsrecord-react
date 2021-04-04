@@ -1,9 +1,9 @@
-import { Form, Space, Select } from "antd";
-import { useState, useEffect } from "react";
+import { Form, Space } from "antd";
+import { useState } from "react";
 import * as S from "./styles";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
-const { Option } = Select;
+const { Option } = S.FormSelects;
 
 const AddPatient = () => {
   const [name, setName] = useState("");
@@ -14,10 +14,6 @@ const AddPatient = () => {
   const [email, setEmail] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [treatmentList, setTreatmentList] = useState([]);
-
-  useEffect(() => {
-    console.log(paymentMethod);
-  });
 
   return (
     <>
@@ -47,14 +43,16 @@ const AddPatient = () => {
           </S.InputCols>
           <S.InputCols lg={1} md={1} sm={24} xs={24}></S.InputCols>
           <S.InputCols lg={7} md={7} sm={24} xs={24}>
-            <S.InputBox
+            <S.FormSelects
               size="large"
-              type="text"
               placeholder="Gender"
-              onChange={(e) => setGender(e.target.value)}
-              value={gender}
-              bordered={false}
-            />
+              style={{ width: "100%" }}
+              onChange={(value) => setGender(value)}
+            >
+              <Option value="Male">Male</Option>
+              <Option value="Female">Female</Option>
+              <Option value="Others">Others</Option>
+            </S.FormSelects>
           </S.InputCols>
         </S.FormRows>
 
@@ -96,7 +94,11 @@ const AddPatient = () => {
 
         <S.FormRows>
           <S.InputCols lg={11} md={11} sm={24} xs={24}>
-            <Form name="dynamic_form_nest_item" autoComplete="off">
+            <Form
+              name="dynamic_form_nest_item"
+              autoComplete="off"
+              onValuesChange={(values) => setTreatmentList(values.users)}
+            >
               <Form.List name="users">
                 {(fields, { add, remove }) => (
                   <>
@@ -157,7 +159,7 @@ const AddPatient = () => {
           </S.InputCols>
           <S.InputCols lg={1} md={2} sm={24} xs={24}></S.InputCols>
           <S.InputCols lg={11} md={11} sm={24} xs={24}>
-            <Select
+            <S.FormSelects
               size="large"
               placeholder="Payment Method"
               style={{ width: "100%" }}
@@ -167,7 +169,7 @@ const AddPatient = () => {
               <Option value="UPI">UPI</Option>
               <Option value="Debit Card">Debit Card</Option>
               <Option value="Credit Card">Credit Card</Option>
-            </Select>
+            </S.FormSelects>
           </S.InputCols>
         </S.FormRows>
 

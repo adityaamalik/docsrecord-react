@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row, Col, Input, Button } from "antd";
+import { Row, Col, Input, Button, Select } from "antd";
 const { TextArea } = Input;
 
 export const Container = styled.div`
@@ -74,4 +74,9 @@ export const CustomButton = styled(Button)`
     color: black;
     border-color: black;
   }
+`;
+
+export const FormSelects = styled(Select)`
+  width: 100%;
+  border: 2px solid black;
 `;
