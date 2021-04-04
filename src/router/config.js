@@ -14,6 +14,11 @@ const routes = [
     exact: true,
     component: "AddPatient",
   },
+  {
+    path: ["/myprofile"],
+    exact: true,
+    component: "MyProfile",
+  },
 ];
 
 export default routes;

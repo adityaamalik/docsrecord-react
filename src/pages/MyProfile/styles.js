@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { Row, Col, Input, Button, Select, InputNumber } from "antd";
-const { TextArea } = Input;
+import { Row, Col, Input, Button } from "antd";
 
 export const Container = styled.div`
   margin: 50px;
@@ -45,29 +44,6 @@ export const FormRows = styled(Row)`
   margin-top: 30px;
 `;
 
-export const FormTextArea = styled(TextArea)`
-  border: 2px solid gray;
-
-  &:focus {
-    border-color: black;
-    border: 2px solid black;
-  }
-
-  &:hover {
-    border-color: black;
-    border: 2px solid black;
-  }
-`;
-
-export const SubHeading = styled.p`
-  margin-top: 40px;
-  font-size: 20px;
-
-  @media only screen and (max-width: 768px) {
-    font-size: 20px;
-  }
-`;
-
 export const CustomButton = styled(Button)`
   color: black;
   border-color: black;
@@ -77,19 +53,10 @@ export const CustomButton = styled(Button)`
   }
 `;
 
-export const FormSelects = styled(Select)`
-  width: 100%;
-  border: 2px solid gray;
-`;
+export const Label = styled.span`
+  font-size: 30px;
 
-export const NumberInput = styled(InputNumber)`
-  width: 100%;
-  border-bottom: 2px solid gray;
-  &:focus {
-    border-bottom: 2px solid black;
-  }
-
-  &:hover {
-    border-bottom: 2px solid black;
+  @media only screen and (max-width: 768px) {
+    font-size: 20px;
   }
 `;

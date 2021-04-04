@@ -32,11 +32,10 @@ const AddPatient = () => {
           </S.InputCols>
           <S.InputCols lg={1} md={1} sm={24} xs={24}></S.InputCols>
           <S.InputCols lg={7} md={7} sm={24} xs={24}>
-            <S.InputBox
+            <S.NumberInput
               size="large"
-              type="number"
               placeholder="Age"
-              onChange={(e) => setAge(e.target.value)}
+              onChange={(value) => setAge(value)}
               value={age}
               bordered={false}
             />
