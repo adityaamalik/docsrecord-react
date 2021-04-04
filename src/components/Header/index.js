@@ -31,7 +31,7 @@ const menu = (
     </Menu.Item>
     <Menu.Item key="5">
       <S.Span href="/logout">
-        {window.location.pathname === "/logout" && <CaretRightOutlined />}my
+        {window.location.pathname === "/logout" && <CaretRightOutlined />}
         logout
       </S.Span>
     </Menu.Item>
