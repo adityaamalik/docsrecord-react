@@ -30,6 +30,12 @@ const menu = (
       </S.Span>
     </Menu.Item>
     <Menu.Item key="5">
+      <S.Span href="/statistics">
+        {window.location.pathname === "/statistics" && <CaretRightOutlined />}
+        statistics
+      </S.Span>
+    </Menu.Item>
+    <Menu.Item key="6">
       <S.Span href="/logout">
         {window.location.pathname === "/logout" && <CaretRightOutlined />}
         logout

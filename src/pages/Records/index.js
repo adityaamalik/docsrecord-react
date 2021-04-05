@@ -15,7 +15,7 @@ for (let i = 0; i < 100; i++) {
   });
 }
 
-class Footer extends React.Component {
+class Records extends React.Component {
   state = {
     searchText: "",
     searchedColumn: "",
@@ -162,4 +162,4 @@ class Footer extends React.Component {
   }
 }
 
-export default Footer;
+export default Records;
