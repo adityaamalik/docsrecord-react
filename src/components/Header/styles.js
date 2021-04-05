@@ -15,8 +15,12 @@ export const Logo = styled.img`
   }
 `;
 
-export const Heading = styled.span`
+export const Heading = styled.a`
   font-size: 30px;
+  color: black;
+  &:hover {
+    color: gray;
+  }
   @media only screen and (max-width: 768px) {
     font-size: 20px;
   }

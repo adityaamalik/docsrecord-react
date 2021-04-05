@@ -13,12 +13,11 @@ export const Container = styled.div`
   }
 `;
 
-export const Heading = styled.span`
-  font-size: 30px;
-  border-bottom: 2px solid gray;
-
+export const Heading = styled.h1`
+  text-align: center;
+  margin-top: 100px;
   @media only screen and (max-width: 768px) {
-    font-size: 20px;
+    marin-top: 50px;
   }
 `;
 

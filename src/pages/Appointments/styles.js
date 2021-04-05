@@ -29,3 +29,11 @@ export const AppointmentCard = styled(Card)`
 export const AppointmentCardContainer = styled.div`
   margin-top: 10px;
 `;
+
+export const Heading = styled.h1`
+  text-align: center;
+  margin-top: 100px;
+  @media only screen and (max-width: 768px) {
+    marin-top: 50px;
+  }
+`;

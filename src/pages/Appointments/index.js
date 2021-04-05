@@ -5,9 +5,7 @@ const Appointments = () => {
   return (
     <>
       <S.Container>
-        <h1 style={{ textAlign: "center", marginTop: "100px" }}>
-          Upcoming Appointments
-        </h1>
+        <S.Heading>UPCOMING APPOINTMENTS</S.Heading>
 
         <S.AppointmentCardContainer>
           <S.Date>Date : 1/1/2021</S.Date>
