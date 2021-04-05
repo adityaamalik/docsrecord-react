@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Input, Button, Space } from "antd";
+import { Table, Input, Button, Space, DatePicker, Row, Col } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import * as S from "./styles";
@@ -10,8 +10,26 @@ for (let i = 0; i < 100; i++) {
   data.push({
     key: i,
     name: "Name " + i,
-    age: parseInt(Math.random() * 10),
+    phone: parseInt(Math.random() * 10),
     address: "Address of name " + i,
+    date: new Date(),
+    age: 10,
+    gender: "female",
+    email: "abc@gmail.com",
+    paymentMethod: "cash",
+    totalCost: 1000,
+    totalTreatments: 2,
+    nextAppointment: new Date(),
+    treatments: [
+      {
+        treatment: "Headache",
+        charges: 500,
+      },
+      {
+        treatment: "BackPain",
+        charges: 500,
+      },
+    ],
   });
 }
 
@@ -127,11 +145,11 @@ class Records extends React.Component {
         ...this.getColumnSearchProps("name"),
       },
       {
-        title: "Age",
-        dataIndex: "age",
-        key: "age",
+        title: "Phone Number",
+        dataIndex: "phone",
+        key: "phone",
         width: "33%",
-        ...this.getColumnSearchProps("age"),
+        ...this.getColumnSearchProps("phone"),
       },
       {
         title: "Address",
@@ -146,16 +164,140 @@ class Records extends React.Component {
           columns={columns}
           dataSource={data}
           expandable={{
-            expandedRowRender: (record) => {
-              return (
-                <>
-                  <p>Date : 1/1/2021</p>
-                  <p>E-Mail : abc@gmail.com</p>
-                </>
-              );
-            },
+            expandedRowRender: (record) => (
+              <>
+                <S.ExpandableContainer>
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span="12">
+                      <S.Label>Date of visit :</S.Label>
+                    </S.ExpandableCol>
+                    <S.ExpandableCol span="12">
+                      {record.date.getDate()}
+                    </S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span="12">
+                      <S.Label>Age :</S.Label>
+                    </S.ExpandableCol>
+                    <S.ExpandableCol span="12">{record.age}</S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span="12">
+                      <S.Label>Gender :</S.Label>
+                    </S.ExpandableCol>
+                    <S.ExpandableCol span="12">{record.gender}</S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span="12">
+                      <S.Label>E-mail :</S.Label>
+                    </S.ExpandableCol>
+                    <S.ExpandableCol span="12">{record.email}</S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span="12">
+                      <S.Label>Payment Method :</S.Label>
+                    </S.ExpandableCol>
+                    <S.ExpandableCol span="12">
+                      {record.paymentMethod}
+                    </S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span="12">
+                      <S.Label>Total Cost :</S.Label>
+                    </S.ExpandableCol>
+                    <S.ExpandableCol span="12">
+                      {record.totalCost}
+                    </S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span="12">
+                      <S.Label>Total Treatments :</S.Label>
+                    </S.ExpandableCol>
+                    <S.ExpandableCol span="12">
+                      {record.totalTreatments}
+                    </S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span="12">
+                      <S.Label>Next Appointment :</S.Label>
+                    </S.ExpandableCol>
+                    <S.ExpandableCol span="12">
+                      <DatePicker
+                        size="small"
+                        onChange={(date) => console.log(date._d)}
+                      />
+                    </S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span="12"></S.ExpandableCol>
+                    <S.ExpandableCol span="12">
+                      <Button type="default" size="small">
+                        Update
+                      </Button>
+                    </S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span="24">
+                      <S.Label>Treatments</S.Label>
+                    </S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  {record.treatments.map((treatment, index) => {
+                    return (
+                      <div key={index}>
+                        <hr />
+                        <S.ExpandableRow>
+                          <S.ExpandableCol span="24">
+                            <Row>
+                              <Col span={12}>Treatment :</Col>
+                              <Col span={12}>{treatment.treatment}</Col>
+                            </Row>
+                            <Row>
+                              <Col span={12}>Charges :</Col>
+                              <Col span={12}>{treatment.charges}</Col>
+                            </Row>
+                          </S.ExpandableCol>
+                        </S.ExpandableRow>
+                      </div>
+                    );
+                  })}
+
+                  <S.ExpandableRow
+                    align="middle"
+                    justify="center"
+                    style={{ textAlign: "center", marginTop: "20px" }}
+                  >
+                    <S.ExpandableCol span="24">
+                      <Space>
+                        <Button type="primary">Print Bill</Button>
+                        <Button type="primary">Print Prescription</Button>
+                      </Space>
+                    </S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow
+                    align="middle"
+                    justify="center"
+                    style={{ textAlign: "center", marginTop: "20px" }}
+                  >
+                    <S.ExpandableCol span="24">
+                      <Button type="danger">Delete Record</Button>
+                    </S.ExpandableCol>
+                  </S.ExpandableRow>
+                </S.ExpandableContainer>
+              </>
+            ),
           }}
-          pagination={{ pageSize: 10 }}
+          pagination={{ pphoneSize: 10 }}
         />
       </S.Container>
     );
