@@ -7,9 +7,12 @@ const InputContainer = styled.div`
   margin: 15px 0;
   position: relative;
   margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
   border: 1px solid #eee;
   border-radius: 8px;
   transition: border-color 0.3s ease-in;
+  max-width: 300px;
 
   &:hover {
     border: 1px solid black;
@@ -122,6 +125,7 @@ const Input = ({
         onBlur={handleOnBlur}
         ref={(ref) => setRef(ref)}
         {...props}
+        autoComplete="off"
       />
     </InputContainer>
   );

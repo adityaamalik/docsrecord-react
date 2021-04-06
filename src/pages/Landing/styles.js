@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Row, Col } from "antd";
+import Input from "../../common/Input";
 
 export const MainRow = styled(Row)`
   height: 100vh;
@@ -7,6 +8,10 @@ export const MainRow = styled(Row)`
 
 export const MainCol = styled(Col)`
   text-align: center;
+  @media only screen and (max-width: 1000px) {
+    height: 100vh;
+    padding-top: 180px;
+  }
 `;
 
 export const Heading = styled.span`
@@ -14,7 +19,10 @@ export const Heading = styled.span`
 `;
 
 export const SubHeading = styled.span`
-  font-size: vw;
+  font-size: 20px;
+  @media only screen and (max-width: 1000px) {
+    font-size: 10px;
+  }
 `;
 
 export const Image = styled.img`

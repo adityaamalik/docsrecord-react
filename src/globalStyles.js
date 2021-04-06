@@ -4,7 +4,7 @@ const Styles = createGlobalStyle`
     body,
     html,
     a {
-        font-family: 'Noto Sans JP', sans-serif;
+        font-family: 'Roboto Slab', serif;
     }
 `;
 

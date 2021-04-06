@@ -13,7 +13,9 @@ const Router = () => {
       <GlobalStyles />
 
       {window.location.pathname !== "/" &&
-        window.location.pathname !== "/landing" && <Header />}
+        window.location.pathname !== "/landing" &&
+        window.location.pathname !== "/login" &&
+        window.location.pathname !== "/signup" && <Header />}
 
       <Switch>
         {routes.map((routeItem) => {
@@ -28,7 +30,9 @@ const Router = () => {
         })}
       </Switch>
       {window.location.pathname !== "/" &&
-        window.location.pathname !== "/landing" && <Footer />}
+        window.location.pathname !== "/landing" &&
+        window.location.pathname !== "/login" &&
+        window.location.pathname !== "/signup" && <Footer />}
     </Suspense>
   );
 };

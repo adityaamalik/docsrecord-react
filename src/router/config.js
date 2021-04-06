@@ -1,8 +1,13 @@
 const routes = [
   {
-    path: ["/", "/landing"],
+    path: ["/", "/landing", "login"],
     exact: true,
     component: "Landing",
+  },
+  {
+    path: ["/signup"],
+    exact: true,
+    component: "Signup",
   },
   {
     path: ["/records"],
