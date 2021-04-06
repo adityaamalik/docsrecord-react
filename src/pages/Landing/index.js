@@ -46,7 +46,9 @@ const Landing = () => {
             label="Password"
           />
 
-          <Button>SIGN IN</Button>
+          <Button onClick={() => (window.location.pathname = "/records")}>
+            SIGN IN
+          </Button>
         </S.MainCol>
         <S.MainCol lg={1} md={1} sm={0} xs={0}></S.MainCol>
       </S.MainRow>

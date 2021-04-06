@@ -53,7 +53,7 @@ const Signup = () => {
             label="Confirm Password"
           />
 
-          <Button>
+          <Button onClick={() => (window.location.pathname = "/records")}>
             SIGN UP
             <RightOutlined />
           </Button>
