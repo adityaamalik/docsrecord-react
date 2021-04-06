@@ -8,6 +8,7 @@ import { Row, Col } from "antd";
 const Signup = () => {
   const [name, setName] = useState("");
   const [clinicName, setClinicName] = useState("");
+  const [clinicAddress, setClinicAddress] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,6 +31,13 @@ const Signup = () => {
             value={clinicName}
             onChange={(val) => setClinicName(val)}
             label="Clinic's Name"
+          />
+
+          <Input
+            type="text"
+            value={clinicAddress}
+            onChange={(val) => setClinicAddress(val)}
+            label="Clinic's Address"
           />
 
           <Input
