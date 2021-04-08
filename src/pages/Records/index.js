@@ -3,41 +3,33 @@ import { Table, Input, Button, Space, DatePicker, Row, Col } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import * as S from "./styles";
-
-const data = [];
-
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i,
-    name: "Name " + i,
-    phone: parseInt(Math.random() * 10),
-    address: "Address of name " + i,
-    date: new Date(),
-    age: 10,
-    gender: "female",
-    email: "abc@gmail.com",
-    paymentMethod: "cash",
-    totalCost: 1000,
-    totalTreatments: 2,
-    nextAppointment: new Date(),
-    treatments: [
-      {
-        treatment: "Headache",
-        charges: 500,
-      },
-      {
-        treatment: "BackPain",
-        charges: 500,
-      },
-    ],
-  });
-}
+import axios from "axios";
 
 class Records extends React.Component {
   state = {
     searchText: "",
     searchedColumn: "",
+    data: [],
   };
+
+  componentDidMount() {
+    axios
+      .get("http://localhost:3000/patients?doctor=606ca88b2dec6205b877d58d", {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N0b3JJZCI6IjYwNmNhODhiMmRlYzYyMDViODc3ZDU4ZCIsImlhdCI6MTYxNzczNjk1MywiZXhwIjoxNjE3ODIzMzUzfQ.05YnbyT9w0HIwJN93o-T1wrNEYl72wvcE2GM04QzNkk`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          data: response.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -146,10 +138,10 @@ class Records extends React.Component {
       },
       {
         title: "Phone Number",
-        dataIndex: "phone",
-        key: "phone",
+        dataIndex: "phone_number",
+        key: "phone_number",
         width: "33%",
-        ...this.getColumnSearchProps("phone"),
+        ...this.getColumnSearchProps("phone_number"),
       },
       {
         title: "Address",
@@ -161,18 +153,19 @@ class Records extends React.Component {
     return (
       <S.Container>
         <Table
+          rowKey="_id"
           columns={columns}
-          dataSource={data}
+          dataSource={this.state.data}
           expandable={{
             expandedRowRender: (record) => (
-              <>
+              <div key={record._key}>
                 <S.ExpandableContainer>
                   <S.ExpandableRow align="middle" justify="center">
                     <S.ExpandableCol span="12">
                       <S.Label>Date of visit :</S.Label>
                     </S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      {record.date.getDate()}
+                      {record.visit_date}
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
@@ -202,7 +195,7 @@ class Records extends React.Component {
                       <S.Label>Payment Method :</S.Label>
                     </S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      {record.paymentMethod}
+                      {record.payment_method}
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
@@ -211,7 +204,7 @@ class Records extends React.Component {
                       <S.Label>Total Cost :</S.Label>
                     </S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      {record.totalCost}
+                      {record.total_cost}
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
@@ -220,7 +213,7 @@ class Records extends React.Component {
                       <S.Label>Total Treatments :</S.Label>
                     </S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      {record.totalTreatments}
+                      {record.treatments.length}
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
@@ -294,7 +287,7 @@ class Records extends React.Component {
                     </S.ExpandableCol>
                   </S.ExpandableRow>
                 </S.ExpandableContainer>
-              </>
+              </div>
             ),
           }}
           pagination={{ pphoneSize: 10 }}

@@ -2,6 +2,7 @@ import { Form, Space } from "antd";
 import { useState } from "react";
 import * as S from "./styles";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 const { Option } = S.FormSelects;
 
@@ -14,6 +15,35 @@ const AddPatient = () => {
   const [email, setEmail] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [treatmentList, setTreatmentList] = useState([]);
+
+  const onSubmit = () => {
+    const data = {
+      email: email,
+      name: name,
+      phone_number: phone,
+      age: age,
+      gender: gender,
+      address: address,
+      payment_method: paymentMethod,
+      treatments: treatmentList,
+      doctor: "606ca88b2dec6205b877d58d",
+    };
+
+    console.log(data);
+    // axios
+    //   .post("http://localhost:3000/patients", data, {
+    //     headers: {
+    //       "Content-type": "application/json",
+    //       Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N0b3JJZCI6IjYwNmNhODhiMmRlYzYyMDViODc3ZDU4ZCIsImlhdCI6MTYxNzczNjk1MywiZXhwIjoxNjE3ODIzMzUzfQ.05YnbyT9w0HIwJN93o-T1wrNEYl72wvcE2GM04QzNkk`,
+    //     },
+    //   })
+    //   .then((response) => {
+    //     console.log(response);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+  };
 
   return (
     <>
@@ -96,9 +126,9 @@ const AddPatient = () => {
             <Form
               name="dynamic_form_nest_item"
               autoComplete="off"
-              onValuesChange={(values) => setTreatmentList(values.users)}
+              onValuesChange={(values) => setTreatmentList(values.treatments)}
             >
-              <Form.List name="users">
+              <Form.List name="treatments">
                 {(fields, { add, remove }) => (
                   <>
                     {fields.map(({ key, name, fieldKey, ...restField }) => (
@@ -174,7 +204,7 @@ const AddPatient = () => {
 
         <S.FormRows>
           <S.InputCols span={23}>
-            <S.CustomButton block size="large">
+            <S.CustomButton block size="large" onClick={onSubmit}>
               Add Patient Record
             </S.CustomButton>
           </S.InputCols>

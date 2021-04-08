@@ -3,10 +3,26 @@ import ImageUrl from "../../img/doc.png";
 import { useState } from "react";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
+import axios from "axios";
 
 const Landing = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const onSubmit = () => {
+    axios
+      .post("http://localhost:3000/doctors/login", {
+        email: email,
+        password: password,
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <S.MainRow align="middle">
@@ -46,9 +62,7 @@ const Landing = () => {
             label="Password"
           />
 
-          <Button onClick={() => (window.location.pathname = "/records")}>
-            SIGN IN
-          </Button>
+          <Button onClick={onSubmit}>SIGN IN</Button>
         </S.MainCol>
         <S.MainCol lg={1} md={1} sm={0} xs={0}></S.MainCol>
       </S.MainRow>

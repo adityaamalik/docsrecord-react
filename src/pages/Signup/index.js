@@ -4,6 +4,7 @@ import Input from "../../common/Input";
 import Button from "../../common/Button";
 import { RightOutlined } from "@ant-design/icons";
 import { Row, Col } from "antd";
+import axios from "axios";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -12,6 +13,23 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const onSubmit = () => {
+    axios
+      .post("http://localhost:3000/doctors/register", {
+        name: name,
+        clinic_name: clinicName,
+        clinic_address: clinicAddress,
+        email: email,
+        password: password,
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <>
@@ -61,7 +79,7 @@ const Signup = () => {
             label="Confirm Password"
           />
 
-          <Button onClick={() => (window.location.pathname = "/records")}>
+          <Button onClick={onSubmit}>
             SIGN UP
             <RightOutlined />
           </Button>
