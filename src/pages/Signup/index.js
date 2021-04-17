@@ -25,6 +25,11 @@ const Signup = () => {
       })
       .then((response) => {
         console.log(response.data);
+
+        localStorage.setItem("docsrecordJwtToken", response.data.token);
+        localStorage.setItem("docsrecordDoctor", response.data.doctor._id);
+
+        window.location.pathname = "/records";
       })
       .catch((err) => {
         console.log(err);

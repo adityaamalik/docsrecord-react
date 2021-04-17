@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import * as S from "./styles";
 import ImageUrl from "../../img/doc.png";
 import { useState } from "react";
@@ -17,6 +18,11 @@ const Landing = () => {
       })
       .then((response) => {
         console.log(response.data);
+
+        localStorage.setItem("docsrecordJwtToken", response.data.token);
+        localStorage.setItem("docsrecordDoctor", response.data.doctor);
+
+        window.location.pathname = "/records";
       })
       .catch((err) => {
         console.log(err);

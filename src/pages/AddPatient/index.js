@@ -1,4 +1,4 @@
-import { Form, Space } from "antd";
+import { Form, message, Space } from "antd";
 import { useState } from "react";
 import * as S from "./styles";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
@@ -17,6 +17,9 @@ const AddPatient = () => {
   const [treatmentList, setTreatmentList] = useState([]);
 
   const onSubmit = () => {
+    const doctor = localStorage.getItem("docsrecordDoctor");
+    const token = localStorage.getItem("docsrecordJwtToken");
+
     const data = {
       email: email,
       name: name,
@@ -26,23 +29,26 @@ const AddPatient = () => {
       address: address,
       payment_method: paymentMethod,
       treatments: treatmentList,
-      doctor: "606ca88b2dec6205b877d58d",
+      doctor: doctor,
     };
 
     console.log(data);
-    // axios
-    //   .post("http://localhost:3000/patients", data, {
-    //     headers: {
-    //       "Content-type": "application/json",
-    //       Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N0b3JJZCI6IjYwNmNhODhiMmRlYzYyMDViODc3ZDU4ZCIsImlhdCI6MTYxNzczNjk1MywiZXhwIjoxNjE3ODIzMzUzfQ.05YnbyT9w0HIwJN93o-T1wrNEYl72wvcE2GM04QzNkk`,
-    //     },
-    //   })
-    //   .then((response) => {
-    //     console.log(response);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    axios
+      .post("http://localhost:3000/patients", data, {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        message.success("Patient added successfully !").then(() => {
+          window.location.pathname = "/records";
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (

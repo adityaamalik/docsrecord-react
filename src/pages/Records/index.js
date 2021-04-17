@@ -1,5 +1,14 @@
 import React from "react";
-import { Table, Input, Button, Space, DatePicker, Row, Col } from "antd";
+import {
+  Table,
+  Input,
+  Button,
+  Space,
+  DatePicker,
+  Row,
+  Col,
+  message,
+} from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import * as S from "./styles";
@@ -13,11 +22,14 @@ class Records extends React.Component {
   };
 
   componentDidMount() {
+    const doctor = localStorage.getItem("docsrecordDoctor");
+    const token = localStorage.getItem("docsrecordJwtToken");
+
     axios
-      .get("http://localhost:3000/patients?doctor=606ca88b2dec6205b877d58d", {
+      .get(`http://localhost:3000/patients?doctor=${doctor}`, {
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N0b3JJZCI6IjYwNmNhODhiMmRlYzYyMDViODc3ZDU4ZCIsImlhdCI6MTYxNzczNjk1MywiZXhwIjoxNjE3ODIzMzUzfQ.05YnbyT9w0HIwJN93o-T1wrNEYl72wvcE2GM04QzNkk`,
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
@@ -27,9 +39,39 @@ class Records extends React.Component {
         });
       })
       .catch((err) => {
-        console.log(err);
+        if (!!err.response && err.response.status === 401) {
+          message
+            .error("You are unauthorized user, please login first !")
+            .then(() => (window.location.pathname = "/login"));
+        }
       });
   }
+
+  deleteRecord = (id) => {
+    const token = localStorage.getItem("docsrecordJwtToken");
+    axios
+      .delete(`http://localhost:3000/patients/${id}`, {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        message.success("Record deleted successfully !");
+        const newData = this.state.data.filter((item) => {
+          return item._id !== id;
+        });
+
+        this.setState({
+          data: newData,
+        });
+      })
+      .catch((err) => {
+        console.log(err.response);
+        message.error("Cannot delete the record. Try again !");
+      });
+  };
 
   getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -283,7 +325,12 @@ class Records extends React.Component {
                     style={{ textAlign: "center", marginTop: "20px" }}
                   >
                     <S.ExpandableCol span="24">
-                      <Button type="danger">Delete Record</Button>
+                      <Button
+                        type="danger"
+                        onClick={() => this.deleteRecord(record._id)}
+                      >
+                        Delete Record
+                      </Button>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
                 </S.ExpandableContainer>
