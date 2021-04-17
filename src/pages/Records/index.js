@@ -13,6 +13,7 @@ import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import * as S from "./styles";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 class Records extends React.Component {
   state = {
@@ -325,12 +326,20 @@ class Records extends React.Component {
                     style={{ textAlign: "center", marginTop: "20px" }}
                   >
                     <S.ExpandableCol span="24">
-                      <Button
-                        type="danger"
-                        onClick={() => this.deleteRecord(record._id)}
+                      <Link
+                        to={{
+                          pathname: "/updatepatient",
+                          state: { id: record._id },
+                        }}
                       >
-                        Delete Record
-                      </Button>
+                        <Button type="primary">Update Record</Button>
+                        <Button
+                          type="danger"
+                          onClick={() => this.deleteRecord(record._id)}
+                        >
+                          Delete Record
+                        </Button>
+                      </Link>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
                 </S.ExpandableContainer>

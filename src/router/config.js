@@ -20,6 +20,11 @@ const routes = [
     component: "AddPatient",
   },
   {
+    path: ["/updatepatient"],
+    exact: true,
+    component: "UpdatePatient",
+  },
+  {
     path: ["/myprofile"],
     exact: true,
     component: "MyProfile",
