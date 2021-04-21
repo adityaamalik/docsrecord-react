@@ -20,6 +20,7 @@ class Records extends React.Component {
     searchText: "",
     searchedColumn: "",
     data: [],
+    nextAppointmentDate: "",
   };
 
   componentDidMount() {
@@ -34,7 +35,7 @@ class Records extends React.Component {
         },
       })
       .then((response) => {
-        console.log(response);
+        console.log(response.data);
         this.setState({
           data: response.data,
         });
@@ -98,7 +99,6 @@ class Records extends React.Component {
         />
         <Space>
           <Button
-            type="primary"
             onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
             icon={<SearchOutlined />}
             size="small"
@@ -170,6 +170,29 @@ class Records extends React.Component {
     this.setState({ searchText: "" });
   };
 
+  setNextAppointment = (id) => {
+    console.log(this.state.nextAppointmentDate);
+    const token = localStorage.getItem("docsrecordJwtToken");
+    axios
+      .put(
+        `http://localhost:3000/patients/${id}`,
+        { next_appointment_date: this.state.nextAppointmentDate },
+        {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        message.success("Next appointment added successfully");
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  };
+
   render() {
     const columns = [
       {
@@ -212,53 +235,58 @@ class Records extends React.Component {
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="12">
-                      <S.Label>Age :</S.Label>
-                    </S.ExpandableCol>
-                    <S.ExpandableCol span="12">{record.age}</S.ExpandableCol>
-                  </S.ExpandableRow>
+                  {record.age && (
+                    <S.ExpandableRow align="middle" justify="center">
+                      <S.ExpandableCol span="12">
+                        <S.Label>Age :</S.Label>
+                      </S.ExpandableCol>
+                      <S.ExpandableCol span="12">{record.age}</S.ExpandableCol>
+                    </S.ExpandableRow>
+                  )}
 
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="12">
-                      <S.Label>Gender :</S.Label>
-                    </S.ExpandableCol>
-                    <S.ExpandableCol span="12">{record.gender}</S.ExpandableCol>
-                  </S.ExpandableRow>
+                  {record.gender && (
+                    <S.ExpandableRow align="middle" justify="center">
+                      <S.ExpandableCol span="12">
+                        <S.Label>Gender :</S.Label>
+                      </S.ExpandableCol>
+                      <S.ExpandableCol span="12">
+                        {record.gender}
+                      </S.ExpandableCol>
+                    </S.ExpandableRow>
+                  )}
 
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="12">
-                      <S.Label>E-mail :</S.Label>
-                    </S.ExpandableCol>
-                    <S.ExpandableCol span="12">{record.email}</S.ExpandableCol>
-                  </S.ExpandableRow>
+                  {record.email && (
+                    <S.ExpandableRow align="middle" justify="center">
+                      <S.ExpandableCol span="12">
+                        <S.Label>E-mail :</S.Label>
+                      </S.ExpandableCol>
+                      <S.ExpandableCol span="12">
+                        {record.email}
+                      </S.ExpandableCol>
+                    </S.ExpandableRow>
+                  )}
 
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="12">
-                      <S.Label>Payment Method :</S.Label>
-                    </S.ExpandableCol>
-                    <S.ExpandableCol span="12">
-                      {record.payment_method}
-                    </S.ExpandableCol>
-                  </S.ExpandableRow>
+                  {record.total_cost && (
+                    <S.ExpandableRow align="middle" justify="center">
+                      <S.ExpandableCol span="12">
+                        <S.Label>Total Cost :</S.Label>
+                      </S.ExpandableCol>
+                      <S.ExpandableCol span="12">
+                        {record.total_cost}
+                      </S.ExpandableCol>
+                    </S.ExpandableRow>
+                  )}
 
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="12">
-                      <S.Label>Total Cost :</S.Label>
-                    </S.ExpandableCol>
-                    <S.ExpandableCol span="12">
-                      {record.total_cost}
-                    </S.ExpandableCol>
-                  </S.ExpandableRow>
-
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="12">
-                      <S.Label>Total Treatments :</S.Label>
-                    </S.ExpandableCol>
-                    <S.ExpandableCol span="12">
-                      {record.treatments.length}
-                    </S.ExpandableCol>
-                  </S.ExpandableRow>
+                  {record.treatments && (
+                    <S.ExpandableRow align="middle" justify="center">
+                      <S.ExpandableCol span="12">
+                        <S.Label>Total Treatments :</S.Label>
+                      </S.ExpandableCol>
+                      <S.ExpandableCol span="12">
+                        {record.treatments.length}
+                      </S.ExpandableCol>
+                    </S.ExpandableRow>
+                  )}
 
                   <S.ExpandableRow align="middle" justify="center">
                     <S.ExpandableCol span="12">
@@ -267,7 +295,11 @@ class Records extends React.Component {
                     <S.ExpandableCol span="12">
                       <DatePicker
                         size="small"
-                        onChange={(date) => console.log(date._d)}
+                        onChange={(date) => {
+                          this.setState({
+                            nextAppointmentDate: date._d,
+                          });
+                        }}
                       />
                     </S.ExpandableCol>
                   </S.ExpandableRow>
@@ -275,37 +307,44 @@ class Records extends React.Component {
                   <S.ExpandableRow align="middle" justify="center">
                     <S.ExpandableCol span="12"></S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      <Button type="default" size="small">
+                      <Button
+                        type="default"
+                        size="small"
+                        onClick={() => this.setNextAppointment(record._id)}
+                      >
                         Update
                       </Button>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="24">
-                      <S.Label>Treatments</S.Label>
-                    </S.ExpandableCol>
-                  </S.ExpandableRow>
+                  {record.treatments && (
+                    <S.ExpandableRow align="middle" justify="center">
+                      <S.ExpandableCol span="24">
+                        <S.Label>Treatments</S.Label>
+                      </S.ExpandableCol>
+                    </S.ExpandableRow>
+                  )}
 
-                  {record.treatments.map((treatment, index) => {
-                    return (
-                      <div key={index}>
-                        <hr />
-                        <S.ExpandableRow>
-                          <S.ExpandableCol span="24">
-                            <Row>
-                              <Col span={12}>Treatment :</Col>
-                              <Col span={12}>{treatment.treatment}</Col>
-                            </Row>
-                            <Row>
-                              <Col span={12}>Charges :</Col>
-                              <Col span={12}>{treatment.charges}</Col>
-                            </Row>
-                          </S.ExpandableCol>
-                        </S.ExpandableRow>
-                      </div>
-                    );
-                  })}
+                  {record.treatments &&
+                    record.treatments.map((treatment, index) => {
+                      return (
+                        <div key={index}>
+                          <hr />
+                          <S.ExpandableRow>
+                            <S.ExpandableCol span="24">
+                              <Row>
+                                <Col span={12}>Treatment :</Col>
+                                <Col span={12}>{treatment.treatment}</Col>
+                              </Row>
+                              <Row>
+                                <Col span={12}>Charges :</Col>
+                                <Col span={12}>{treatment.charges}</Col>
+                              </Row>
+                            </S.ExpandableCol>
+                          </S.ExpandableRow>
+                        </div>
+                      );
+                    })}
 
                   <S.ExpandableRow
                     align="middle"
@@ -313,10 +352,24 @@ class Records extends React.Component {
                     style={{ textAlign: "center", marginTop: "20px" }}
                   >
                     <S.ExpandableCol span="24">
-                      <Space>
-                        <Button type="primary">Print Bill</Button>
-                        <Button type="primary">Print Prescription</Button>
-                      </Space>
+                      <Link
+                        to={{
+                          pathname: "/printbill",
+                          state: { patient: record },
+                        }}
+                      >
+                        <Button style={{ marginRight: "5px" }}>
+                          Print Bill
+                        </Button>
+                      </Link>
+                      <Link
+                        to={{
+                          pathname: "/printprescription",
+                          state: { patient: record },
+                        }}
+                      >
+                        <Button>Print Prescription</Button>
+                      </Link>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
@@ -332,14 +385,16 @@ class Records extends React.Component {
                           state: { id: record._id },
                         }}
                       >
-                        <Button type="primary">Update Record</Button>
-                        <Button
-                          type="danger"
-                          onClick={() => this.deleteRecord(record._id)}
-                        >
-                          Delete Record
+                        <Button style={{ marginRight: "5px" }}>
+                          Update Record
                         </Button>
                       </Link>
+                      <Button
+                        danger
+                        onClick={() => this.deleteRecord(record._id)}
+                      >
+                        Delete Record
+                      </Button>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
                 </S.ExpandableContainer>

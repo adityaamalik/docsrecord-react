@@ -1,22 +1,22 @@
 import styled from "styled-components";
-import { Row, Col, Input, Button, Select, InputNumber } from "antd";
+import { Col, Input, Button, Select, InputNumber } from "antd";
 const { TextArea } = Input;
 
 export const Container = styled.div`
-  margin: 50px;
+  margin: 150px;
 
   @media only screen and (max-width: 1400px) {
-    margin: 20px;
+    margin: 60px;
   }
 
   @media only screen and (max-width: 768px) {
-    marin: 5px;
+    margin: 20px;
   }
 `;
 
 export const Heading = styled.h1`
   text-align: center;
-  margin-top: 100px;
+  margin-top: 50px;
   @media only screen and (max-width: 768px) {
     marin-top: 50px;
   }
@@ -30,22 +30,20 @@ export const InputCols = styled(Col)`
 `;
 
 export const InputBox = styled(Input)`
-  border-bottom: 2px solid gray;
+  border-bottom: 2px solid #eee;
   &:focus {
     border-bottom: 2px solid black;
+    border: 2px solid black;
   }
 
   &:hover {
     border-bottom: 2px solid black;
+    border: 2px solid black;
   }
 `;
 
-export const FormRows = styled(Row)`
-  margin-top: 30px;
-`;
-
 export const FormTextArea = styled(TextArea)`
-  border: 2px solid gray;
+  border: 2px solid #eee;
 
   &:focus {
     border-color: black;
@@ -78,12 +76,12 @@ export const CustomButton = styled(Button)`
 
 export const FormSelects = styled(Select)`
   width: 100%;
-  border: 2px solid gray;
+  border: 2px solid #eee;
 `;
 
 export const NumberInput = styled(InputNumber)`
   width: 100%;
-  border-bottom: 2px solid gray;
+  border-bottom: 2px solid #eee;
   &:focus {
     border-bottom: 2px solid black;
   }

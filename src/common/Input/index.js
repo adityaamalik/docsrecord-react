@@ -4,16 +4,11 @@ import styled from "styled-components";
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 15px 0;
   position: relative;
-  margin-top: 30px;
-  margin-left: auto;
-  margin-right: auto;
   border: 1px solid #eee;
   border-radius: 8px;
   transition: border-color 0.3s ease-in;
-  max-width: 300px;
-
+  margin-right: 10px;
   &:hover {
     border: 1px solid black;
   }

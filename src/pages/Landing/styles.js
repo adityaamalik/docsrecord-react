@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { Row, Col } from "antd";
-import Input from "../../common/Input";
 
 export const MainRow = styled(Row)`
   height: 100vh;

@@ -15,7 +15,9 @@ const Router = () => {
       {window.location.pathname !== "/" &&
         window.location.pathname !== "/landing" &&
         window.location.pathname !== "/login" &&
-        window.location.pathname !== "/signup" && <Header />}
+        window.location.pathname !== "/signup" &&
+        window.location.pathname !== "/printbill" &&
+        window.location.pathname !== "/printprescription" && <Header />}
 
       <Switch>
         {routes.map((routeItem) => {
@@ -32,7 +34,9 @@ const Router = () => {
       {window.location.pathname !== "/" &&
         window.location.pathname !== "/landing" &&
         window.location.pathname !== "/login" &&
-        window.location.pathname !== "/signup" && <Footer />}
+        window.location.pathname !== "/signup" &&
+        window.location.pathname !== "/printbill" &&
+        window.location.pathname !== "/printprescription" && <Footer />}
     </Suspense>
   );
 };

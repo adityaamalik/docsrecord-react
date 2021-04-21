@@ -32,7 +32,7 @@ export const AppointmentCardContainer = styled.div`
 
 export const Heading = styled.h1`
   text-align: center;
-  margin-top: 100px;
+  margin-top: 50px;
   @media only screen and (max-width: 768px) {
     marin-top: 50px;
   }

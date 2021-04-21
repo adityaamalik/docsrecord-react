@@ -57,6 +57,7 @@ const Header = () => {
         <Col span={6}>
           <Dropdown overlay={menu} trigger={["click"]}>
             <a
+              href="/#"
               className="ant-dropdown-link"
               onClick={(e) => e.preventDefault()}
             >

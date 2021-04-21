@@ -1,26 +1,17 @@
-import { Form, message, Space } from "antd";
+import { Form, Space, Row } from "antd";
 import { useState, useEffect } from "react";
 import * as S from "./styles";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
+import Input from "../../common/Input";
 
 const { Option } = S.FormSelects;
 
-const AddPatient = (props) => {
+const UpdatePatient = (props) => {
   const [patient, setPatient] = useState({});
-
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [gender, setGender] = useState("");
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [treatmentList, setTreatmentList] = useState([]);
+  const { id } = props.location.state;
 
   useEffect(() => {
-    const { id } = props.location.state;
-
     if (!!id) {
       const token = localStorage.getItem("docsrecordJwtToken");
       axios
@@ -40,127 +31,108 @@ const AddPatient = (props) => {
     } else {
       window.location.pathname = "/records";
     }
-  }, []);
+  }, [id]);
 
-  const onSubmit = () => {
-    const doctor = localStorage.getItem("docsrecordDoctor");
-    const token = localStorage.getItem("docsrecordJwtToken");
-
-    const data = {
-      email: email,
-      name: name,
-      phone_number: phone,
-      age: age,
-      gender: gender,
-      address: address,
-      payment_method: paymentMethod,
-      treatments: treatmentList,
-      doctor: doctor,
-    };
-
-    console.log(data);
-    axios
-      .post("http://localhost:3000/patients", data, {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        message.success("Patient added successfully !").then(() => {
-          window.location.pathname = "/records";
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const onFinish = (values) => {
+    console.log(values);
   };
 
   return (
     <>
       <S.Container>
         <S.Heading>UPDATE PATIENT</S.Heading>
-        <S.FormRows>
-          <S.InputCols lg={7} md={7} sm={24} xs={24}>
-            <S.InputBox
-              size="large"
-              type="text"
-              placeholder="Name"
-              onChange={(e) => setName(e.target.value)}
-              value={patient.name}
-              bordered={false}
-            />
-          </S.InputCols>
-          <S.InputCols lg={1} md={1} sm={24} xs={24}></S.InputCols>
-          <S.InputCols lg={7} md={7} sm={24} xs={24}>
-            <S.NumberInput
-              size="large"
-              placeholder="Age"
-              onChange={(value) => setAge(value)}
-              value={patient.age}
-              bordered={false}
-            />
-          </S.InputCols>
-          <S.InputCols lg={1} md={1} sm={24} xs={24}></S.InputCols>
-          <S.InputCols lg={7} md={7} sm={24} xs={24}>
-            <S.FormSelects
-              size="large"
-              placeholder="Gender"
-              style={{ width: "100%" }}
-              onChange={(value) => setGender(value)}
-              value={patient.gender}
-            >
-              <Option value="Male">Male</Option>
-              <Option value="Female">Female</Option>
-              <Option value="Others">Others</Option>
-            </S.FormSelects>
-          </S.InputCols>
-        </S.FormRows>
 
-        <S.FormRows>
-          <S.InputCols lg={11} md={11} sm={24} xs={24}>
-            <S.InputBox
-              size="large"
-              type="number"
-              placeholder="Phone Number"
-              onChange={(e) => setPhone(e.target.value)}
-              value={patient.phone_number}
-              bordered={false}
-            />
-          </S.InputCols>
-          <S.InputCols lg={1} md={2} sm={24} xs={24}></S.InputCols>
+        <Form
+          name="dynamic_form_nest_item"
+          autoComplete="off"
+          onFinish={onFinish}
+        >
+          {patient.name && patient.age && patient.gender && (
+            <Row align="middle">
+              <S.InputCols lg={8} md={8} sm={24} xs={24}>
+                <Form.Item name="name" initialValue={patient.name}>
+                  <Input type="text" label="Name" />
+                </Form.Item>
+              </S.InputCols>
+              <S.InputCols lg={8} md={8} sm={24} xs={24}>
+                <Form.Item name="age" initialValue={patient.age}>
+                  <Input type="number" label="Age" />
+                </Form.Item>
+              </S.InputCols>
+              <S.InputCols lg={8} md={8} sm={24} xs={24}>
+                <Form.Item name="gender" initialValue={patient.gender}>
+                  <S.FormSelects
+                    size="large"
+                    placeholder="Gender"
+                    style={{ width: "100%" }}
+                  >
+                    <Option value="Male">Male</Option>
+                    <Option value="Female">Female</Option>
+                    <Option value="Others">Others</Option>
+                  </S.FormSelects>
+                </Form.Item>
+              </S.InputCols>
+            </Row>
+          )}
 
-          <S.InputCols lg={11} md={10} sm={24} xs={24}>
-            <S.InputBox
-              size="large"
-              type="email"
-              placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={patient.email}
-              bordered={false}
-            />
-          </S.InputCols>
-        </S.FormRows>
+          {patient.phone_number && patient.email && (
+            <Row>
+              <S.InputCols lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="phone_number"
+                  initialValue={patient.phone_number}
+                >
+                  <Input type="number" label="Phone Number" />
+                </Form.Item>
+              </S.InputCols>
 
-        <S.FormRows>
-          <S.InputCols span={23}>
-            <S.FormTextArea
-              rows={4}
-              placeholder="Address"
-              value={patient.address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-          </S.InputCols>
-        </S.FormRows>
+              <S.InputCols lg={12} md={12} sm={24} xs={24}>
+                <Form.Item name="email" initialValue={patient.email}>
+                  <Input type="email" label="Email" />
+                </Form.Item>
+              </S.InputCols>
+            </Row>
+          )}
 
-        <S.FormRows>
-          <S.InputCols lg={11} md={11} sm={24} xs={24}>
-            <Form
-              name="dynamic_form_nest_item"
-              autoComplete="off"
-              onValuesChange={(values) => setTreatmentList(values.treatments)}
-            >
+          {patient.address && (
+            <Row>
+              <S.InputCols span={24}>
+                <Form.Item name="address" initialValue={patient.address}>
+                  <S.FormTextArea rows={4} placeholder="Address" />
+                </Form.Item>
+              </S.InputCols>
+            </Row>
+          )}
+
+          {patient.treatments &&
+            patient.treatments.map((treatment, index) => {
+              return (
+                <Row key={index}>
+                  <S.InputCols lg={6} md={6} sm={12} xs={12}>
+                    <Form.Item
+                      name={`treatment${index}`}
+                      initialValue={treatment.treatment}
+                    >
+                      <Input type="text" label="Treatment" />
+                    </Form.Item>
+                  </S.InputCols>
+                  <S.InputCols lg={6} md={6} sm={12} xs={12}>
+                    <Form.Item
+                      name={`charge${index}`}
+                      initialValue={treatment.charges}
+                    >
+                      <Input type="number" label="Charges" />
+                    </Form.Item>
+                  </S.InputCols>
+                  <Form.Item name={`id${index}`} initialValue={treatment._id}>
+                    <Input type="hidden" />
+                  </Form.Item>
+                </Row>
+              );
+            })}
+
+          <Row>
+            <S.InputCols lg={12} md={12} sm={24} xs={24}>
               <Form.List name="treatments">
                 {(fields, { add, remove }) => (
                   <>
@@ -178,12 +150,7 @@ const AddPatient = (props) => {
                             { required: true, message: "Missing Treatment" },
                           ]}
                         >
-                          <S.InputBox
-                            placeholder="Treatment"
-                            type="text"
-                            bordered={false}
-                            size="large"
-                          />
+                          <Input label="Treatment" type="text" />
                         </Form.Item>
                         <Form.Item
                           {...restField}
@@ -193,12 +160,7 @@ const AddPatient = (props) => {
                             { required: true, message: "Missing Charges" },
                           ]}
                         >
-                          <S.InputBox
-                            placeholder="Charges"
-                            type="number"
-                            bordered={false}
-                            size="large"
-                          />
+                          <Input label="Charges" type="number" />
                         </Form.Item>
                         <MinusCircleOutlined onClick={() => remove(name)} />
                       </Space>
@@ -217,32 +179,15 @@ const AddPatient = (props) => {
                   </>
                 )}
               </Form.List>
-            </Form>
-          </S.InputCols>
-          <S.InputCols lg={1} md={2} sm={24} xs={24}></S.InputCols>
-          <S.InputCols lg={11} md={11} sm={24} xs={24}>
-            <S.FormSelects
-              size="large"
-              placeholder="Payment Method"
-              style={{ width: "100%" }}
-              onChange={(value) => setPaymentMethod(value)}
-              value={patient.payment_method}
-            >
-              <Option value="Cash">Cash</Option>
-              <Option value="UPI">UPI</Option>
-              <Option value="Debit Card">Debit Card</Option>
-              <Option value="Credit Card">Credit Card</Option>
-            </S.FormSelects>
-          </S.InputCols>
-        </S.FormRows>
+            </S.InputCols>
+          </Row>
 
-        <S.FormRows>
-          <S.InputCols span={23}>
-            <S.CustomButton block size="large" onClick={onSubmit}>
-              Add Patient Record
+          <Form.Item>
+            <S.CustomButton block size="large" htmlType="submit">
+              Update Patient Record
             </S.CustomButton>
-          </S.InputCols>
-        </S.FormRows>
+          </Form.Item>
+        </Form>
       </S.Container>
       <br />
       <br />
@@ -250,4 +195,4 @@ const AddPatient = (props) => {
   );
 };
 
-export default AddPatient;
+export default UpdatePatient;

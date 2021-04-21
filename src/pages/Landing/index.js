@@ -1,10 +1,10 @@
-import { useEffect } from "react";
 import * as S from "./styles";
 import ImageUrl from "../../img/doc.png";
 import { useState } from "react";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
 import axios from "axios";
+import { message } from "antd";
 
 const Landing = () => {
   const [email, setEmail] = useState("");
@@ -25,7 +25,11 @@ const Landing = () => {
         window.location.pathname = "/records";
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.data === "email incorrect") {
+          message.error("This email is not registered !");
+        } else if (err.response.data === "password incorrect") {
+          message.error("Password is wrong. Please try again !");
+        }
       });
   };
 
