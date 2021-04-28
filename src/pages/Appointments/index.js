@@ -12,7 +12,7 @@ const Appointments = () => {
 
     axios
       .get(
-        `/https://docsrecord-backend.herokuapp.compatients?doctor=${doctor}`,
+        `https://docsrecord-backend.herokuapp.com/patients?doctor=${doctor}`,
         {
           withCredentials: true,
         }

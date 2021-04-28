@@ -3,7 +3,9 @@ import { useEffect } from "react";
 
 const Logout = () => {
   useEffect(() => {
-    axios.get("/doctors/logout", { withCredentials: true });
+    axios.get("https://docsrecord-backend.herokuapp.com/doctors/logout", {
+      withCredentials: true,
+    });
     window.location.pathname = "/";
   }, []);
 

@@ -14,7 +14,7 @@ const PrintPrescription = (props) => {
     if (!!patient.doctor) {
       axios
         .get(
-          `/https://docsrecord-backend.herokuapp.comdoctors/${patient.doctor}`,
+          `https://docsrecord-backend.herokuapp.com/doctors/${patient.doctor}`,
           {
             withCredentials: true,
           }

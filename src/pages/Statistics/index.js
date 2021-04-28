@@ -16,7 +16,7 @@ const Statistics = () => {
 
     axios
       .get(
-        `/https://docsrecord-backend.herokuapp.compatients/stats/${doctor}`,
+        `https://docsrecord-backend.herokuapp.com/patients/stats/${doctor}`,
         {
           withCredentials: true,
         }
