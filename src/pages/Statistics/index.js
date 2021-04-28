@@ -1,10 +1,31 @@
 import * as S from "./styles";
 import Graph from "../../components/Graph";
 import CountUp from "react-countup";
-import { Col } from "antd";
+import { Col, message } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
+import { useEffect } from "react";
+import axios from "axios";
 
 const Statistics = () => {
+  useEffect(() => {
+    const doctor = localStorage.getItem("docsrecordDoctor");
+
+    axios
+      .get(`/patients/stats/${doctor}`, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((err) => {
+        if (!!err.response && err.response.status === 401) {
+          message
+            .error("You are unauthorized user, please login first !")
+            .then(() => (window.location.pathname = "/login"));
+        }
+      });
+  }, []);
+
   const YearData = [
     { year: "2017", patients: 50 },
     { year: "2018", patients: 10 },

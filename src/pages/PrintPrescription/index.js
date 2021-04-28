@@ -12,13 +12,9 @@ const PrintPrescription = (props) => {
 
   useEffect(() => {
     if (!!patient.doctor) {
-      const token = localStorage.getItem("docsrecordJwtToken");
       axios
-        .get(`http://localhost:3000/doctors/${patient.doctor}`, {
-          headers: {
-            "Content-type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+        .get(`/doctors/${patient.doctor}`, {
+          withCredentials: true,
         })
         .then((response) => {
           setDoc(response.data);
@@ -31,7 +27,7 @@ const PrintPrescription = (props) => {
     } else {
       window.location.pathname = "/records";
     }
-  }, []);
+  }, [patient.doctor]);
 
   return (
     <S.Container>

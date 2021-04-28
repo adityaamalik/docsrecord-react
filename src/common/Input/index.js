@@ -5,12 +5,12 @@ const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  border: 1px solid #eee;
+  border: 1px solid gray;
   border-radius: 8px;
   transition: border-color 0.3s ease-in;
-  margin-right: 10px;
+  margin: 10px;
   &:hover {
-    border: 1px solid black;
+    border: 1px solid gray;
   }
 
   & > input {
@@ -24,7 +24,7 @@ const InputContainer = styled.div`
     z-index: 500;
   }
   & > label {
-    color: #757575;
+    color: gray;
     position: absolute;
     top: 15px;
     left: 15px;
@@ -61,6 +61,9 @@ const Input = ({
   onFocus,
   onBlur,
   setRef,
+  marginTop,
+  marginBottom,
+  defaultValue,
   ...props
 }) => {
   const [focused, setFocused] = React.useState(false);
@@ -114,6 +117,7 @@ const Input = ({
       {renderLabel()}
       <input
         value={value}
+        defaultValue={defaultValue}
         type={type}
         onChange={(e) => handleOnChange(e.target.value)}
         onFocus={handleOnFocus}
@@ -129,9 +133,6 @@ const Input = ({
 Input.defaultProps = {
   type: "text",
   label: "",
-  onChange: (text) => {
-    console.error(`Missing onChange prop: ${text}`);
-  },
   onFocus: () => {},
   onBlur: () => {},
   setRef: () => {},

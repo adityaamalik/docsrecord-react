@@ -22,9 +22,9 @@ export const Heading = styled.h1`
 `;
 
 export const InputCols = styled(Col)`
-  margin-top: 50px;
+  margin-top: 10px;
   @media only screen and (max-width: 768px) {
-    margin-top: 10px;
+    margin-top: 5px;
   }
 `;
 
@@ -39,9 +39,7 @@ export const InputBox = styled(Input)`
   }
 `;
 
-export const FormRows = styled(Row)`
-  margin-top: 30px;
-`;
+export const FormRows = styled(Row)``;
 
 export const CustomButton = styled(Button)`
   color: black;
@@ -58,4 +56,14 @@ export const Label = styled.span`
   @media only screen and (max-width: 768px) {
     font-size: 20px;
   }
+`;
+
+export const FileUpload = styled.input`
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+`;
+
+export const FileUploadLabel = styled.label`
+  cursor: pointer;
 `;

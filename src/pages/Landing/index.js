@@ -5,6 +5,7 @@ import Button from "../../common/Button";
 import Input from "../../common/Input";
 import axios from "axios";
 import { message } from "antd";
+import WaitingRoom from "../../img/waitingroom.jpg";
 
 const Landing = () => {
   const [email, setEmail] = useState("");
@@ -12,14 +13,13 @@ const Landing = () => {
 
   const onSubmit = () => {
     axios
-      .post("http://localhost:3000/doctors/login", {
+      .post("/doctors/login", {
         email: email,
         password: password,
       })
       .then((response) => {
         console.log(response.data);
 
-        localStorage.setItem("docsrecordJwtToken", response.data.token);
         localStorage.setItem("docsrecordDoctor", response.data.doctor);
 
         window.location.pathname = "/records";
@@ -34,8 +34,20 @@ const Landing = () => {
   };
 
   return (
-    <>
-      <S.MainRow align="middle">
+    <div style={{ position: "relative" }}>
+      <img
+        src={WaitingRoom}
+        alt="clinic waiting room"
+        style={{
+          position: "absolute",
+          opacity: "0.6",
+          height: "100vh",
+          width: "auto",
+          left: "0",
+          top: "0",
+        }}
+      />
+      <S.MainRow align="middle" style={{ position: "relative" }}>
         <S.MainCol lg={14} md={24} sm={24} xs={24}>
           <S.Image src={ImageUrl} />
           <br />
@@ -76,7 +88,7 @@ const Landing = () => {
         </S.MainCol>
         <S.MainCol lg={1} md={1} sm={0} xs={0}></S.MainCol>
       </S.MainRow>
-    </>
+    </div>
   );
 };
 

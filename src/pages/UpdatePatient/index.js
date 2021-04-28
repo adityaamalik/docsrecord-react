@@ -1,9 +1,10 @@
-import { Form, Space, Row } from "antd";
+import { Form, Space, Row, message } from "antd";
 import { useState, useEffect } from "react";
 import * as S from "./styles";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import Input from "../../common/Input";
+import Button from "../../common/Button";
 
 const { Option } = S.FormSelects;
 
@@ -13,13 +14,9 @@ const UpdatePatient = (props) => {
 
   useEffect(() => {
     if (!!id) {
-      const token = localStorage.getItem("docsrecordJwtToken");
       axios
-        .get(`http://localhost:3000/patients/${id}`, {
-          headers: {
-            "Content-type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+        .get(`/patients/${id}`, {
+          withCredentials: true,
         })
         .then((response) => {
           setPatient(response.data);
@@ -34,7 +31,58 @@ const UpdatePatient = (props) => {
   }, [id]);
 
   const onFinish = (values) => {
-    console.log(values);
+    const treatmentsArr = [];
+    for (const [key, value] of Object.entries(values)) {
+      if (
+        key !== "name" &&
+        key !== "phone_number" &&
+        key !== "address" &&
+        key !== "email" &&
+        key !== "payment_method" &&
+        key !== "treatments" &&
+        key !== "age" &&
+        key !== "gender"
+      ) {
+        treatmentsArr.push(value);
+      }
+    }
+
+    for (let i = 0; i < treatmentsArr.length - 1; i = i + 2) {
+      const temp = {
+        treatment: treatmentsArr[i],
+        charges: treatmentsArr[i + 1],
+      };
+
+      values.treatments.push(temp);
+    }
+
+    const doctor = localStorage.getItem("docsrecordDoctor");
+    values.doctor = doctor;
+    axios
+      .put(`/patients/${id}`, values, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log(response);
+        setPatient(response.data);
+        message.success("Patient updated successfully !").then(() => {
+          window.location.pathname = "/records";
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const deleteTreatment = (treatment) => {
+    console.log("clicked");
+    console.log(
+      patient.treatments.filter((t) => {
+        return (
+          t.treatment !== treatment.treatment && t.charges !== treatment.charges
+        );
+      })
+    );
   };
 
   return (
@@ -104,10 +152,22 @@ const UpdatePatient = (props) => {
             </Row>
           )}
 
+          <Row>
+            {patient.payment_method && (
+              <S.InputCols lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="payment_method"
+                  initialValue={patient.payment_method}
+                >
+                  <Input type="text" label="Payment Method" />
+                </Form.Item>
+              </S.InputCols>
+            )}
+          </Row>
           {patient.treatments &&
             patient.treatments.map((treatment, index) => {
               return (
-                <Row key={index}>
+                <Row key={index} align="middle">
                   <S.InputCols lg={6} md={6} sm={12} xs={12}>
                     <Form.Item
                       name={`treatment${index}`}
@@ -116,7 +176,7 @@ const UpdatePatient = (props) => {
                       <Input type="text" label="Treatment" />
                     </Form.Item>
                   </S.InputCols>
-                  <S.InputCols lg={6} md={6} sm={12} xs={12}>
+                  <S.InputCols lg={6} md={6} sm={11} xs={11}>
                     <Form.Item
                       name={`charge${index}`}
                       initialValue={treatment.charges}
@@ -124,9 +184,12 @@ const UpdatePatient = (props) => {
                       <Input type="number" label="Charges" />
                     </Form.Item>
                   </S.InputCols>
-                  <Form.Item name={`id${index}`} initialValue={treatment._id}>
-                    <Input type="hidden" />
-                  </Form.Item>
+                  <S.InputCols span={1}>
+                    <MinusCircleOutlined
+                      style={{ marginBottom: "30px" }}
+                      onClick={() => deleteTreatment(treatment)}
+                    />
+                  </S.InputCols>
                 </Row>
               );
             })}
@@ -166,15 +229,9 @@ const UpdatePatient = (props) => {
                       </Space>
                     ))}
                     <Form.Item>
-                      <S.CustomButton
-                        size="large"
-                        type="dashed"
-                        onClick={() => add()}
-                        block
-                        icon={<PlusOutlined />}
-                      >
-                        Add Treatment
-                      </S.CustomButton>
+                      <Button onClick={() => add()}>
+                        <PlusOutlined /> Add Treatment
+                      </Button>
                     </Form.Item>
                   </>
                 )}
@@ -182,10 +239,8 @@ const UpdatePatient = (props) => {
             </S.InputCols>
           </Row>
 
-          <Form.Item>
-            <S.CustomButton block size="large" htmlType="submit">
-              Update Patient Record
-            </S.CustomButton>
+          <Form.Item style={{ textAlign: "center" }}>
+            <Button htmlType="submit">Update Patient Record</Button>
           </Form.Item>
         </Form>
       </S.Container>

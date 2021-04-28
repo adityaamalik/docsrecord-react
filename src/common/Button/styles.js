@@ -1,13 +1,12 @@
 import styled from "styled-components";
 
 export const Button = styled.button`
-  background: ${(props) => props.color || "#2E3559"};
-  color: ${(props) => (props.color ? "#2E3559" : "#fff")};
+  background: white;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 900;
   width: 100%;
-  border: ${(props) => (props.color ? "1px solid #2E186A" : "0px")};
-  border-radius: 8px;
+  border: 2px solid black;
+  border-radius: 50px;
   height: 60px;
   outline: none;
   cursor: pointer;

@@ -49,6 +49,11 @@ const routes = [
     exact: true,
     component: "PrintPrescription",
   },
+  {
+    path: ["/logout"],
+    exact: true,
+    component: "Logout",
+  },
 ];
 
 export default routes;

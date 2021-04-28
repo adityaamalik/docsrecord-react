@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row, Col, Input, Button, Select, InputNumber } from "antd";
+import { Row, Col, Input, Select, InputNumber } from "antd";
 const { TextArea } = Input;
 
 export const Container = styled.div`
@@ -45,16 +45,14 @@ export const FormRows = styled(Row)`
 `;
 
 export const FormTextArea = styled(TextArea)`
-  border: 2px solid #eee;
+  border: 1px solid black;
 
   &:focus {
-    border-color: black;
-    border: 2px solid black;
+    border: 1px solid black;
   }
 
   &:hover {
-    border-color: black;
-    border: 2px solid black;
+    border: 1px solid black;
   }
 `;
 
@@ -67,18 +65,9 @@ export const SubHeading = styled.p`
   }
 `;
 
-export const CustomButton = styled(Button)`
-  color: black;
-  border-color: black;
-  &:hover {
-    color: black;
-    border-color: black;
-  }
-`;
-
 export const FormSelects = styled(Select)`
   width: 100%;
-  border: 2px solid #eee;
+  border: 1px solid black;
 `;
 
 export const NumberInput = styled(InputNumber)`

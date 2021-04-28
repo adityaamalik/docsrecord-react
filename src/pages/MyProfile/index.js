@@ -1,25 +1,32 @@
 import * as S from "./styles";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Input from "../../common/Input";
+import Button from "../../common/Button";
+import { message, Avatar, Badge } from "antd";
+import { UserOutlined, EditOutlined } from "@ant-design/icons";
 
 const MyProfile = () => {
+  const [docData, setDocData] = useState({});
+
   const [name, setName] = useState("");
   const [clinicName, setClinicName] = useState("");
   const [clinicAddress, setClinicAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [qualifications, setQualifications] = useState("");
+  const [visitCharges, setVisitCharges] = useState("");
+  const [image, setImage] = useState({});
 
+  const [showEdit, toggleEdit] = useState(false);
   useEffect(() => {
+    const doctor = localStorage.getItem("docsrecordDoctor");
     axios
-      .get("http://localhost:3000/doctors/606ca88b2dec6205b877d58d", {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N0b3JJZCI6IjYwNmNhODhiMmRlYzYyMDViODc3ZDU4ZCIsImlhdCI6MTYxNzg3NDg5OCwiZXhwIjoxNjE3OTYxMjk4fQ.bsMAqc6Quw5HeCooOElX5w4M0iYFfSrD2McNwKu061g`,
-        },
+      .get(`/doctors/${doctor}`, {
+        withCredentials: true,
       })
       .then((response) => {
-        console.log(response);
-        setName(response.data.name);
-        setClinicName(response.data.clinic_name);
-        setClinicAddress(response.data.clinic_address);
+        console.log(response.data);
+        setDocData(response.data);
       })
       .catch((err) => {
         console.log(err);
@@ -27,24 +34,50 @@ const MyProfile = () => {
   }, []);
 
   const onSubmit = () => {
-    const data = {
-      name: name,
-      clinic_name: clinicName,
-      clinic_address: clinicAddress,
-    };
+    const doctor = localStorage.getItem("docsrecordDoctor");
+
+    const data = new FormData();
+
+    if (name !== "") {
+      data.append("name", name);
+    }
+
+    if (clinicName !== "") {
+      data.append("clinic_name", clinicName);
+    }
+
+    if (clinicAddress !== "") {
+      data.append("clinic_address", clinicAddress);
+    }
+
+    if (phone !== "") {
+      data.append("phone_number", phone);
+    }
+
+    if (qualifications !== "") {
+      data.append("qualifications", qualifications);
+    }
+
+    if (visitCharges !== "") {
+      data.append("visit_charges", visitCharges);
+    }
+
+    if (!!image) {
+      data.append("image", image);
+    }
 
     axios
-      .put("http://localhost:3000/doctors/606ca88b2dec6205b877d58d", data, {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N0b3JJZCI6IjYwNmNhODhiMmRlYzYyMDViODc3ZDU4ZCIsImlhdCI6MTYxNzg3NDg5OCwiZXhwIjoxNjE3OTYxMjk4fQ.bsMAqc6Quw5HeCooOElX5w4M0iYFfSrD2McNwKu061g`,
-        },
+      .put(`/doctors/${doctor}`, data, {
+        withCredentials: true,
       })
       .then((response) => {
         console.log(response.data);
+        setDocData(response.data);
+        message.success("Successfully updated your profile");
       })
       .catch((err) => {
         console.log(err);
+        message.error("Some error occured");
       });
   };
 
@@ -52,81 +85,137 @@ const MyProfile = () => {
     <>
       <S.Container>
         <S.Heading>MY PROFILE</S.Heading>
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          {!!docData.image ? (
+            <span
+              onMouseEnter={() => toggleEdit(true)}
+              onMouseLeave={() => toggleEdit(false)}
+            >
+              <S.FileUploadLabel htmlFor="userImage">
+                <Badge count={showEdit ? <EditOutlined /> : <></>}>
+                  <Avatar
+                    src={`data:image/${
+                      docData.image.contentType
+                    };base64,${new Buffer.from(docData.image.data).toString(
+                      "base64"
+                    )}`}
+                    size={{
+                      xs: 40,
+                      sm: 40,
+                      md: 64,
+                      lg: 64,
+                      xl: 80,
+                      xxl: 100,
+                    }}
+                  />
+                </Badge>
+              </S.FileUploadLabel>
+              <S.FileUpload
+                type="file"
+                id="userImage"
+                onChange={(e) => setImage(e.target.files[0])}
+              />
+              <br />
+              <br />
+              <span>{image.name}</span>
+            </span>
+          ) : (
+            <span
+              onMouseEnter={() => toggleEdit(true)}
+              onMouseLeave={() => toggleEdit(false)}
+            >
+              <S.FileUploadLabel htmlFor="userImage">
+                <Badge count={showEdit ? <EditOutlined /> : <></>}>
+                  <Avatar
+                    icon={<UserOutlined />}
+                    size={{ xs: 40, sm: 40, md: 64, lg: 64, xl: 80, xxl: 100 }}
+                  />
+                </Badge>
+              </S.FileUploadLabel>
+              <S.FileUpload
+                type="file"
+                id="userImage"
+                onChange={(e) => setImage(e.target.files[0])}
+              />
+              <br />
+              <br />
+              <span>{image.name}</span>
+            </span>
+          )}
+        </div>
 
         <S.FormRows align="middle">
-          <S.InputCols
-            lg={6}
-            md={6}
-            sm={8}
-            xs={8}
-            style={{ textAlign: "center" }}
-          >
-            <S.Label>Name :</S.Label>
+          <S.InputCols lg={12} md={12} sm={24} xs={24}>
+            {!!docData.name && (
+              <Input
+                type="text"
+                label="Edit name"
+                onChange={(val) => setName(val)}
+                defaultValue={docData.name}
+              />
+            )}
           </S.InputCols>
-          <S.InputCols lg={14} md={14} sm={16} xs={16}>
-            <S.InputBox
-              type="text"
-              bordered={false}
-              size="large"
-              placeholder="Enter New Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+          <S.InputCols lg={12} md={12} sm={24} xs={24}>
+            {!!docData.phone_number && (
+              <Input
+                type="text"
+                label="Edit Phone Number"
+                onChange={(val) => setPhone(val)}
+                defaultValue={docData.phone_number}
+              />
+            )}
           </S.InputCols>
-          <S.InputCols lg={4} md={4} sm={0} xs={0}></S.InputCols>
         </S.FormRows>
 
         <S.FormRows align="middle">
-          <S.InputCols
-            lg={6}
-            md={6}
-            sm={8}
-            xs={8}
-            style={{ textAlign: "center" }}
-          >
-            <S.Label>Clinic Name :</S.Label>
+          <S.InputCols lg={12} md={12} sm={24} xs={24}>
+            {!!docData.clinic_name && (
+              <Input
+                type="text"
+                label="Edit clinic name"
+                defaultValue={docData.clinic_name}
+                onChange={(val) => setClinicName(val)}
+              />
+            )}
           </S.InputCols>
-          <S.InputCols lg={14} md={14} sm={16} xs={16}>
-            <S.InputBox
-              type="text"
-              bordered={false}
-              size="large"
-              placeholder="Enter Clinic's New Name"
-              value={clinicName}
-              onChange={(e) => setClinicName(e.target.value)}
-            />
+          <S.InputCols lg={12} md={12} sm={24} xs={24}>
+            {!!docData.clinic_address && (
+              <Input
+                type="text"
+                label="Edit clinic's address"
+                defaultValue={docData.clinic_address}
+                onChange={(val) => setClinicAddress(val)}
+              />
+            )}
           </S.InputCols>
-          <S.InputCols lg={4} md={4} sm={0} xs={0}></S.InputCols>
         </S.FormRows>
 
         <S.FormRows align="middle">
-          <S.InputCols
-            lg={6}
-            md={6}
-            sm={8}
-            xs={8}
-            style={{ textAlign: "center" }}
-          >
-            <S.Label>Clinic Address :</S.Label>
+          <S.InputCols lg={12} md={12} sm={24} xs={24}>
+            {!!docData.qualifications && (
+              <Input
+                type="text"
+                label="Edit qualifications"
+                defaultValue={docData.qualifications}
+                onChange={(val) => setQualifications(val)}
+              />
+            )}
           </S.InputCols>
-          <S.InputCols lg={14} md={14} sm={16} xs={16}>
-            <S.InputBox
-              type="text"
-              bordered={false}
-              size="large"
-              placeholder="Enter Clinic's New Address"
-              value={clinicAddress}
-              onChange={(e) => setClinicAddress(e.target.value)}
-            />
+          <S.InputCols lg={12} md={12} sm={24} xs={24}>
+            {!!docData.visit_charges && (
+              <Input
+                type="number"
+                label="Edit visit charges"
+                defaultValue={docData.visit_charges}
+                onChange={(val) => setVisitCharges(val)}
+              />
+            )}
           </S.InputCols>
-          <S.InputCols lg={4} md={4} sm={0} xs={0}></S.InputCols>
         </S.FormRows>
 
         <S.FormRows align="middle">
           <S.InputCols span={24} style={{ textAlign: "center" }}>
-            <S.CustomButton size="large" onClick={onSubmit}>
-              Save Profile Changes
-            </S.CustomButton>
+            <Button onClick={onSubmit}>Save Profile Changes</Button>
           </S.InputCols>
         </S.FormRows>
       </S.Container>

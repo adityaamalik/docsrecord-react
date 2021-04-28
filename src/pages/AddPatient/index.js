@@ -3,6 +3,7 @@ import * as S from "./styles";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import Input from "../../common/Input";
+import Button from "../../common/Button";
 
 const { Option } = S.FormSelects;
 
@@ -11,14 +12,10 @@ const AddPatient = () => {
     console.log("Received values of form:", values);
 
     const doctor = localStorage.getItem("docsrecordDoctor");
-    const token = localStorage.getItem("docsrecordJwtToken");
     values.doctor = doctor;
     axios
-      .post("http://localhost:3000/patients", values, {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+      .post("/patients", values, {
+        withCredentials: true,
       })
       .then((response) => {
         console.log(response);
@@ -54,11 +51,7 @@ const AddPatient = () => {
             </S.InputCols>
             <S.InputCols lg={8} md={8} sm={24} xs={24}>
               <Form.Item name="gender">
-                <S.FormSelects
-                  size="large"
-                  placeholder="Gender"
-                  style={{ width: "100%" }}
-                >
+                <S.FormSelects size="large" placeholder="Gender">
                   <Option value="Male">Male</Option>
                   <Option value="Female">Female</Option>
                   <Option value="Others">Others</Option>
@@ -123,27 +116,25 @@ const AddPatient = () => {
                         <MinusCircleOutlined onClick={() => remove(name)} />
                       </Space>
                     ))}
-                    <Form.Item>
-                      <S.CustomButton
-                        size="large"
-                        type="dashed"
-                        onClick={() => add()}
-                        block
-                        icon={<PlusOutlined />}
-                      >
+                    <Form.Item style={{ textAlign: "center" }}>
+                      <Button onClick={() => add()}>
+                        <PlusOutlined />
                         Add Treatment
-                      </S.CustomButton>
+                      </Button>
                     </Form.Item>
                   </>
                 )}
               </Form.List>
             </S.InputCols>
+            <S.InputCols lg={12} md={12} sm={24} xs={24}>
+              <Form.Item name="payment_method">
+                <Input type="text" label="Payment Method" />
+              </Form.Item>
+            </S.InputCols>
           </Row>
 
-          <Form.Item>
-            <S.CustomButton block size="large" htmlType="submit">
-              Add Patient Record
-            </S.CustomButton>
+          <Form.Item style={{ textAlign: "center" }}>
+            <Button htmlType="submit">Add Patient Record</Button>
           </Form.Item>
         </Form>
       </S.Container>

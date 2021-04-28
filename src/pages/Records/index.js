@@ -1,19 +1,11 @@
 import React from "react";
-import {
-  Table,
-  Input,
-  Button,
-  Space,
-  DatePicker,
-  Row,
-  Col,
-  message,
-} from "antd";
+import { Table, Input, Button, Space, Row, Col, message } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import * as S from "./styles";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 class Records extends React.Component {
   state = {
@@ -25,14 +17,10 @@ class Records extends React.Component {
 
   componentDidMount() {
     const doctor = localStorage.getItem("docsrecordDoctor");
-    const token = localStorage.getItem("docsrecordJwtToken");
 
     axios
-      .get(`http://localhost:3000/patients?doctor=${doctor}`, {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+      .get(`/patients?doctor=${doctor}`, {
+        withCredentials: true,
       })
       .then((response) => {
         console.log(response.data);
@@ -50,13 +38,9 @@ class Records extends React.Component {
   }
 
   deleteRecord = (id) => {
-    const token = localStorage.getItem("docsrecordJwtToken");
     axios
-      .delete(`http://localhost:3000/patients/${id}`, {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+      .delete(`/patients/${id}`, {
+        withCredentials: true,
       })
       .then((response) => {
         console.log(response);
@@ -175,7 +159,7 @@ class Records extends React.Component {
     const token = localStorage.getItem("docsrecordJwtToken");
     axios
       .put(
-        `http://localhost:3000/patients/${id}`,
+        `/patients/${id}`,
         { next_appointment_date: this.state.nextAppointmentDate },
         {
           headers: {
@@ -272,7 +256,7 @@ class Records extends React.Component {
                         <S.Label>Total Cost :</S.Label>
                       </S.ExpandableCol>
                       <S.ExpandableCol span="12">
-                        {record.total_cost}
+                        ₹ {record.total_cost}
                       </S.ExpandableCol>
                     </S.ExpandableRow>
                   )}
@@ -293,11 +277,14 @@ class Records extends React.Component {
                       <S.Label>Next Appointment :</S.Label>
                     </S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      <DatePicker
-                        size="small"
+                      <input
+                        type="date"
+                        defaultValue={moment(
+                          record.next_appointment_date
+                        ).format("YYYY-MM-DD")}
                         onChange={(date) => {
                           this.setState({
-                            nextAppointmentDate: date._d,
+                            nextAppointmentDate: date.target.value,
                           });
                         }}
                       />
@@ -321,6 +308,7 @@ class Records extends React.Component {
                     <S.ExpandableRow align="middle" justify="center">
                       <S.ExpandableCol span="24">
                         <S.Label>Treatments</S.Label>
+                        <hr />
                       </S.ExpandableCol>
                     </S.ExpandableRow>
                   )}
@@ -329,7 +317,6 @@ class Records extends React.Component {
                     record.treatments.map((treatment, index) => {
                       return (
                         <div key={index}>
-                          <hr />
                           <S.ExpandableRow>
                             <S.ExpandableCol span="24">
                               <Row>
@@ -338,10 +325,11 @@ class Records extends React.Component {
                               </Row>
                               <Row>
                                 <Col span={12}>Charges :</Col>
-                                <Col span={12}>{treatment.charges}</Col>
+                                <Col span={12}>₹ {treatment.charges}</Col>
                               </Row>
                             </S.ExpandableCol>
                           </S.ExpandableRow>
+                          <hr />
                         </div>
                       );
                     })}
