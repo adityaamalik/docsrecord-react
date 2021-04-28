@@ -21,7 +21,7 @@ const MyProfile = () => {
   useEffect(() => {
     const doctor = localStorage.getItem("docsrecordDoctor");
     axios
-      .get(`https://docsrecord-backend.herokuapp.com/doctors/${doctor}`, {
+      .get(`/doctors/${doctor}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -67,7 +67,7 @@ const MyProfile = () => {
     }
 
     axios
-      .put(`https://docsrecord-backend.herokuapp.com/doctors/${doctor}`, data, {
+      .put(`/doctors/${doctor}`, data, {
         withCredentials: true,
       })
       .then((response) => {

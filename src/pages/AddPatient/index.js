@@ -14,7 +14,7 @@ const AddPatient = () => {
     const doctor = localStorage.getItem("docsrecordDoctor");
     values.doctor = doctor;
     axios
-      .post("https://docsrecord-backend.herokuapp.com/patients", values, {
+      .post("/patients", values, {
         withCredentials: true,
       })
       .then((response) => {

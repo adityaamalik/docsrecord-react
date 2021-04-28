@@ -22,7 +22,7 @@ const Signup = () => {
 
   const onSubmit = () => {
     axios
-      .post("https://docsrecord-backend.herokuapp.com/doctors/register", {
+      .post("/doctors/register", {
         name: name,
         clinic_name: clinicName,
         clinic_address: clinicAddress,

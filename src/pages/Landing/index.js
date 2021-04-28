@@ -13,7 +13,7 @@ const Landing = () => {
 
   const onSubmit = () => {
     axios
-      .post("https://docsrecord-backend.herokuapp.com/doctors/login", {
+      .post("/doctors/login", {
         email: email,
         password: password,
       })

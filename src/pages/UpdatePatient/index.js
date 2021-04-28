@@ -15,7 +15,7 @@ const UpdatePatient = (props) => {
   useEffect(() => {
     if (!!id) {
       axios
-        .get(`https://docsrecord-backend.herokuapp.com/patients/${id}`, {
+        .get(`/patients/${id}`, {
           withCredentials: true,
         })
         .then((response) => {
@@ -59,7 +59,7 @@ const UpdatePatient = (props) => {
     const doctor = localStorage.getItem("docsrecordDoctor");
     values.doctor = doctor;
     axios
-      .put(`https://docsrecord-backend.herokuapp.com/patients/${id}`, values, {
+      .put(`/patients/${id}`, values, {
         withCredentials: true,
       })
       .then((response) => {
