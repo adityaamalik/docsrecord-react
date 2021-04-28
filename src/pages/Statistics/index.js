@@ -15,9 +15,12 @@ const Statistics = () => {
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
-      .get(`/patients/stats/${doctor}`, {
-        withCredentials: true,
-      })
+      .get(
+        `/https://docsrecord-backend.herokuapp.compatients/stats/${doctor}`,
+        {
+          withCredentials: true,
+        }
+      )
       .then((response) => {
         setStats(response.data);
         const Monthdata = [

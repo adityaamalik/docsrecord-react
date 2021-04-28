@@ -11,9 +11,12 @@ const Appointments = () => {
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
-      .get(`/patients?doctor=${doctor}`, {
-        withCredentials: true,
-      })
+      .get(
+        `/https://docsrecord-backend.herokuapp.compatients?doctor=${doctor}`,
+        {
+          withCredentials: true,
+        }
+      )
       .then((response) => {
         const temp = [];
         response.data.forEach((record) => {

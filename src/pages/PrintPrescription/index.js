@@ -13,9 +13,12 @@ const PrintPrescription = (props) => {
   useEffect(() => {
     if (!!patient.doctor) {
       axios
-        .get(`/doctors/${patient.doctor}`, {
-          withCredentials: true,
-        })
+        .get(
+          `/https://docsrecord-backend.herokuapp.comdoctors/${patient.doctor}`,
+          {
+            withCredentials: true,
+          }
+        )
         .then((response) => {
           setDoc(response.data);
           console.log("Doctor");

@@ -20,9 +20,12 @@ class Records extends React.Component {
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
-      .get(`/patients?doctor=${doctor}`, {
-        withCredentials: true,
-      })
+      .get(
+        `/https://docsrecord-backend.herokuapp.compatients?doctor=${doctor}`,
+        {
+          withCredentials: true,
+        }
+      )
       .then((response) => {
         this.setState({
           data: response.data,
@@ -39,7 +42,7 @@ class Records extends React.Component {
 
   deleteRecord = (id) => {
     axios
-      .delete(`/patients/${id}`, {
+      .delete(`/https://docsrecord-backend.herokuapp.compatients/${id}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -158,7 +161,7 @@ class Records extends React.Component {
     console.log(this.state.nextAppointmentDate);
     axios
       .put(
-        `/patients/${id}`,
+        `/https://docsrecord-backend.herokuapp.compatients/${id}`,
         { next_appointment_date: this.state.nextAppointmentDate },
         {
           withCredentials: true,
@@ -181,7 +184,7 @@ class Records extends React.Component {
     }
 
     axios
-      .put(`/patients/${id}`, formData)
+      .put(`/https://docsrecord-backend.herokuapp.compatients/${id}`, formData)
       .then((response) => {
         const temp = this.state.data.filter((d) => {
           return d._id !== response.data._id;
