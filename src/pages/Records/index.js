@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Input, Button, Space, Row, Col, message } from "antd";
+import { Table, Input, Button, Space, Row, Col, message, Image } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import * as S from "./styles";
@@ -13,6 +13,7 @@ class Records extends React.Component {
     searchedColumn: "",
     data: [],
     nextAppointmentDate: "",
+    images: [],
   };
 
   componentDidMount() {
@@ -23,7 +24,6 @@ class Records extends React.Component {
         withCredentials: true,
       })
       .then((response) => {
-        console.log(response.data);
         this.setState({
           data: response.data,
         });
@@ -156,16 +156,12 @@ class Records extends React.Component {
 
   setNextAppointment = (id) => {
     console.log(this.state.nextAppointmentDate);
-    const token = localStorage.getItem("docsrecordJwtToken");
     axios
       .put(
         `/patients/${id}`,
         { next_appointment_date: this.state.nextAppointmentDate },
         {
-          headers: {
-            "Content-type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true,
         }
       )
       .then((response) => {
@@ -174,6 +170,31 @@ class Records extends React.Component {
       })
       .catch((err) => {
         console.log(err.response);
+      });
+  };
+
+  onUploadPhotos = (id) => {
+    const formData = new FormData();
+
+    for (let image of this.state.images) {
+      formData.append("images", image);
+    }
+
+    axios
+      .put(`/patients/${id}`, formData)
+      .then((response) => {
+        const temp = this.state.data.filter((d) => {
+          return d._id !== response.data._id;
+        });
+        temp.unshift(response.data);
+        this.setState({
+          data: temp,
+        });
+        document.getElementById("images").value = null;
+        message.success("Successfully uploaded the photos");
+      })
+      .catch((err) => {
+        message.error("Some error occured");
       });
   };
 
@@ -301,6 +322,50 @@ class Records extends React.Component {
                       >
                         Update
                       </Button>
+                    </S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span={24}>
+                      <label htmlFor="images">Select Image Gallery : </label>
+                      <input
+                        required
+                        id="images"
+                        type="file"
+                        multiple
+                        onChange={(e) => {
+                          let arr = [];
+                          for (let file of e.target.files) {
+                            arr.push(file);
+                          }
+                          this.setState({
+                            ...this.state,
+                            images: [...arr],
+                          });
+                        }}
+                      />
+                      <Button onClick={() => this.onUploadPhotos(record._id)}>
+                        Upload Photos
+                      </Button>
+                    </S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow>
+                    <S.ExpandableCol span={24}>
+                      {!!record.images &&
+                        record.images.map((img, index) => {
+                          return (
+                            <Image
+                              key={index}
+                              src={`data:image/${
+                                img.contentType
+                              };base64,${img.data.toString("base64")}`}
+                              alt="gallery image"
+                              width="200px"
+                              style={{ margin: "10px" }}
+                            />
+                          );
+                        })}
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
