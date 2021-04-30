@@ -18,8 +18,6 @@ const Landing = () => {
         password: password,
       })
       .then((response) => {
-        console.log(response.data);
-
         localStorage.setItem("docsrecordDoctor", response.data.doctor);
         localStorage.setItem("token", response.data.token);
 
