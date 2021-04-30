@@ -15,9 +15,7 @@ const Statistics = () => {
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
-      .get(`/patients/stats/${doctor}`, {
-        withCredentials: true,
-      })
+      .get(`/patients/stats/${doctor}`)
       .then((response) => {
         setStats(response.data);
         const Monthdata = [

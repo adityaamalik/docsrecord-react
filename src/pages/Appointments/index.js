@@ -11,9 +11,7 @@ const Appointments = () => {
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
-      .get(`/patients?doctor=${doctor}`, {
-        withCredentials: true,
-      })
+      .get(`/patients?doctor=${doctor}`)
       .then((response) => {
         const temp = [];
         response.data.forEach((record) => {

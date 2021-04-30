@@ -14,9 +14,7 @@ const AddPatient = () => {
     const doctor = localStorage.getItem("docsrecordDoctor");
     values.doctor = doctor;
     axios
-      .post("/patients", values, {
-        withCredentials: true,
-      })
+      .post("/patients", values)
       .then((response) => {
         console.log(response);
         message.success("Patient added successfully !").then(() => {

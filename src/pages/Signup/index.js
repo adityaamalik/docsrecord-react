@@ -36,6 +36,7 @@ const Signup = () => {
         console.log(response.data);
 
         localStorage.setItem("docsrecordDoctor", response.data.doctor._id);
+        localStorage.setItem("token", response.data.token);
 
         window.location.pathname = "/records";
       })

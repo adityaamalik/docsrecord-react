@@ -15,9 +15,7 @@ const UpdatePatient = (props) => {
   useEffect(() => {
     if (!!id) {
       axios
-        .get(`/patients/${id}`, {
-          withCredentials: true,
-        })
+        .get(`/patients/${id}`)
         .then((response) => {
           setPatient(response.data);
           console.log(response.data);
@@ -59,9 +57,7 @@ const UpdatePatient = (props) => {
     const doctor = localStorage.getItem("docsrecordDoctor");
     values.doctor = doctor;
     axios
-      .put(`/patients/${id}`, values, {
-        withCredentials: true,
-      })
+      .put(`/patients/${id}`, values)
       .then((response) => {
         console.log(response);
         setPatient(response.data);
