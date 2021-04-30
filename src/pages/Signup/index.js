@@ -3,7 +3,7 @@ import { useState } from "react";
 import Input from "../../common/Input";
 import Button from "../../common/Button";
 import { RightOutlined } from "@ant-design/icons";
-import { Row, Col } from "antd";
+import { Row, Col, message } from "antd";
 import axios from "axios";
 import SignupImg from "../../img/doctors.jpg";
 
@@ -42,6 +42,7 @@ const Signup = () => {
       })
       .catch((err) => {
         console.log(err);
+        message.error("Some error occured !");
       });
   };
 

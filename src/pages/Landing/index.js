@@ -24,10 +24,13 @@ const Landing = () => {
         window.location.pathname = "/records";
       })
       .catch((err) => {
+        console.log(err);
         if (err.response.data === "email incorrect") {
           message.error("This email is not registered !");
         } else if (err.response.data === "password incorrect") {
           message.error("Password is wrong. Please try again !");
+        } else {
+          message.error("Some error occured !");
         }
       });
   };
