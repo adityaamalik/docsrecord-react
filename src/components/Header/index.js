@@ -36,7 +36,15 @@ const menu = (
       </S.Span>
     </Menu.Item>
     <Menu.Item key="6">
-      <S.Span href="/logout">logout</S.Span>
+      <S.Span
+        href="/#"
+        onClick={() => {
+          localStorage.clear();
+          window.location.pathname = "/";
+        }}
+      >
+        logout
+      </S.Span>
     </Menu.Item>
   </Menu>
 );

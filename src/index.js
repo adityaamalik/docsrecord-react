@@ -4,6 +4,13 @@ import "antd/dist/antd.css";
 
 import Router from "./router";
 import reportWebVitals from "./reportWebVitals";
+import axios from "axios";
+
+axios.defaults.headers.common[`Authorization`] = `Bearer ${localStorage.getItem(
+  "token"
+)}`;
+axios.defaults.headers.post["Content-Type"] = "application/json";
+axios.defaults.baseURL = "https://docsrecord.herokuapp.com";
 
 const App = () => (
   <BrowserRouter>

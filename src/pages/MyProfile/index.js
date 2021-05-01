@@ -21,9 +21,7 @@ const MyProfile = () => {
   useEffect(() => {
     const doctor = localStorage.getItem("docsrecordDoctor");
     axios
-      .get(`/doctors/${doctor}`, {
-        withCredentials: true,
-      })
+      .get(`/doctors/${doctor}`)
       .then((response) => {
         console.log(response.data);
         setDocData(response.data);
@@ -67,9 +65,7 @@ const MyProfile = () => {
     }
 
     axios
-      .put(`/doctors/${doctor}`, data, {
-        withCredentials: true,
-      })
+      .put(`/doctors/${doctor}`, data)
       .then((response) => {
         console.log(response.data);
         setDocData(response.data);

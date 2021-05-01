@@ -13,9 +13,7 @@ const PrintPrescription = (props) => {
   useEffect(() => {
     if (!!patient.doctor) {
       axios
-        .get(`/doctors/${patient.doctor}`, {
-          withCredentials: true,
-        })
+        .get(`/doctors/${patient.doctor}`)
         .then((response) => {
           setDoc(response.data);
           console.log("Doctor");

@@ -20,9 +20,7 @@ class Records extends React.Component {
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
-      .get(`/patients?doctor=${doctor}`, {
-        withCredentials: true,
-      })
+      .get(`/patients?doctor=${doctor}`)
       .then((response) => {
         this.setState({
           data: response.data,
@@ -39,9 +37,7 @@ class Records extends React.Component {
 
   deleteRecord = (id) => {
     axios
-      .delete(`/patients/${id}`, {
-        withCredentials: true,
-      })
+      .delete(`/patients/${id}`)
       .then((response) => {
         console.log(response);
         message.success("Record deleted successfully !");
