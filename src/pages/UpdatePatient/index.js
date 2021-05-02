@@ -29,6 +29,7 @@ const UpdatePatient = (props) => {
   }, [id]);
 
   const onFinish = (values) => {
+    console.log(values);
     const treatmentsArr = [];
     for (const [key, value] of Object.entries(values)) {
       if (
@@ -40,9 +41,10 @@ const UpdatePatient = (props) => {
         key !== "treatments" &&
         key !== "age" &&
         key !== "gender"
-      ) {
-        treatmentsArr.push(value);
-      }
+      )
+        if (!!values.treatments) {
+          treatmentsArr.push(value);
+        }
     }
 
     for (let i = 0; i < treatmentsArr.length - 1; i = i + 2) {

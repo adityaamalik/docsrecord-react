@@ -28,9 +28,8 @@ class Records extends React.Component {
       })
       .catch((err) => {
         if (!!err.response && err.response.status === 401) {
-          message
-            .error("You are unauthorized user, please login first !")
-            .then(() => (window.location.pathname = "/login"));
+          message.error("You are unauthorized user, please login first !");
+          // .then(() => (window.location.pathname = "/login"));
         }
       });
   }
@@ -153,13 +152,9 @@ class Records extends React.Component {
   setNextAppointment = (id) => {
     console.log(this.state.nextAppointmentDate);
     axios
-      .put(
-        `/patients/${id}`,
-        { next_appointment_date: this.state.nextAppointmentDate },
-        {
-          withCredentials: true,
-        }
-      )
+      .put(`/patients/${id}`, {
+        next_appointment_date: this.state.nextAppointmentDate,
+      })
       .then((response) => {
         console.log(response);
         message.success("Next appointment added successfully");
@@ -217,6 +212,7 @@ class Records extends React.Component {
         ...this.getColumnSearchProps("address"),
       },
     ];
+
     return (
       <S.Container>
         <Table
@@ -232,7 +228,7 @@ class Records extends React.Component {
                       <S.Label>Date of visit :</S.Label>
                     </S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      {record.visit_date}
+                      {moment(record.visit_date).format("DD-MM-YYYY")}
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 

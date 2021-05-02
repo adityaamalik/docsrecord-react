@@ -37,18 +37,7 @@ const Landing = () => {
 
   return (
     <div style={{ position: "relative" }}>
-      <img
-        src={WaitingRoom}
-        alt="clinic waiting room"
-        style={{
-          position: "absolute",
-          opacity: "0.6",
-          height: "100vh",
-          width: "auto",
-          left: "0",
-          top: "0",
-        }}
-      />
+      <S.WaitRoomImg src={WaitingRoom} />
       <S.MainRow align="middle" style={{ position: "relative" }}>
         <S.MainCol lg={14} md={24} sm={24} xs={24}>
           <S.Image src={ImageUrl} />

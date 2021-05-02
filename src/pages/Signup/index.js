@@ -48,18 +48,8 @@ const Signup = () => {
 
   return (
     <div style={{ position: "relative" }}>
-      <img
-        src={SignupImg}
-        alt="Sign up"
-        style={{
-          position: "absolute",
-          opacity: "0.6",
-          height: "auto",
-          width: "50%",
-          right: "0",
-          top: "20%",
-        }}
-      />
+      <S.WaitRoomImg src={SignupImg} />
+
       <Row align="middle" justify="center" style={{ position: "relative" }}>
         <Col span={1}></Col>
         <Col lg={11} style={{ textAlign: "center", marginTop: "50px" }}>
@@ -132,6 +122,10 @@ const Signup = () => {
             SIGN UP
             <RightOutlined />
           </Button>
+
+          <S.SubHeading>
+            Already Registered User? <a href="/landing">Login</a>
+          </S.SubHeading>
 
           <br />
           <br />
