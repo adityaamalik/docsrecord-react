@@ -26,6 +26,7 @@ const PrintBill = (props) => {
     } else {
       window.location.pathname = "/records";
     }
+    // document.getElementById("mainHeader").style.display = "none";
   }, [patient.doctor]);
 
   return (
@@ -95,43 +96,46 @@ const PrintBill = (props) => {
       </S.PatientInfo>
 
       <S.TreatmentContainer>
-        <Row>
-          <Col span={8}>
-            <h3>
-              <strong>S. No.</strong>
-            </h3>
-          </Col>
-          <Col span={8}>
-            <h3>
-              <strong>Treatment</strong>
-            </h3>
-          </Col>
-          <Col span={8}>
-            <h3>
-              <strong>Charges</strong>
-            </h3>
-          </Col>
-        </Row>
+        {patient.treatments && (
+          <Row>
+            <Col span={8}>
+              <h3>
+                <strong>S. No.</strong>
+              </h3>
+            </Col>
+            <Col span={8}>
+              <h3>
+                <strong>Treatment</strong>
+              </h3>
+            </Col>
+            <Col span={8}>
+              <h3>
+                <strong>Charges</strong>
+              </h3>
+            </Col>
+          </Row>
+        )}
 
-        <hr />
-        {patient.treatments.map((treatment, index) => {
-          return (
-            <>
-              <Row>
-                <Col span={8}>
-                  <h3>{index + 1}</h3>
-                </Col>
-                <Col span={8}>
-                  <h3>{treatment.treatment}</h3>
-                </Col>
-                <Col span={8}>
-                  <h3>₹ {treatment.charges}</h3>
-                </Col>
-              </Row>
-              <hr />
-            </>
-          );
-        })}
+        {patient.treatments && <hr />}
+        {patient.treatments &&
+          patient.treatments.map((treatment, index) => {
+            return (
+              <>
+                <Row>
+                  <Col span={8}>
+                    <h3>{index + 1}</h3>
+                  </Col>
+                  <Col span={8}>
+                    <h3>{treatment.treatment}</h3>
+                  </Col>
+                  <Col span={8}>
+                    <h3>₹ {treatment.charges}</h3>
+                  </Col>
+                </Row>
+                <hr />
+              </>
+            );
+          })}
 
         <br />
         <br />

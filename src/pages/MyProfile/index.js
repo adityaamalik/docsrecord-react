@@ -67,9 +67,7 @@ const MyProfile = () => {
     axios
       .put(`/doctors/${doctor}`, data)
       .then((response) => {
-        console.log(response.data);
-        setDocData(response.data);
-        message.success("Successfully updated your profile");
+        window.location.pathname = "/myprofile";
       })
       .catch((err) => {
         console.log(err);

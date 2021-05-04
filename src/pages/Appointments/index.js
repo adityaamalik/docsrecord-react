@@ -13,13 +13,14 @@ const Appointments = () => {
     axios
       .get(`/patients?doctor=${doctor}`)
       .then((response) => {
+        // console.log(response.data);
         const temp = [];
         response.data.forEach((record) => {
           if (
             record.next_appointment_date !== undefined &&
-            record.next_appointment_date !== null &&
-            record.next_appointment_date > moment().format("YYYY-MM-DD")
+            record.next_appointment_date !== null
           ) {
+            console.log(record);
             temp.push(record);
           }
         });
@@ -40,6 +41,7 @@ const Appointments = () => {
         }
       });
   }, []);
+  console.log(records);
 
   const title = (name, date) => {
     return (
@@ -59,7 +61,8 @@ const Appointments = () => {
 
         <S.AppointmentCardContainer>
           <S.CustomRow>
-            {records.length !== 0 &&
+            {!!records &&
+              records.length !== 0 &&
               records.map((record, index) => {
                 return (
                   <Col lg={8} md={12} sm={24} xs={24} key={index}>
@@ -67,29 +70,42 @@ const Appointments = () => {
                       size="small"
                       title={title(record.name, record.next_appointment_date)}
                     >
+                      <Row style={{ marginBottom: "20px" }}>
+                        <Col>Patient no : {index + 1}</Col>
+                      </Row>
+
                       {!!record.phone_number && (
                         <Row style={{ marginBottom: "20px" }}>
                           <Col>Phone Number : {record.phone_number}</Col>
                         </Row>
                       )}
 
-                      <Row style={{ marginBottom: "20px" }}>
-                        <Col span={12}>
-                          <strong>Treatment</strong>
-                        </Col>
-                        <Col span={12}>
-                          <strong>Charges</strong>
-                        </Col>
-                      </Row>
+                      {!!record.treatments && (
+                        <Row style={{ marginBottom: "20px" }}>
+                          <Col span={12}>
+                            <strong>Treatment</strong>
+                          </Col>
+                          <Col span={12}>
+                            <strong>Charges</strong>
+                          </Col>
+                        </Row>
+                      )}
 
-                      {record.treatments.map((treatment, i) => {
-                        return (
-                          <Row key={i}>
-                            <Col span={12}>{treatment.treatment}</Col>
-                            <Col span={12}>₹ {treatment.charges}</Col>
-                          </Row>
-                        );
-                      })}
+                      {!!record.treatments &&
+                        record.treatments.map((treatment, i) => {
+                          return (
+                            <Row key={i}>
+                              <Col span={12}>{treatment.treatment}</Col>
+                              <Col span={12}>₹ {treatment.charges}</Col>
+                            </Row>
+                          );
+                        })}
+
+                      {!!record.total_cost && (
+                        <Row style={{ marginBottom: "20px" }}>
+                          <Col>Total Cost : {record.total_cost}</Col>
+                        </Row>
+                      )}
                     </S.AppointmentCard>
                   </Col>
                 );

@@ -5,11 +5,11 @@ export const Container = styled.div`
   margin: 50px;
 
   @media only screen and (max-width: 1400px) {
-    margin: 20px;
+    margin: 60px;
   }
 
   @media only screen and (max-width: 768px) {
-    marin: 5px;
+    margin: 0px;
   }
 `;
 
@@ -62,6 +62,7 @@ export const FileUpload = styled.input`
   opacity: 0;
   position: absolute;
   z-index: -1;
+  width: 25%;
 `;
 
 export const FileUploadLabel = styled.label`

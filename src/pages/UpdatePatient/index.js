@@ -29,7 +29,9 @@ const UpdatePatient = (props) => {
   }, [id]);
 
   const onFinish = (values) => {
+    console.log(values);
     const treatmentsArr = [];
+
     for (const [key, value] of Object.entries(values)) {
       if (
         key !== "name" &&
@@ -40,9 +42,10 @@ const UpdatePatient = (props) => {
         key !== "treatments" &&
         key !== "age" &&
         key !== "gender"
-      ) {
-        treatmentsArr.push(value);
-      }
+      )
+        if (!!values.treatments) {
+          treatmentsArr.push(value);
+        }
     }
 
     for (let i = 0; i < treatmentsArr.length - 1; i = i + 2) {
@@ -62,7 +65,7 @@ const UpdatePatient = (props) => {
         console.log(response);
         setPatient(response.data);
         message.success("Patient updated successfully !").then(() => {
-          window.location.pathname = "/records";
+          // window.location.pathname = "/records";
         });
       })
       .catch((err) => {
@@ -72,13 +75,16 @@ const UpdatePatient = (props) => {
 
   const deleteTreatment = (treatment) => {
     console.log("clicked");
-    console.log(
-      patient.treatments.filter((t) => {
-        return (
-          t.treatment !== treatment.treatment && t.charges !== treatment.charges
-        );
-      })
-    );
+
+    let treatmentss = patient.treatments.filter((t) => {
+      return (
+        t.treatment !== treatment.treatment && t.charges !== treatment.charges
+      );
+    });
+    patient.treatments = [...treatmentss];
+    console.log(patient.treatments);
+    setPatient({ ...patient });
+    console.log(patient);
   };
 
   return (
@@ -163,10 +169,10 @@ const UpdatePatient = (props) => {
           {patient.treatments &&
             patient.treatments.map((treatment, index) => {
               return (
-                <Row key={index} align="middle">
+                <Row key={treatment.treatment + index} align="middle">
                   <S.InputCols lg={6} md={6} sm={12} xs={12}>
                     <Form.Item
-                      name={`treatment${index}`}
+                      name={`treatment${treatment.treatment + index}`}
                       initialValue={treatment.treatment}
                     >
                       <Input type="text" label="Treatment" />
@@ -174,7 +180,7 @@ const UpdatePatient = (props) => {
                   </S.InputCols>
                   <S.InputCols lg={6} md={6} sm={11} xs={11}>
                     <Form.Item
-                      name={`charge${index}`}
+                      name={`charge${treatment.treatment + index}`}
                       initialValue={treatment.charges}
                     >
                       <Input type="number" label="Charges" />
