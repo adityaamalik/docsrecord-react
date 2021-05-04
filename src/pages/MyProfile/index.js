@@ -68,7 +68,6 @@ const MyProfile = () => {
       .put(`/doctors/${doctor}`, data)
       .then((response) => {
         window.location.pathname = "/myprofile";
-        message.success("f");
       })
       .catch((err) => {
         console.log(err);
