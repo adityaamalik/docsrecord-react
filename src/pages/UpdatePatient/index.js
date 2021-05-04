@@ -29,34 +29,7 @@ const UpdatePatient = (props) => {
   }, [id]);
 
   const onFinish = (values) => {
-    console.log(values);
-    const treatmentsArr = [];
-
-    for (const [key, value] of Object.entries(values)) {
-      if (
-        key !== "name" &&
-        key !== "phone_number" &&
-        key !== "address" &&
-        key !== "email" &&
-        key !== "payment_method" &&
-        key !== "treatments" &&
-        key !== "age" &&
-        key !== "gender"
-      )
-        if (!!values.treatments) {
-          treatmentsArr.push(value);
-        }
-    }
-
-    for (let i = 0; i < treatmentsArr.length - 1; i = i + 2) {
-      const temp = {
-        treatment: treatmentsArr[i],
-        charges: treatmentsArr[i + 1],
-      };
-
-      values.treatments.push(temp);
-    }
-
+    console.log("on finish called");
     const doctor = localStorage.getItem("docsrecordDoctor");
     values.doctor = doctor;
     axios
@@ -64,27 +37,11 @@ const UpdatePatient = (props) => {
       .then((response) => {
         console.log(response);
         setPatient(response.data);
-        message.success("Patient updated successfully !").then(() => {
-          // window.location.pathname = "/records";
-        });
+        message.success("Patient updated successfully !");
       })
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  const deleteTreatment = (treatment) => {
-    console.log("clicked");
-
-    let treatmentss = patient.treatments.filter((t) => {
-      return (
-        t.treatment !== treatment.treatment && t.charges !== treatment.charges
-      );
-    });
-    patient.treatments = [...treatmentss];
-    console.log(patient.treatments);
-    setPatient({ ...patient });
-    console.log(patient);
   };
 
   return (
@@ -166,79 +123,58 @@ const UpdatePatient = (props) => {
               </S.InputCols>
             )}
           </Row>
-          {patient.treatments &&
-            patient.treatments.map((treatment, index) => {
-              return (
-                <Row key={treatment.treatment + index} align="middle">
-                  <S.InputCols lg={6} md={6} sm={12} xs={12}>
-                    <Form.Item
-                      name={`treatment${treatment.treatment + index}`}
-                      initialValue={treatment.treatment}
-                    >
-                      <Input type="text" label="Treatment" />
-                    </Form.Item>
-                  </S.InputCols>
-                  <S.InputCols lg={6} md={6} sm={11} xs={11}>
-                    <Form.Item
-                      name={`charge${treatment.treatment + index}`}
-                      initialValue={treatment.charges}
-                    >
-                      <Input type="number" label="Charges" />
-                    </Form.Item>
-                  </S.InputCols>
-                  <S.InputCols span={1}>
-                    <MinusCircleOutlined
-                      style={{ marginBottom: "30px" }}
-                      onClick={() => deleteTreatment(treatment)}
-                    />
-                  </S.InputCols>
-                </Row>
-              );
-            })}
 
           <Row>
-            <S.InputCols lg={12} md={12} sm={24} xs={24}>
-              <Form.List name="treatments">
-                {(fields, { add, remove }) => (
-                  <>
-                    {fields.map(({ key, name, fieldKey, ...restField }) => (
-                      <Space
-                        key={key}
-                        style={{ display: "flex", marginBottom: 8 }}
-                        align="baseline"
-                      >
-                        <Form.Item
-                          {...restField}
-                          name={[name, "treatment"]}
-                          fieldKey={[fieldKey, "treatment"]}
-                          rules={[
-                            { required: true, message: "Missing Treatment" },
-                          ]}
+            {patient.treatments && (
+              <S.InputCols lg={12} md={12} sm={24} xs={24}>
+                <Form.List name="treatments" initialValue={patient.treatments}>
+                  {(fields, { add, remove }) => (
+                    <>
+                      {fields.map(({ key, name, fieldKey, ...restField }) => (
+                        <Space
+                          key={key}
+                          style={{ display: "flex", marginBottom: 8 }}
+                          align="baseline"
                         >
-                          <Input label="Treatment" type="text" />
-                        </Form.Item>
-                        <Form.Item
-                          {...restField}
-                          name={[name, "charges"]}
-                          fieldKey={[fieldKey, "charges"]}
-                          rules={[
-                            { required: true, message: "Missing Charges" },
-                          ]}
-                        >
-                          <Input label="Charges" type="number" />
-                        </Form.Item>
-                        <MinusCircleOutlined onClick={() => remove(name)} />
-                      </Space>
-                    ))}
-                    <Form.Item>
-                      <Button onClick={() => add()}>
-                        <PlusOutlined /> Add Treatment
-                      </Button>
-                    </Form.Item>
-                  </>
-                )}
-              </Form.List>
-            </S.InputCols>
+                          <Form.Item
+                            {...restField}
+                            name={[name, "treatment"]}
+                            fieldKey={[fieldKey, "treatment"]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please fill treatment",
+                              },
+                            ]}
+                          >
+                            <Input label="Treatment" type="text" />
+                          </Form.Item>
+                          <Form.Item
+                            {...restField}
+                            name={[name, "charges"]}
+                            fieldKey={[fieldKey, "charges"]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please fill charges",
+                              },
+                            ]}
+                          >
+                            <Input label="Charges" type="number" />
+                          </Form.Item>
+                          <MinusCircleOutlined onClick={() => remove(name)} />
+                        </Space>
+                      ))}
+                      <Form.Item>
+                        <Button onClick={() => add()}>
+                          <PlusOutlined /> Add Treatment
+                        </Button>
+                      </Form.Item>
+                    </>
+                  )}
+                </Form.List>
+              </S.InputCols>
+            )}
           </Row>
 
           <Form.Item style={{ textAlign: "center" }}>
