@@ -4,14 +4,18 @@ import { useState } from "react";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
 import axios from "axios";
-import { message, Modal } from "antd";
+import { message, Modal, Row, Col } from "antd";
 import WaitingRoom from "../../img/waitingroom.jpg";
+import { CloseCircleOutlined } from "@ant-design/icons";
 
 const Landing = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isMonthlyModalVisible, setIsMonthlyModalVisible] = useState(false);
+  const [isYearlyModalVisible, setIsYearlyModalVisible] = useState(false);
   const [doctor, setDoctor] = useState({});
+  const [token, setToken] = useState("");
 
   const onSubmit = () => {
     axios
@@ -20,17 +24,15 @@ const Landing = () => {
         password: password,
       })
       .then((response) => {
-        localStorage.setItem("docsrecordDoctor", response.data.doctor._id);
-        localStorage.setItem("token", response.data.token);
-
         var today = new Date();
         var payment = new Date(response.data.doctor.payment_valid_till);
-        console.log(today);
-        console.log(payment);
         setDoctor(response.data.doctor);
-        if (today.getTime() > payment.getTime()) {
+        if (today > payment) {
+          setToken(response.data.token);
           setIsModalVisible(true);
         } else {
+          localStorage.setItem("docsrecordDoctor", response.data.doctor._id);
+          localStorage.setItem("token", response.data.token);
           window.location.pathname = "/records";
         }
       })
@@ -45,26 +47,7 @@ const Landing = () => {
         }
       });
   };
-  // const loadScript = () => {
-  //   const Script = document.createElement("script");
-  //   //id should be same as given to form element
-  //   const Form = document.getElementById("donateForm");
-  //   Script.setAttribute(
-  //     "src",
-  //     "https://checkout.razorpay.com/v1/payment-button.js"
-  //   );
-  //   Script.setAttribute("data-payment_button_id", "pl_H6R4HFn11wkcrx");
 
-  //   Form.appendChild(Script);
-  // };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
   const loadScript = (src) => {
     return new Promise((resolve) => {
       const script = document.createElement("script");
@@ -79,7 +62,7 @@ const Landing = () => {
     });
   };
 
-  const displayRazorpay = async () => {
+  const displayRazorpay = async (subscription) => {
     const res = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
     );
@@ -90,52 +73,52 @@ const Landing = () => {
     }
 
     // creating a new order
-    // const result = await axios.post("/payment/orders", {
-    //   amount: price,
-    // });
+    const result = await axios.post("/payments/orders", {
+      subscription: subscription,
+    });
 
-    // if (!result) {
-    //   alert("Server error. Are you online?");
-    //   return;
-    // }
+    if (!result) {
+      alert("Server error. Are you online?");
+      return;
+    }
 
     // Getting the order details back
-    // const { amount, id: order_id, currency } = result.data;
+    const { amount, id: order_id, currency } = result.data;
 
     const options = {
       key: "rzp_test_wWXoxoQf1kjrSm", // Enter the Key ID generated from the Dashboard
-      amount: 700,
-      name: "doc",
-      description: "Payment for your order at doc store",
-
+      amount: amount * 100,
+      currency: currency,
+      name: "DOCSRECORD",
+      description: `DOCSRECORD ${subscription} subscription.`,
+      order_id: order_id,
       handler: async function (response) {
         const data = {
+          doctorId: doctor._id,
+          orderCreationId: order_id,
           razorpayPaymentId: response.razorpay_payment_id,
           razorpayOrderId: response.razorpay_order_id,
           razorpaySignature: response.razorpay_signature,
+          subscription: subscription,
         };
 
-        const doctor = localStorage.getItem("docsrecordDoctor");
+        const result = await axios.post("/payments/success", data);
 
-        var pay = new Date();
-        let offset = pay.getTimezoneOffset();
-        pay = new Date(pay.getTime() - offset * 60000);
-        pay = pay.setDate(pay.getDate() + 30);
-        axios
-          .put(`/doctors/${doctor}`, { payment_valid_till: pay })
-          .then((response) => {})
-          .catch((err) => {
-            console.log(err);
-            message.error("Some error occured");
-          });
-
-        message.success().then(() => (window.location.pathname = "/login"));
+        console.log(result.data.statusCode);
+        message.success(result.data.msg).then(() => {
+          localStorage.setItem("docsrecordDoctor", doctor._id);
+          localStorage.setItem("token", token);
+          window.location.pathname = "/records";
+        });
       },
       prefill: {
         name: doctor.name,
         email: doctor.email,
+        contact: doctor.phone_number,
       },
-
+      notes: {
+        address: doctor.address,
+      },
       theme: {
         color: "#61dafb",
       },
@@ -145,86 +128,114 @@ const Landing = () => {
     paymentObject.open();
   };
 
-  // const submitOrder = () => {
-  //   if (name === "") {
-  //     message.error("Please fill the name");
-  //   } else if (email === "") {
-  //     message.error("Please fill the email");
-  //   } else if (phone === "") {
-  //     message.error("Please fill the phone number");
-  //   } else if (address1 === "" && address2 === "") {
-  //     message.error("Please provide an address");
-  //   } else if (state === "") {
-  //     message.error("Please fill the state");
-  //   } else if (city === "") {
-  //     message.error("Please fill the city");
-  //   } else if (zip === "") {
-  //     message.error("Please fill the zip code");
-  //   } else if (paymentMethod === "") {
-  //     message.error("Please enter the payment method");
-  //   } else {
-  //     // const fmData = new FormData();
-
-  //     const orderItems = [];
-  //     let totalPrice = 0;
-  //     JSON.parse(localStorage.getItem("products")).forEach((product) => {
-  //       const temp = {
-  //         product: product.id,
-  //         price: product.discountedPrice * product.quantity,
-  //         quantity: parseInt(product.quantity),
-  //         colour: product.colour,
-  //       };
-
-  //       orderItems.push(temp);
-
-  //       totalPrice = totalPrice + product.discountedPrice * product.quantity;
-  //     });
-
-  //     const data = {
-  //       name: name,
-  //       email: email,
-  //       phone: phone,
-  //       shippingAddress1: address1,
-  //       shippingAddress2: address2,
-  //       city: city,
-  //       state: state,
-  //       zip: zip,
-  //       orderItems: orderItems,
-  //       paymentMethod: paymentMethod,
-  //     };
-
-  //     axios
-  //       .post("/orders", data)
-  //       .then((response) => {
-  //         console.log(response.data);
-  //         localStorage.removeItem("products");
-  //         if (response.data.paymentMethod !== "COD") {
-  //           displayRazorpay(
-  //             name,
-  //             email,
-  //             phone,
-  //             address1,
-  //             totalPrice,
-  //             response.data._id
-  //           );
-  //         } else {
-  //           window.location.pathname = "/thankyou";
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         message.error("Some error occured !");
-  //         console.log(error);
-  //       });
-  //   }
-  // };
-
   return (
     <div style={{ position: "relative" }}>
-      <Modal visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        <form id="donateForm"> </form>
-        <Button width="30" onClick={() => displayRazorpay()}>
-          Continue to payment
-        </Button>
+      {/* main modal */}
+      <Modal
+        footer={null}
+        centered
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        closable={false}
+        bodyStyle={{ backgroundColor: "#fff" }}
+      >
+        <div style={{ textAlign: "right" }}>
+          <CloseCircleOutlined
+            style={{ color: "black", fontSize: "20px" }}
+            onClick={() => setIsModalVisible(false)}
+          />
+        </div>
+
+        <h1>Payment Due</h1>
+        <h3>
+          Your plan has expired. To continue using docsrecord, please choose a
+          monthly or an yearly subscription.
+        </h3>
+        <h3>Click on monthly or yearly button to check the details.</h3>
+        <Row justify="center" align="middle" style={{ textAlign: "center" }}>
+          <Col span={11}>
+            <Button width="30" onClick={() => setIsMonthlyModalVisible(true)}>
+              Monthly subscription
+            </Button>
+          </Col>
+          <Col span={2}></Col>
+          <Col span={11}>
+            <Button width="30" onClick={() => setIsYearlyModalVisible(true)}>
+              Yearly subscription
+            </Button>
+          </Col>
+        </Row>
+        <br />
+        <p>
+          Contact Support for any queries : +91 - 8130083852 |
+          codeclan0100@gmail.com
+        </p>
+      </Modal>
+
+      {/* monthly modal */}
+      <Modal
+        footer={null}
+        centered
+        visible={isMonthlyModalVisible}
+        onCancel={() => setIsMonthlyModalVisible(false)}
+        closable={false}
+        bodyStyle={{ backgroundColor: "#fff" }}
+      >
+        <div style={{ textAlign: "right" }}>
+          <CloseCircleOutlined
+            style={{ color: "black", fontSize: "20px" }}
+            onClick={() => setIsMonthlyModalVisible(false)}
+          />
+        </div>
+
+        <h1>Monthly Plan</h1>
+        <h3>Your subscription will be extended for 1 Month.</h3>
+        <h3>Amount : ₹ 500</h3>
+        <Row justify="center" align="middle" style={{ textAlign: "center" }}>
+          <Col span={24}>
+            <Button width="30" onClick={() => displayRazorpay("monthly")}>
+              Continue to payment
+            </Button>
+          </Col>
+        </Row>
+        <br />
+        <p>
+          Contact Support for any queries : +91 - 8130083852 |
+          codeclan0100@gmail.com
+        </p>
+      </Modal>
+
+      {/* yearly modal */}
+      <Modal
+        footer={null}
+        centered
+        visible={isYearlyModalVisible}
+        onCancel={() => setIsYearlyModalVisible(false)}
+        closable={false}
+        bodyStyle={{ backgroundColor: "#fff" }}
+      >
+        <div style={{ textAlign: "right" }}>
+          <CloseCircleOutlined
+            style={{ color: "black", fontSize: "20px" }}
+            onClick={() => setIsYearlyModalVisible(false)}
+          />
+        </div>
+
+        <h1>Yearly Plan</h1>
+        <h3>Your subscription will be extended for 1 Year.</h3>
+        <h3>Amount : ₹ 5000</h3>
+        <Row justify="center" align="middle" style={{ textAlign: "center" }}>
+          <Col span={24}>
+            <Button width="30" onClick={() => displayRazorpay("yearly")}>
+              Continue to payment
+            </Button>
+          </Col>
+        </Row>
+        <br />
+        <p>
+          Contact Support for any queries : +91 - 8130083852 |
+          codeclan0100@gmail.com
+        </p>
       </Modal>
 
       <S.WaitRoomImg src={WaitingRoom} />
