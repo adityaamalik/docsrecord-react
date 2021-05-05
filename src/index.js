@@ -10,7 +10,7 @@ axios.defaults.headers.common[`Authorization`] = `Bearer ${localStorage.getItem(
   "token"
 )}`;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-axios.defaults.baseURL = "https://docsrecord-backend.herokuapp.com";
+axios.defaults.baseURL = "https://docsrecord.herokuapp.com";
 const App = () => (
   <BrowserRouter>
     <Router />
