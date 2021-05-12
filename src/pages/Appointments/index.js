@@ -21,7 +21,9 @@ const Appointments = () => {
             record.next_appointment_date !== null
           ) {
             console.log(record);
-            temp.push(record);
+            var today = moment();
+            var appointdate = moment(record.next_appointment_date);
+            if (appointdate >= today) temp.push(record);
           }
         });
         setRecords(
@@ -48,7 +50,7 @@ const Appointments = () => {
       <Row>
         <Col span={12}>{name}</Col>
         <Col span={12} style={{ textAlign: "right" }}>
-          {moment(date).format("DD-MMM-YYYY")}
+          {moment(date).format("MMMM Do YYYY, h:mm:ss a")}
         </Col>
       </Row>
     );

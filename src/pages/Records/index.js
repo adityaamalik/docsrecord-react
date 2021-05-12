@@ -6,13 +6,13 @@ import * as S from "./styles";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import moment from "moment";
-
+import DateTimePicker from "react-datetime-picker";
 class Records extends React.Component {
   state = {
     searchText: "",
     searchedColumn: "",
     data: [],
-    nextAppointmentDate: "",
+    nextAppointmentDate: new Date(),
     images: [],
   };
 
@@ -150,10 +150,12 @@ class Records extends React.Component {
   };
 
   setNextAppointment = (id) => {
+    let today = new Date(this.state.nextAppointmentDate);
+
     console.log(this.state.nextAppointmentDate);
     axios
       .put(`/patients/${id}`, {
-        next_appointment_date: this.state.nextAppointmentDate,
+        next_appointment_date: today,
       })
       .then((response) => {
         console.log(response);
@@ -284,13 +286,35 @@ class Records extends React.Component {
                       </S.ExpandableCol>
                     </S.ExpandableRow>
                   )}
+                  {record.next_appointment_date && (
+                    <S.ExpandableRow align="middle" justify="center">
+                      <S.ExpandableCol span="12">
+                        <S.Label>Last/Next Appointment Date :</S.Label>
+                      </S.ExpandableCol>
+                      <S.ExpandableCol span="12">
+                        {moment(record.next_appointment_date).format(
+                          "MMMM Do YYYY, h:mm:ss a"
+                        )}
+                      </S.ExpandableCol>
+                    </S.ExpandableRow>
+                  )}
 
                   <S.ExpandableRow align="middle" justify="center">
                     <S.ExpandableCol span="12">
-                      <S.Label>Next Appointment :</S.Label>
+                      <S.Label>Set Appointment :</S.Label>
                     </S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      <input
+                      <S.Picker>
+                        <DateTimePicker
+                          onChange={(date) => {
+                            this.setState({
+                              nextAppointmentDate: date,
+                            });
+                          }}
+                          value={this.state.nextAppointmentDate}
+                        />
+                      </S.Picker>
+                      {/* <input
                         type="date"
                         defaultValue={moment(
                           record.next_appointment_date
@@ -300,8 +324,25 @@ class Records extends React.Component {
                             nextAppointmentDate: date.target.value,
                           });
                         }}
-                      />
+                      /> */}
+                      {/* {console.log(this.state.nextAppointmentDate)} */}
                     </S.ExpandableCol>
+                  </S.ExpandableRow>
+
+                  <S.ExpandableRow align="middle" justify="center">
+                    <S.ExpandableCol span="12">
+                      <S.PickerM>
+                        <DateTimePicker
+                          onChange={(date) => {
+                            this.setState({
+                              nextAppointmentDate: date,
+                            });
+                          }}
+                          value={this.state.nextAppointmentDate}
+                        />
+                      </S.PickerM>
+                    </S.ExpandableCol>
+                    <S.ExpandableCol span="12"></S.ExpandableCol>
                   </S.ExpandableRow>
 
                   <S.ExpandableRow align="middle" justify="center">
