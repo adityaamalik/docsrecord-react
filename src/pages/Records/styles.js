@@ -29,3 +29,15 @@ export const ExpandableCol = styled(Col)`
 export const Label = styled.span`
   font-weight: 900;
 `;
+export const Picker = styled.div`
+  display: flex;
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
+`;
+export const PickerM = styled.div`
+  display: none;
+  @media only screen and (max-width: 768px) {
+    display: flex;
+  }
+`;

@@ -4,7 +4,8 @@ import { useState } from "react";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
 import axios from "axios";
-import { message, Modal, Row, Col } from "antd";
+import { message, Modal, Row, Col, Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 import WaitingRoom from "../../img/waitingroom.jpg";
 import { CloseCircleOutlined } from "@ant-design/icons";
 
@@ -16,14 +17,18 @@ const Landing = () => {
   const [isYearlyModalVisible, setIsYearlyModalVisible] = useState(false);
   const [doctor, setDoctor] = useState({});
   const [token, setToken] = useState("");
+  const [islogin, setIslogin] = useState(false);
 
   const onSubmit = () => {
+    setIslogin(true);
+
     axios
       .post("/doctors/login", {
         email: email,
         password: password,
       })
       .then((response) => {
+        setIslogin(false);
         var today = new Date();
         var payment = new Date(response.data.doctor.payment_valid_till);
         setDoctor(response.data.doctor);
@@ -33,10 +38,12 @@ const Landing = () => {
         } else {
           localStorage.setItem("docsrecordDoctor", response.data.doctor._id);
           localStorage.setItem("token", response.data.token);
+
           window.location.pathname = "/records";
         }
       })
       .catch((err) => {
+        setIslogin(false);
         console.log(err);
         if (err.response.data === "email incorrect") {
           message.error("This email is not registered !");
@@ -47,6 +54,12 @@ const Landing = () => {
         }
       });
   };
+
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+  let login = <Button onClick={onSubmit}>SIGN IN</Button>;
+  if (islogin === true) {
+    login = <Spin indicator={antIcon} />;
+  }
 
   const loadScript = (src) => {
     return new Promise((resolve) => {
@@ -276,7 +289,8 @@ const Landing = () => {
             label="Password"
           />
 
-          <Button onClick={onSubmit}>SIGN IN</Button>
+          {/* <Button onClick={onSubmit}>SIGN IN</Button> */}
+          {login}
         </S.MainCol>
         <S.MainCol lg={1} md={1} sm={0} xs={0}></S.MainCol>
       </S.MainRow>
