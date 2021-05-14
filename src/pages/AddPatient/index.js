@@ -1,6 +1,12 @@
-import { Form, message, Space, Row } from "antd";
+import { Form, message, Space, Row, Spin } from "antd";
 import * as S from "./styles";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import {
+  MinusCircleOutlined,
+  PlusOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
+
 import axios from "axios";
 import Input from "../../common/Input";
 import Button from "../../common/Button";
@@ -8,7 +14,9 @@ import Button from "../../common/Button";
 const { Option } = S.FormSelects;
 
 const AddPatient = () => {
+  const [islogin, setIslogin] = useState(false);
   const onFinish = (values) => {
+    setIslogin(true);
     console.log("Received values of form:", values);
 
     const doctor = localStorage.getItem("docsrecordDoctor");
@@ -16,15 +24,23 @@ const AddPatient = () => {
     axios
       .post("/patients", values)
       .then((response) => {
+        setIslogin(false);
         console.log(response);
         message.success("Patient added successfully !").then(() => {
           window.location.pathname = "/records";
         });
       })
       .catch((err) => {
+        setIslogin(false);
         console.log(err);
       });
   };
+
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+  let login = <Button htmlType="submit">Add Patient Record</Button>;
+  if (islogin === true) {
+    login = <Spin indicator={antIcon} />;
+  }
 
   return (
     <>
@@ -131,9 +147,7 @@ const AddPatient = () => {
             </S.InputCols>
           </Row>
 
-          <Form.Item style={{ textAlign: "center" }}>
-            <Button htmlType="submit">Add Patient Record</Button>
-          </Form.Item>
+          <Form.Item style={{ textAlign: "center" }}>{login}</Form.Item>
         </Form>
       </S.Container>
       <br />

@@ -16,6 +16,10 @@ const MyProfile = () => {
   const [qualifications, setQualifications] = useState("");
   const [visitCharges, setVisitCharges] = useState("");
   const [image, setImage] = useState({});
+  const [weekdaysmorning, setWeekdaysmorning] = useState("");
+  const [weekdaysevening, setWeekdaysevening] = useState("");
+  const [weekendmorning, setWeekendmorning] = useState("");
+  const [weekendevening, setWeekendevening] = useState("");
 
   const [showEdit, toggleEdit] = useState(false);
   useEffect(() => {
@@ -33,8 +37,24 @@ const MyProfile = () => {
 
   const onSubmit = () => {
     const doctor = localStorage.getItem("docsrecordDoctor");
-
     const data = new FormData();
+    // let data = new Object();
+    // data = {
+    //   image: [],
+    // };
+    let timings = {
+      weekdaystiming: {
+        morning: weekdaysmorning,
+        evening: weekdaysevening,
+      },
+      weekendtiming: {
+        morning: weekendmorning,
+        evening: weekendevening,
+      },
+    };
+    var myJSON = JSON.stringify(timings);
+
+    data.append("timings", myJSON);
 
     if (name !== "") {
       data.append("name", name);
@@ -46,10 +66,12 @@ const MyProfile = () => {
 
     if (clinicAddress !== "") {
       data.append("clinic_address", clinicAddress);
+      // data.clinic_address = clinicAddress;
     }
 
     if (phone !== "") {
       data.append("phone_number", phone);
+      // data.phone_number = phone;
     }
 
     if (qualifications !== "") {
@@ -58,16 +80,19 @@ const MyProfile = () => {
 
     if (visitCharges !== "") {
       data.append("visit_charges", visitCharges);
+      // data.visit_charges = visitCharges;
     }
 
     if (!!image) {
       data.append("image", image);
+      console.log(image);
+      // data.image.push(image);
     }
-
+    console.log(data);
     axios
       .put(`/doctors/${doctor}`, data)
       .then((response) => {
-        window.location.pathname = "/myprofile";
+        // window.location.pathname = "/myprofile";
       })
       .catch((err) => {
         console.log(err);
@@ -163,47 +188,83 @@ const MyProfile = () => {
 
         <S.FormRows align="middle">
           <S.InputCols lg={12} md={12} sm={24} xs={24}>
-            {!!docData.clinic_name && (
-              <Input
-                type="text"
-                label="Edit clinic name"
-                defaultValue={docData.clinic_name}
-                onChange={(val) => setClinicName(val)}
-              />
-            )}
+            {docData.clinic_name !== undefined &&
+              docData.clinic_name !== null && (
+                <Input
+                  type="text"
+                  label="Edit clinic name"
+                  defaultValue={docData.clinic_name}
+                  onChange={(val) => setClinicName(val)}
+                />
+              )}
           </S.InputCols>
           <S.InputCols lg={12} md={12} sm={24} xs={24}>
-            {!!docData.clinic_address && (
-              <Input
-                type="text"
-                label="Edit clinic's address"
-                defaultValue={docData.clinic_address}
-                onChange={(val) => setClinicAddress(val)}
-              />
-            )}
+            {docData.clinic_address !== undefined &&
+              docData.clinic_address !== null && (
+                <Input
+                  type="text"
+                  label="Edit clinic's address"
+                  defaultValue={docData.clinic_address}
+                  onChange={(val) => setClinicAddress(val)}
+                />
+              )}
           </S.InputCols>
         </S.FormRows>
 
         <S.FormRows align="middle">
           <S.InputCols lg={12} md={12} sm={24} xs={24}>
-            {!!docData.qualifications && (
-              <Input
-                type="text"
-                label="Edit qualifications"
-                defaultValue={docData.qualifications}
-                onChange={(val) => setQualifications(val)}
-              />
-            )}
+            {docData.qualifications !== undefined &&
+              docData.qualifications !== null && (
+                <Input
+                  type="text"
+                  label="Edit qualifications"
+                  defaultValue={docData.qualifications}
+                  onChange={(val) => setQualifications(val)}
+                />
+              )}
           </S.InputCols>
           <S.InputCols lg={12} md={12} sm={24} xs={24}>
-            {!!docData.visit_charges && (
-              <Input
-                type="number"
-                label="Edit visit charges"
-                defaultValue={docData.visit_charges}
-                onChange={(val) => setVisitCharges(val)}
-              />
-            )}
+            {docData.visit_charges !== undefined &&
+              docData.visit_charges !== null && (
+                <Input
+                  type="number"
+                  label="Edit visit charges"
+                  defaultValue={docData.visit_charges}
+                  onChange={(val) => setVisitCharges(val)}
+                />
+              )}
+          </S.InputCols>
+
+          <S.InputCols lg={12} md={12} sm={24} xs={24}>
+            <Input
+              type="text"
+              label="weekdays Morning"
+              onChange={(val) => setWeekdaysmorning(val)}
+            />
+          </S.InputCols>
+
+          <S.InputCols lg={12} md={12} sm={24} xs={24}>
+            <Input
+              type="text"
+              label="weekdays Evening"
+              onChange={(val) => setWeekdaysevening(val)}
+            />
+          </S.InputCols>
+
+          <S.InputCols lg={12} md={12} sm={24} xs={24}>
+            <Input
+              type="text"
+              label="weekend Morning"
+              onChange={(val) => setWeekendmorning(val)}
+            />
+          </S.InputCols>
+
+          <S.InputCols lg={12} md={12} sm={24} xs={24}>
+            <Input
+              type="text"
+              label="weekend Evening"
+              onChange={(val) => setWeekendevening(val)}
+            />
           </S.InputCols>
         </S.FormRows>
 
