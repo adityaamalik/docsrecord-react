@@ -1,12 +1,13 @@
 import * as S from "./styles";
 import ImageUrl from "../../img/doc.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
 import axios from "axios";
 import { message, Modal, Row, Col, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { CloseCircleOutlined } from "@ant-design/icons";
+import BannerImage from "../../img/bannerimage.jpeg";
 
 const Landing = () => {
   const [email, setEmail] = useState("");
@@ -27,6 +28,14 @@ const Landing = () => {
   const [isRegister, setIsRegister] = useState(false);
 
   const [loginForm, toggleLoginForm] = useState(true);
+
+  const [welcomeModal, toggleWelcomeModal] = useState(false);
+
+  useEffect(() => {
+    window.setTimeout(() => {
+      toggleWelcomeModal(true);
+    }, 2000);
+  }, []);
 
   const onSubmitForRegister = () => {
     if (!name) {
@@ -206,6 +215,46 @@ const Landing = () => {
 
   return (
     <div style={{ position: "relative" }}>
+      {/* welcome modal */}
+      <Modal
+        footer={null}
+        centered
+        visible={welcomeModal}
+        onCancel={() => toggleWelcomeModal(false)}
+        closable={false}
+      >
+        <div style={{ textAlign: "right" }}>
+          <CloseCircleOutlined
+            style={{ color: "black", fontSize: "20px" }}
+            onClick={() => toggleWelcomeModal(false)}
+          />
+        </div>
+
+        <div style={{ textAlign: "center" }}>
+          <h1>WELCOME TO DOCSRECORD</h1>
+          <br />
+          <img src={BannerImage} height="auto" width="100%" />
+          <br />
+          <br />
+          <br />
+          <h3>REGISTER NOW FOR THE 30 DAYS FREE TRIAL</h3>
+        </div>
+
+        <Row justify="center" align="middle" style={{ textAlign: "center" }}>
+          <Col span={11}>
+            <Button
+              width="30"
+              onClick={() => {
+                toggleWelcomeModal(false);
+                toggleLoginForm(false);
+              }}
+            >
+              REGISTER
+            </Button>
+          </Col>
+        </Row>
+      </Modal>
+
       {/* main modal */}
       <Modal
         footer={null}
