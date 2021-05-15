@@ -5,8 +5,7 @@ import Button from "../../common/Button";
 import Input from "../../common/Input";
 import axios from "axios";
 import { message, Modal, Row, Col, Spin } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
-import { CloseCircleOutlined } from "@ant-design/icons";
+import { LoadingOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import BannerImage from "../../img/bannerimage.jpeg";
 
 const Landing = () => {
@@ -232,7 +231,12 @@ const Landing = () => {
 
         <div style={{ textAlign: "center" }}>
           <br />
-          <img src={BannerImage} height="auto" width="100%" />
+          <img
+            alt="docsrecord features"
+            src={BannerImage}
+            height="auto"
+            width="100%"
+          />
           <br />
           <br />
           <br />
