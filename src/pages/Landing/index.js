@@ -231,13 +231,14 @@ const Landing = () => {
         </div>
 
         <div style={{ textAlign: "center" }}>
-          <h1>WELCOME TO DOCSRECORD</h1>
           <br />
           <img src={BannerImage} height="auto" width="100%" />
           <br />
           <br />
           <br />
-          <h3>REGISTER NOW FOR THE 30 DAYS FREE TRIAL</h3>
+          <h1>
+            <strong>30 DAYS FREE TRIAL</strong>
+          </h1>
         </div>
 
         <Row justify="center" align="middle" style={{ textAlign: "center" }}>
