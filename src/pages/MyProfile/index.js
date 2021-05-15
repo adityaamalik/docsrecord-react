@@ -88,11 +88,10 @@ const MyProfile = () => {
       console.log(image);
       // data.image.push(image);
     }
-    console.log(data);
     axios
       .put(`/doctors/${doctor}`, data)
       .then((response) => {
-        // window.location.pathname = "/myprofile";
+        window.location.pathname = "/myprofile";
       })
       .catch((err) => {
         console.log(err);

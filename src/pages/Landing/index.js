@@ -19,6 +19,57 @@ const Landing = () => {
   const [token, setToken] = useState("");
   const [islogin, setIslogin] = useState(false);
 
+  // states for register
+  const [name, setName] = useState("");
+  const [emailForRegister, setEmailForRegister] = useState("");
+  const [passwordForRegister, setPasswordForRegister] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [isRegister, setIsRegister] = useState(false);
+
+  const [loginForm, toggleLoginForm] = useState(true);
+
+  const onSubmitForRegister = () => {
+    if (!name) {
+      message.error("Name is required");
+      setIslogin(false);
+    } else if (!emailForRegister) {
+      message.error("Email is required");
+      setIslogin(false);
+    } else if (!passwordForRegister) {
+      message.error("Password is required");
+      setIslogin(false);
+    } else if (passwordForRegister !== confirmPassword) {
+      message.error("Password does not match");
+      setIslogin(false);
+    } else if (!phone) {
+      message.error("Phone Number is required");
+      setIslogin(false);
+    } else {
+      setIsRegister(true);
+      axios
+        .post("/doctors/register", {
+          name: name,
+          email: emailForRegister,
+          password: passwordForRegister,
+          phone_number: phone,
+        })
+        .then((response) => {
+          setIsRegister(false);
+
+          localStorage.setItem("docsrecordDoctor", response.data.doctor._id);
+          localStorage.setItem("token", response.data.token);
+
+          window.location.pathname = "/records";
+        })
+        .catch((err) => {
+          setIsRegister(false);
+          console.log(err.message);
+          message.error("Some error occured !");
+        });
+    }
+  };
+
   const onSubmit = () => {
     setIslogin(true);
 
@@ -59,6 +110,11 @@ const Landing = () => {
   let login = <Button onClick={onSubmit}>SIGN IN</Button>;
   if (islogin === true) {
     login = <Spin indicator={antIcon} />;
+  }
+
+  let register = <Button onClick={onSubmitForRegister}>REGISTER</Button>;
+  if (isRegister === true) {
+    register = <Spin indicator={antIcon} />;
   }
 
   const loadScript = (src) => {
@@ -271,26 +327,79 @@ const Landing = () => {
           ></div>
         </S.MainCol>
         <S.MainCol lg={8} md={24} sm={24} xs={24}>
-          <S.SubHeading>
-            SIGN IN OR <a href="/signup">SIGN UP</a>
-          </S.SubHeading>
+          {loginForm ? (
+            <div>
+              <S.SubHeading>
+                SIGN IN OR{" "}
+                <a href="/#" onClick={() => toggleLoginForm(!loginForm)}>
+                  REGISTER
+                </a>
+              </S.SubHeading>
 
-          <Input
-            type="email"
-            value={email}
-            onChange={(val) => setEmail(val)}
-            label="E-Mail"
-          />
+              <Input
+                type="email"
+                value={email}
+                onChange={(val) => setEmail(val)}
+                label="E-Mail"
+              />
 
-          <Input
-            type="password"
-            value={password}
-            onChange={(val) => setPassword(val)}
-            label="Password"
-          />
+              <Input
+                type="password"
+                value={password}
+                onChange={(val) => setPassword(val)}
+                label="Password"
+              />
 
-          {/* <Button onClick={onSubmit}>SIGN IN</Button> */}
-          {login}
+              {/* <Button onClick={onSubmit}>SIGN IN</Button> */}
+              {login}
+            </div>
+          ) : (
+            <div>
+              <S.SubHeading>
+                REGISTER OR{" "}
+                <a href="/#" onClick={() => toggleLoginForm(!loginForm)}>
+                  SIGN IN
+                </a>
+              </S.SubHeading>
+
+              <Input
+                type="text"
+                value={name}
+                onChange={(val) => setName(val)}
+                label="Name"
+              />
+
+              <Input
+                type="tel"
+                value={phone}
+                onChange={(val) => setPhone(val)}
+                label="Phone Number"
+              />
+
+              <Input
+                type="email"
+                value={emailForRegister}
+                onChange={(val) => setEmailForRegister(val)}
+                label="E-Mail"
+              />
+
+              <Input
+                type="password"
+                value={passwordForRegister}
+                onChange={(val) => setPasswordForRegister(val)}
+                label="Password"
+              />
+
+              <Input
+                type="password"
+                value={confirmPassword}
+                onChange={(val) => setConfirmPassword(val)}
+                label="Confirm Password"
+              />
+
+              {register}
+            </div>
+          )}
         </S.MainCol>
         <S.MainCol lg={1} md={1} sm={0} xs={0}></S.MainCol>
       </S.MainRow>
