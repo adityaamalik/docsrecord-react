@@ -15,7 +15,7 @@ import {
 const MyProfile = () => {
   const [docData, setDocData] = useState({});
 
-  const [isModalVisible, setIsModalVisible] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isMonthlyModalVisible, setIsMonthlyModalVisible] = useState(false);
   const [isYearlyModalVisible, setIsYearlyModalVisible] = useState(false);
 
