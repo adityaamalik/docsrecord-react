@@ -65,7 +65,11 @@ const AddPatient = () => {
             </S.InputCols>
             <S.InputCols lg={8} md={8} sm={24} xs={24}>
               <Form.Item name="gender">
-                <S.FormSelects size="large" placeholder="Gender">
+                <S.FormSelects
+                  size="large"
+                  placeholder="Gender"
+                  style={{ width: "95%" }}
+                >
                   <Option value="Male">Male</Option>
                   <Option value="Female">Female</Option>
                   <Option value="Others">Others</Option>
@@ -74,7 +78,7 @@ const AddPatient = () => {
             </S.InputCols>
           </Row>
 
-          <Row>
+          <Row justify="center" align="middle">
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
               <Form.Item name="phone_number">
                 <Input type="number" label="Phone Number" />
@@ -89,7 +93,7 @@ const AddPatient = () => {
           </Row>
 
           <Row>
-            <S.InputCols span={24}>
+            <S.InputCols span={24} style={{ textAlign: "center" }}>
               <Form.Item name="address">
                 <S.FormTextArea rows={4} placeholder="Address" />
               </Form.Item>

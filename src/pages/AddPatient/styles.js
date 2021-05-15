@@ -32,11 +32,11 @@ export const InputCols = styled(Col)`
 export const InputBox = styled(Input)`
   border-bottom: 2px solid #eee;
   &:focus {
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid gray;
   }
 
   &:hover {
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid gray;
   }
 `;
 
@@ -45,14 +45,21 @@ export const FormRows = styled(Row)`
 `;
 
 export const FormTextArea = styled(TextArea)`
-  border: 1px solid black;
+  border: 1px solid gray;
+  border-radius: 8px;
+
+  @media only screen and (max-width: 768px) {
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 95%;
+  }
 
   &:focus {
-    border: 1px solid black;
+    border: 1px solid gray;
   }
 
   &:hover {
-    border: 1px solid black;
+    border: 1px solid gray;
   }
 `;
 
@@ -66,18 +73,19 @@ export const SubHeading = styled.p`
 `;
 
 export const FormSelects = styled(Select)`
-  width: 100%;
-  border: 1px solid black;
+  border: 1px solid gray;
+  border-radius: 8px;
+  margin-left: 10px;
 `;
 
 export const NumberInput = styled(InputNumber)`
   width: 100%;
   border-bottom: 2px solid #eee;
   &:focus {
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid gray;
   }
 
   &:hover {
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid gray;
   }
 `;
