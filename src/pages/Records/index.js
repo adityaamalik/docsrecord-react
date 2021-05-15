@@ -258,7 +258,9 @@ class Records extends React.Component {
                       <S.Label>Date of visit :</S.Label>
                     </S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      {moment(record.visit_date).format("DD-MM-YYYY")}
+                      <S.RightLabel>
+                        {moment(record.visit_date).format("DD-MM-YYYY")}
+                      </S.RightLabel>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
@@ -267,7 +269,9 @@ class Records extends React.Component {
                       <S.ExpandableCol span="12">
                         <S.Label>Age :</S.Label>
                       </S.ExpandableCol>
-                      <S.ExpandableCol span="12">{record.age}</S.ExpandableCol>
+                      <S.ExpandableCol span="12">
+                        <S.RightLabel>{record.age}</S.RightLabel>
+                      </S.ExpandableCol>
                     </S.ExpandableRow>
                   )}
 
@@ -277,7 +281,7 @@ class Records extends React.Component {
                         <S.Label>Gender :</S.Label>
                       </S.ExpandableCol>
                       <S.ExpandableCol span="12">
-                        {record.gender}
+                        <S.RightLabel>{record.gender}</S.RightLabel>
                       </S.ExpandableCol>
                     </S.ExpandableRow>
                   )}
@@ -288,7 +292,7 @@ class Records extends React.Component {
                         <S.Label>E-mail :</S.Label>
                       </S.ExpandableCol>
                       <S.ExpandableCol span="12">
-                        {record.email}
+                        <S.RightLabel>{record.email}</S.RightLabel>
                       </S.ExpandableCol>
                     </S.ExpandableRow>
                   )}
@@ -299,7 +303,7 @@ class Records extends React.Component {
                         <S.Label>Total Cost :</S.Label>
                       </S.ExpandableCol>
                       <S.ExpandableCol span="12">
-                        ₹ {record.total_cost} /-
+                        <S.RightLabel>₹ {record.total_cost} /-</S.RightLabel>
                       </S.ExpandableCol>
                     </S.ExpandableRow>
                   )}
@@ -310,20 +314,22 @@ class Records extends React.Component {
                         <S.Label>Total Treatments :</S.Label>
                       </S.ExpandableCol>
                       <S.ExpandableCol span="12">
-                        {record.treatments.length}
+                        <S.RightLabel>{record.treatments.length}</S.RightLabel>
                       </S.ExpandableCol>
                     </S.ExpandableRow>
                   )}
                   {record.next_appointment_date && (
                     <S.ExpandableRow align="middle" justify="center">
                       <S.ExpandableCol span="12">
-                        <S.Label>Last/Next Appointment Date :</S.Label>
+                        <S.Label>Next Appointment :</S.Label>
                       </S.ExpandableCol>
                       <S.ExpandableCol span="12">
-                        {moment(record.next_appointment_date).format(
-                          "MMMM Do YYYY"
-                        )}{" "}
-                        ({this.tConvert(record.next_appointment_time)})
+                        <S.RightLabel>
+                          {moment(record.next_appointment_date).format(
+                            "MMMM Do YYYY"
+                          )}{" "}
+                          ({this.tConvert(record.next_appointment_time)})
+                        </S.RightLabel>
                       </S.ExpandableCol>
                     </S.ExpandableRow>
                   )}
@@ -333,53 +339,57 @@ class Records extends React.Component {
                       <S.Label>Set Appointment :</S.Label>
                     </S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      <Row align="middle">
-                        <Col lg={8} md={24} sm={24} xs={24}>
-                          Appointment date :
-                        </Col>
-                        <Col lg={16} md={24} sm={24} xs={24}>
-                          <S.Picker>
-                            <DatePicker
-                              className="form-control"
-                              onChange={(date) => {
-                                this.setState({
-                                  nextAppointmentDate: date,
-                                });
-                              }}
-                              value={this.state.nextAppointmentDate}
-                            />
-                          </S.Picker>
-                        </Col>
-                      </Row>
+                      <S.RightLabel>
+                        <Row align="middle">
+                          <Col lg={8} md={24} sm={24} xs={24}>
+                            Appointment date :
+                          </Col>
+                          <Col lg={16} md={24} sm={24} xs={24}>
+                            <S.Picker>
+                              <DatePicker
+                                className="form-control"
+                                onChange={(date) => {
+                                  this.setState({
+                                    nextAppointmentDate: date,
+                                  });
+                                }}
+                                value={this.state.nextAppointmentDate}
+                              />
+                            </S.Picker>
+                          </Col>
+                        </Row>
+                      </S.RightLabel>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
                   <S.ExpandableRow align="middle" justify="center">
                     <S.ExpandableCol span="12"></S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      <Row>
-                        <Col lg={8} md={24} sm={24} xs={24}>
-                          Appointment time :
-                        </Col>
-                        <Col lg={16} md={24} sm={24} xs={24}>
-                          <S.Picker>
-                            <TimePicker
-                              amPmAriaLabel="Select AM/PM"
-                              className="form-control"
-                              locale="en-US"
-                              hourPlaceholder="hh"
-                              minutePlaceholder="mm"
-                              onChange={(value) =>
-                                this.setState({
-                                  ...this.state,
-                                  nextAppointmentTime: value,
-                                })
-                              }
-                              value={this.state.nextAppointmentTime}
-                            />
-                          </S.Picker>
-                        </Col>
-                      </Row>
+                      <S.RightLabel>
+                        <Row>
+                          <Col lg={8} md={24} sm={24} xs={24}>
+                            Appointment time :
+                          </Col>
+                          <Col lg={16} md={24} sm={24} xs={24}>
+                            <S.Picker>
+                              <TimePicker
+                                amPmAriaLabel="Select AM/PM"
+                                className="form-control"
+                                locale="en-US"
+                                hourPlaceholder="hh"
+                                minutePlaceholder="mm"
+                                onChange={(value) =>
+                                  this.setState({
+                                    ...this.state,
+                                    nextAppointmentTime: value,
+                                  })
+                                }
+                                value={this.state.nextAppointmentTime}
+                              />
+                            </S.Picker>
+                          </Col>
+                        </Row>
+                      </S.RightLabel>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
@@ -391,7 +401,7 @@ class Records extends React.Component {
                         size="small"
                         onClick={() => this.setNextAppointment(record._id)}
                       >
-                        Update next appointment
+                        Update
                       </Button>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
@@ -399,11 +409,18 @@ class Records extends React.Component {
                   <br />
                   <S.ExpandableRow align="middle" justify="center">
                     <S.ExpandableCol span={12}>
-                      <S.Label>Upload Patient Images</S.Label>
+                      <S.Label>Upload Patient Images : </S.Label>
                     </S.ExpandableCol>
                     <S.ExpandableCol span={12}>
                       <S.FileUploadLabel htmlFor="images">
-                        <Avatar icon={<CloudUploadOutlined />} size={25} />
+                        <Avatar
+                          icon={<CloudUploadOutlined />}
+                          size={40}
+                          style={{
+                            backgroundColor: "transparent",
+                            color: "black",
+                          }}
+                        />
                       </S.FileUploadLabel>
                       <S.FileUpload
                         required
@@ -426,6 +443,7 @@ class Records extends React.Component {
                           this.state.images.length + " images selected"}
                       </span>
                       <Button
+                        size="small"
                         onClick={() => this.onUploadPhotos(record._id)}
                         disabled={this.state.images.length > 0 ? false : true}
                       >
@@ -477,14 +495,16 @@ class Records extends React.Component {
                         <div key={index}>
                           <S.ExpandableRow>
                             <S.ExpandableCol span="24">
-                              <Row>
-                                <Col span={12}>Treatment :</Col>
-                                <Col span={12}>{treatment.treatment}</Col>
-                              </Row>
-                              <Row>
-                                <Col span={12}>Charges :</Col>
-                                <Col span={12}>₹ {treatment.charges} /-</Col>
-                              </Row>
+                              <S.RightLabel>
+                                <Row>
+                                  <Col span={12}>Treatment :</Col>
+                                  <Col span={12}>{treatment.treatment}</Col>
+                                </Row>
+                                <Row>
+                                  <Col span={12}>Charges :</Col>
+                                  <Col span={12}>₹ {treatment.charges} /-</Col>
+                                </Row>
+                              </S.RightLabel>
                             </S.ExpandableCol>
                           </S.ExpandableRow>
                           <hr />

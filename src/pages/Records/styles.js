@@ -28,7 +28,19 @@ export const ExpandableCol = styled(Col)`
 
 export const Label = styled.span`
   font-weight: 900;
+
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+    margin-left: 5px;
+  }
 `;
+
+export const RightLabel = styled.span`
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
+`;
+
 export const Picker = styled.div`
   display: flex;
 `;
@@ -42,6 +54,4 @@ export const FileUpload = styled.input`
 
 export const FileUploadLabel = styled.label`
   cursor: pointer;
-  margin-right: 10px;
-  background-color: transparent;
 `;
