@@ -6,7 +6,6 @@ import Input from "../../common/Input";
 import axios from "axios";
 import { message, Modal, Row, Col, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import WaitingRoom from "../../img/waitingroom.jpg";
 import { CloseCircleOutlined } from "@ant-design/icons";
 
 const Landing = () => {
@@ -107,12 +106,20 @@ const Landing = () => {
   };
 
   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-  let login = <Button onClick={onSubmit}>SIGN IN</Button>;
+  let login = (
+    <Button onClick={onSubmit} width="150px" height="35px">
+      SIGN IN
+    </Button>
+  );
   if (islogin === true) {
     login = <Spin indicator={antIcon} />;
   }
 
-  let register = <Button onClick={onSubmitForRegister}>REGISTER</Button>;
+  let register = (
+    <Button onClick={onSubmitForRegister} width="150px" height="35px">
+      REGISTER
+    </Button>
+  );
   if (isRegister === true) {
     register = <Spin indicator={antIcon} />;
   }
@@ -307,7 +314,6 @@ const Landing = () => {
         </p>
       </Modal>
 
-      <S.WaitRoomImg src={WaitingRoom} />
       <S.MainRow align="middle" style={{ position: "relative" }}>
         <S.MainCol lg={14} md={24} sm={24} xs={24}>
           <S.Image src={ImageUrl} />
@@ -315,11 +321,6 @@ const Landing = () => {
           <S.Heading>DOCSRECORD</S.Heading>
           <br />
           <S.SubHeading>KEEP RECORDS. SAFELY.</S.SubHeading>
-          <br />
-          <br />
-          <Button onClick={() => (window.location.pathname = "/signup")}>
-            7 days free trial
-          </Button>
         </S.MainCol>
         <S.MainCol lg={1} md={1} sm={0} xs={0} style={{ height: "100%" }}>
           <div
@@ -352,6 +353,8 @@ const Landing = () => {
 
               {/* <Button onClick={onSubmit}>SIGN IN</Button> */}
               {login}
+              <br />
+              <br />
             </div>
           ) : (
             <div>
@@ -398,6 +401,8 @@ const Landing = () => {
               />
 
               {register}
+              <br />
+              <br />
             </div>
           )}
         </S.MainCol>

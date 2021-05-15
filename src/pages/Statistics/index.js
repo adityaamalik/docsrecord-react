@@ -93,12 +93,16 @@ const Statistics = () => {
       </S.CounterContainer>
 
       <S.CounterContainer>
-        <S.CounterRow align="middle">
+        <S.CounterRow align="middle" justify="center">
           {!!stats.monthpercentage && (
             <S.CounterCol span={12}>
               <CountUp end={stats.monthpercentage} duration={4} />
               <span>%</span>
-              <ArrowUpOutlined />
+              {stats.monthpercentage > 0 ? (
+                <ArrowUpOutlined />
+              ) : (
+                <ArrowDownOutlined />
+              )}
             </S.CounterCol>
           )}
 
@@ -106,12 +110,16 @@ const Statistics = () => {
             <S.CounterCol span={12}>
               <CountUp end={stats.weekpercentage} duration={4} />
               <span>%</span>
-              <ArrowDownOutlined />
+              {stats.weekpercentage > 0 ? (
+                <ArrowUpOutlined />
+              ) : (
+                <ArrowDownOutlined />
+              )}
             </S.CounterCol>
           )}
         </S.CounterRow>
 
-        <S.CounterRow align="middle">
+        <S.CounterRow align="middle" justify="center">
           {!!stats.monthpercentage && (
             <Col span={12}>
               <span>SINCE LAST MONTH</span>
