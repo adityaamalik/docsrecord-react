@@ -1,4 +1,4 @@
-import { Form, message, Space, Row, Spin } from "antd";
+import { Form, message, Space, Row, Spin, Col } from "antd";
 import * as S from "./styles";
 import { useState } from "react";
 import {
@@ -106,33 +106,38 @@ const AddPatient = () => {
                 {(fields, { add, remove }) => (
                   <>
                     {fields.map(({ key, name, fieldKey, ...restField }) => (
-                      <Space
-                        key={key}
-                        style={{ display: "flex", marginBottom: 8 }}
-                        align="baseline"
-                      >
-                        <Form.Item
-                          {...restField}
-                          name={[name, "treatment"]}
-                          fieldKey={[fieldKey, "treatment"]}
-                          rules={[
-                            { required: true, message: "Missing Treatment" },
-                          ]}
-                        >
-                          <Input label="Treatment" type="text" />
-                        </Form.Item>
-                        <Form.Item
-                          {...restField}
-                          name={[name, "charges"]}
-                          fieldKey={[fieldKey, "charges"]}
-                          rules={[
-                            { required: true, message: "Missing Charges" },
-                          ]}
-                        >
-                          <Input label="Charges" type="number" />
-                        </Form.Item>
-                        <MinusCircleOutlined onClick={() => remove(name)} />
-                      </Space>
+                      <Row key={key} justify="center" align="middle">
+                        <Col lg={10} md={11} sm={11} xs={11}>
+                          <Form.Item
+                            {...restField}
+                            name={[name, "treatment"]}
+                            fieldKey={[fieldKey, "treatment"]}
+                            rules={[
+                              { required: true, message: "Missing Treatment" },
+                            ]}
+                          >
+                            <Input label="Treatment" type="text" />
+                          </Form.Item>
+                        </Col>
+                        <Col lg={10} md={11} sm={11} xs={11}>
+                          <Form.Item
+                            {...restField}
+                            name={[name, "charges"]}
+                            fieldKey={[fieldKey, "charges"]}
+                            rules={[
+                              { required: true, message: "Missing Charges" },
+                            ]}
+                          >
+                            <Input label="Charges" type="number" />
+                          </Form.Item>
+                        </Col>
+                        <Col lg={4} md={2} sm={2} xs={2}>
+                          <MinusCircleOutlined
+                            style={{ paddingBottom: "30px" }}
+                            onClick={() => remove(name)}
+                          />
+                        </Col>
+                      </Row>
                     ))}
                     <Form.Item style={{ textAlign: "center" }}>
                       <Button onClick={() => add()}>
