@@ -43,14 +43,34 @@ const Appointments = () => {
         }
       });
   }, []);
-  console.log(records);
 
-  const title = (name, date) => {
+  const tConvert = (time) => {
+    // Check correct time format and split into components
+    time = time
+      .toString()
+      .match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+    if (time.length > 1) {
+      // If time format correct
+      time = time.slice(1); // Remove full string match value
+      time[5] = +time[0] < 12 ? " AM" : " PM"; // Set AM/PM
+      time[0] = +time[0] % 12 || 12; // Adjust hours
+    }
+    return time.join(""); // return adjusted time or original string
+  };
+
+  const title = (name, date, time, gender) => {
     return (
       <Row>
-        <Col span={12}>{name}</Col>
+        <Col span={12}>
+          <strong>{name}</strong>
+        </Col>
         <Col span={12} style={{ textAlign: "right" }}>
-          {moment(date).format("MMMM Do YYYY, h:mm:ss a")}
+          Date : {moment(date).format("MMMM Do YYYY")}
+        </Col>
+        <Col span={12}>({gender})</Col>
+        <Col span={12} style={{ textAlign: "right" }}>
+          Time : {tConvert(time)}
         </Col>
       </Row>
     );
@@ -59,7 +79,11 @@ const Appointments = () => {
   return (
     <>
       <S.Container>
-        <S.Heading>UPCOMING APPOINTMENTS</S.Heading>
+        <S.Heading>
+          {records.length === 0
+            ? "NO UPCOMING APPOINTMENTS"
+            : "UPCOMING APPOINTMENTS"}
+        </S.Heading>
 
         <S.AppointmentCardContainer>
           <S.CustomRow>
@@ -70,7 +94,12 @@ const Appointments = () => {
                   <Col lg={8} md={12} sm={24} xs={24} key={index}>
                     <S.AppointmentCard
                       size="small"
-                      title={title(record.name, record.next_appointment_date)}
+                      title={title(
+                        record.name,
+                        record.next_appointment_date,
+                        record.next_appointment_time,
+                        record.gender
+                      )}
                     >
                       <Row style={{ marginBottom: "20px" }}>
                         <Col>Patient no : {index + 1}</Col>
@@ -78,7 +107,7 @@ const Appointments = () => {
 
                       {!!record.phone_number && (
                         <Row style={{ marginBottom: "20px" }}>
-                          <Col>Phone Number : {record.phone_number}</Col>
+                          <Col>Phone Number : +91 - {record.phone_number}</Col>
                         </Row>
                       )}
 
@@ -98,14 +127,14 @@ const Appointments = () => {
                           return (
                             <Row key={i}>
                               <Col span={12}>{treatment.treatment}</Col>
-                              <Col span={12}>₹ {treatment.charges}</Col>
+                              <Col span={12}>₹ {treatment.charges} /-</Col>
                             </Row>
                           );
                         })}
 
                       {!!record.total_cost && (
                         <Row style={{ marginBottom: "20px" }}>
-                          <Col>Total Cost : {record.total_cost}</Col>
+                          <Col>Total Cost : ₹ {record.total_cost} /-</Col>
                         </Row>
                       )}
                     </S.AppointmentCard>

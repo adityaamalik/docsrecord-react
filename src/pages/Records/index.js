@@ -1,18 +1,31 @@
 import React from "react";
-import { Table, Input, Button, Space, Row, Col, message, Image } from "antd";
+import {
+  Table,
+  Input,
+  Button,
+  Space,
+  Row,
+  Col,
+  message,
+  Image,
+  Avatar,
+} from "antd";
 import Highlighter from "react-highlight-words";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, CloudUploadOutlined } from "@ant-design/icons";
 import * as S from "./styles";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import moment from "moment";
-import DateTimePicker from "react-datetime-picker";
+import DatePicker from "react-date-picker";
+import TimePicker from "react-time-picker";
+
 class Records extends React.Component {
   state = {
     searchText: "",
     searchedColumn: "",
     data: [],
     nextAppointmentDate: new Date(),
+    nextAppointmentTime: "12:00",
     images: [],
   };
 
@@ -52,6 +65,21 @@ class Records extends React.Component {
         console.log(err.response);
         message.error("Cannot delete the record. Try again !");
       });
+  };
+
+  tConvert = (time) => {
+    // Check correct time format and split into components
+    time = time
+      .toString()
+      .match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+    if (time.length > 1) {
+      // If time format correct
+      time = time.slice(1); // Remove full string match value
+      time[5] = +time[0] < 12 ? " AM" : " PM"; // Set AM/PM
+      time[0] = +time[0] % 12 || 12; // Adjust hours
+    }
+    return time.join(""); // return adjusted time or original string
   };
 
   getColumnSearchProps = (dataIndex) => ({
@@ -152,13 +180,12 @@ class Records extends React.Component {
   setNextAppointment = (id) => {
     let today = new Date(this.state.nextAppointmentDate);
 
-    console.log(this.state.nextAppointmentDate);
     axios
       .put(`/patients/${id}`, {
         next_appointment_date: today,
+        next_appointment_time: this.state.nextAppointmentTime,
       })
       .then((response) => {
-        console.log(response);
         message.success("Next appointment added successfully");
       })
       .catch((err) => {
@@ -182,6 +209,7 @@ class Records extends React.Component {
         temp.unshift(response.data);
         this.setState({
           data: temp,
+          images: [],
         });
         document.getElementById("images").value = null;
         message.success("Successfully uploaded the photos");
@@ -271,7 +299,7 @@ class Records extends React.Component {
                         <S.Label>Total Cost :</S.Label>
                       </S.ExpandableCol>
                       <S.ExpandableCol span="12">
-                        ₹ {record.total_cost}
+                        ₹ {record.total_cost} /-
                       </S.ExpandableCol>
                     </S.ExpandableRow>
                   )}
@@ -293,8 +321,9 @@ class Records extends React.Component {
                       </S.ExpandableCol>
                       <S.ExpandableCol span="12">
                         {moment(record.next_appointment_date).format(
-                          "MMMM Do YYYY, h:mm:ss a"
-                        )}
+                          "MMMM Do YYYY"
+                        )}{" "}
+                        ({this.tConvert(record.next_appointment_time)})
                       </S.ExpandableCol>
                     </S.ExpandableRow>
                   )}
@@ -304,45 +333,54 @@ class Records extends React.Component {
                       <S.Label>Set Appointment :</S.Label>
                     </S.ExpandableCol>
                     <S.ExpandableCol span="12">
-                      <S.Picker>
-                        <DateTimePicker
-                          onChange={(date) => {
-                            this.setState({
-                              nextAppointmentDate: date,
-                            });
-                          }}
-                          value={this.state.nextAppointmentDate}
-                        />
-                      </S.Picker>
-                      {/* <input
-                        type="date"
-                        defaultValue={moment(
-                          record.next_appointment_date
-                        ).format("YYYY-MM-DD")}
-                        onChange={(date) => {
-                          this.setState({
-                            nextAppointmentDate: date.target.value,
-                          });
-                        }}
-                      /> */}
-                      {/* {console.log(this.state.nextAppointmentDate)} */}
+                      <Row align="middle">
+                        <Col lg={8} md={24} sm={24} xs={24}>
+                          Appointment date :
+                        </Col>
+                        <Col lg={16} md={24} sm={24} xs={24}>
+                          <S.Picker>
+                            <DatePicker
+                              className="form-control"
+                              onChange={(date) => {
+                                this.setState({
+                                  nextAppointmentDate: date,
+                                });
+                              }}
+                              value={this.state.nextAppointmentDate}
+                            />
+                          </S.Picker>
+                        </Col>
+                      </Row>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
                   <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="12">
-                      <S.PickerM>
-                        <DateTimePicker
-                          onChange={(date) => {
-                            this.setState({
-                              nextAppointmentDate: date,
-                            });
-                          }}
-                          value={this.state.nextAppointmentDate}
-                        />
-                      </S.PickerM>
-                    </S.ExpandableCol>
                     <S.ExpandableCol span="12"></S.ExpandableCol>
+                    <S.ExpandableCol span="12">
+                      <Row>
+                        <Col lg={8} md={24} sm={24} xs={24}>
+                          Appointment time :
+                        </Col>
+                        <Col lg={16} md={24} sm={24} xs={24}>
+                          <S.Picker>
+                            <TimePicker
+                              amPmAriaLabel="Select AM/PM"
+                              className="form-control"
+                              locale="en-US"
+                              hourPlaceholder="hh"
+                              minutePlaceholder="mm"
+                              onChange={(value) =>
+                                this.setState({
+                                  ...this.state,
+                                  nextAppointmentTime: value,
+                                })
+                              }
+                              value={this.state.nextAppointmentTime}
+                            />
+                          </S.Picker>
+                        </Col>
+                      </Row>
+                    </S.ExpandableCol>
                   </S.ExpandableRow>
 
                   <S.ExpandableRow align="middle" justify="center">
@@ -353,15 +391,21 @@ class Records extends React.Component {
                         size="small"
                         onClick={() => this.setNextAppointment(record._id)}
                       >
-                        Update
+                        Update next appointment
                       </Button>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
+                  <br />
                   <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span={24}>
-                      <label htmlFor="images">Select Image Gallery : </label>
-                      <input
+                    <S.ExpandableCol span={12}>
+                      <S.Label>Upload Patient Images</S.Label>
+                    </S.ExpandableCol>
+                    <S.ExpandableCol span={12}>
+                      <S.FileUploadLabel htmlFor="images">
+                        <Avatar icon={<CloudUploadOutlined />} size={25} />
+                      </S.FileUploadLabel>
+                      <S.FileUpload
                         required
                         id="images"
                         type="file"
@@ -377,29 +421,45 @@ class Records extends React.Component {
                           });
                         }}
                       />
-                      <Button onClick={() => this.onUploadPhotos(record._id)}>
+                      <span style={{ marginRight: "10px" }}>
+                        {this.state.images.length !== 0 &&
+                          this.state.images.length + " images selected"}
+                      </span>
+                      <Button
+                        onClick={() => this.onUploadPhotos(record._id)}
+                        disabled={this.state.images.length > 0 ? false : true}
+                      >
                         Upload Photos
                       </Button>
                     </S.ExpandableCol>
                   </S.ExpandableRow>
 
-                  <S.ExpandableRow>
-                    <S.ExpandableCol span={24}>
-                      {!!record.images &&
-                        record.images.map((img, index) => {
-                          return (
+                  <S.ExpandableRow align="middle">
+                    {!!record.images &&
+                      record.images.map((img, index) => {
+                        return (
+                          <S.ExpandableCol
+                            key={index}
+                            lg={6}
+                            md={12}
+                            sm={12}
+                            xs={12}
+                          >
                             <Image
-                              key={index}
                               src={`data:image/${
                                 img.contentType
                               };base64,${img.data.toString("base64")}`}
                               alt="gallery image"
-                              width="200px"
-                              style={{ margin: "10px" }}
+                              style={{
+                                margin: "10px",
+                                maxWidth: "80%",
+                                maxHeight: "80%",
+                                height: "auto",
+                              }}
                             />
-                          );
-                        })}
-                    </S.ExpandableCol>
+                          </S.ExpandableCol>
+                        );
+                      })}
                   </S.ExpandableRow>
 
                   {record.treatments && (
@@ -423,7 +483,7 @@ class Records extends React.Component {
                               </Row>
                               <Row>
                                 <Col span={12}>Charges :</Col>
-                                <Col span={12}>₹ {treatment.charges}</Col>
+                                <Col span={12}>₹ {treatment.charges} /-</Col>
                               </Row>
                             </S.ExpandableCol>
                           </S.ExpandableRow>

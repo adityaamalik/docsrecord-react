@@ -31,13 +31,17 @@ export const Label = styled.span`
 `;
 export const Picker = styled.div`
   display: flex;
-  @media only screen and (max-width: 768px) {
-    display: none;
-  }
 `;
-export const PickerM = styled.div`
-  display: none;
-  @media only screen and (max-width: 768px) {
-    display: flex;
-  }
+
+export const FileUpload = styled.input`
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+  width: 25%;
+`;
+
+export const FileUploadLabel = styled.label`
+  cursor: pointer;
+  margin-right: 10px;
+  background-color: transparent;
 `;

@@ -94,7 +94,6 @@ const Statistics = () => {
 
       <S.CounterContainer>
         <S.CounterRow align="middle">
-          {console.log(stats)}
           {!!stats.monthpercentage && (
             <S.CounterCol span={12}>
               <CountUp end={stats.monthpercentage} duration={4} />
@@ -131,10 +130,18 @@ const Statistics = () => {
         <Graph data={monthData} type="month" />
       </S.Container>
 
+      <br />
+      <br />
+      <br />
+
       <S.Container>
         <h1>Weekly Graph</h1>
         <Graph data={weekData} type="week" />
       </S.Container>
+
+      <br />
+      <br />
+      <br />
     </>
   );
 };

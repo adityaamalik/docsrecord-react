@@ -16,10 +16,10 @@ const MyProfile = () => {
   const [qualifications, setQualifications] = useState("");
   const [visitCharges, setVisitCharges] = useState("");
   const [image, setImage] = useState({});
-  const [weekdaysmorning, setWeekdaysmorning] = useState("");
-  const [weekdaysevening, setWeekdaysevening] = useState("");
-  const [weekendmorning, setWeekendmorning] = useState("");
-  const [weekendevening, setWeekendevening] = useState("");
+  // const [weekdaysmorning, setWeekdaysmorning] = useState("");
+  // const [weekdaysevening, setWeekdaysevening] = useState("");
+  // const [weekendmorning, setWeekendmorning] = useState("");
+  // const [weekendevening, setWeekendevening] = useState("");
 
   const [showEdit, toggleEdit] = useState(false);
   useEffect(() => {
@@ -38,23 +38,20 @@ const MyProfile = () => {
   const onSubmit = () => {
     const doctor = localStorage.getItem("docsrecordDoctor");
     const data = new FormData();
-    // let data = new Object();
-    // data = {
-    //   image: [],
-    // };
-    let timings = {
-      weekdaystiming: {
-        morning: weekdaysmorning,
-        evening: weekdaysevening,
-      },
-      weekendtiming: {
-        morning: weekendmorning,
-        evening: weekendevening,
-      },
-    };
-    var myJSON = JSON.stringify(timings);
 
-    data.append("timings", myJSON);
+    // let timings = {
+    //   weekdaystiming: {
+    //     morning: weekdaysmorning,
+    //     evening: weekdaysevening,
+    //   },
+    //   weekendtiming: {
+    //     morning: weekendmorning,
+    //     evening: weekendevening,
+    //   },
+    // };
+    // var myJSON = JSON.stringify(timings);
+
+    // data.append("timings", myJSON);
 
     if (name !== "") {
       data.append("name", name);
@@ -233,7 +230,9 @@ const MyProfile = () => {
                 />
               )}
           </S.InputCols>
+        </S.FormRows>
 
+        {/* <S.FormRows align="middle">
           <S.InputCols lg={12} md={12} sm={24} xs={24}>
             <Input
               type="text"
@@ -249,7 +248,9 @@ const MyProfile = () => {
               onChange={(val) => setWeekdaysevening(val)}
             />
           </S.InputCols>
+        </S.FormRows>
 
+        <S.FormRows>
           <S.InputCols lg={12} md={12} sm={24} xs={24}>
             <Input
               type="text"
@@ -265,13 +266,17 @@ const MyProfile = () => {
               onChange={(val) => setWeekendevening(val)}
             />
           </S.InputCols>
-        </S.FormRows>
+        </S.FormRows> */}
 
         <S.FormRows align="middle">
           <S.InputCols span={24} style={{ textAlign: "center" }}>
             <Button onClick={onSubmit}>Save Profile Changes</Button>
           </S.InputCols>
         </S.FormRows>
+
+        <br />
+        <br />
+        <br />
       </S.Container>
     </>
   );
