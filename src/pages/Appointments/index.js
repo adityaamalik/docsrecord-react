@@ -70,7 +70,7 @@ const Appointments = () => {
         </Col>
         <Col span={12}>({gender})</Col>
         <Col span={12} style={{ textAlign: "right" }}>
-          Time : {tConvert(time)}
+          {!!time && <>Time : {tConvert(time)}</>}
         </Col>
       </Row>
     );

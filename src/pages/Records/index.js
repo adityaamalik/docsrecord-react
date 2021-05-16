@@ -52,7 +52,7 @@ class Records extends React.Component {
       .delete(`/patients/${id}`)
       .then((response) => {
         console.log(response);
-        message.success("Record deleted successfully !");
+        message.success("Record deleted successfully !", 1);
         const newData = this.state.data.filter((item) => {
           return item._id !== id;
         });
@@ -328,7 +328,9 @@ class Records extends React.Component {
                           {moment(record.next_appointment_date).format(
                             "MMMM Do YYYY"
                           )}{" "}
-                          ({this.tConvert(record.next_appointment_time)})
+                          {!!record.next_appointment_time && (
+                            <>({this.tConvert(record.next_appointment_time)})</>
+                          )}
                         </S.RightLabel>
                       </S.ExpandableCol>
                     </S.ExpandableRow>

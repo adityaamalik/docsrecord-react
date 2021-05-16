@@ -284,92 +284,96 @@ const MyProfile = () => {
         <S.Heading>MY PROFILE</S.Heading>
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           {" "}
-          {isLoadingData && <LoadingOutlined style={{ fontSize: "50px" }} />}
+          {isLoadingData ? (
+            <LoadingOutlined style={{ fontSize: "50px" }} />
+          ) : (
+            <>
+              <div style={{ textAlign: "center", marginTop: "20px" }}>
+                {!!docData.image ? (
+                  <span
+                    onMouseEnter={() => toggleEdit(true)}
+                    onMouseLeave={() => toggleEdit(false)}
+                  >
+                    <S.FileUploadLabel htmlFor="userImage">
+                      <Badge count={showEdit ? <EditOutlined /> : <></>}>
+                        <Avatar
+                          src={`data:image/${
+                            docData.image.contentType
+                          };base64,${new Buffer.from(
+                            docData.image.data
+                          ).toString("base64")}`}
+                          size={{
+                            xs: 40,
+                            sm: 40,
+                            md: 64,
+                            lg: 64,
+                            xl: 80,
+                            xxl: 100,
+                          }}
+                        />
+                      </Badge>
+                    </S.FileUploadLabel>
+                    <S.FileUpload
+                      type="file"
+                      id="userImage"
+                      onChange={(e) => setImage(e.target.files[0])}
+                    />
+                    <br />
+                    <br />
+                    <span>{image.name}</span>
+                  </span>
+                ) : (
+                  <span
+                    onMouseEnter={() => toggleEdit(true)}
+                    onMouseLeave={() => toggleEdit(false)}
+                  >
+                    <S.FileUploadLabel htmlFor="userImage">
+                      <Badge count={showEdit ? <EditOutlined /> : <></>}>
+                        <Avatar
+                          icon={<UserOutlined />}
+                          size={{
+                            xs: 40,
+                            sm: 40,
+                            md: 64,
+                            lg: 64,
+                            xl: 80,
+                            xxl: 100,
+                          }}
+                        />
+                      </Badge>
+                    </S.FileUploadLabel>
+                    <S.FileUpload
+                      type="file"
+                      id="userImage"
+                      onChange={(e) => setImage(e.target.files[0])}
+                    />
+                    <br />
+                    <br />
+                    <span>{image.name}</span>
+                  </span>
+                )}
+              </div>
+              <div style={{ textAlign: "center" }}>
+                Your next payment date is :{" "}
+                {moment(docData.payment_valid_till).format("MMMM Do YYYY")}
+                <br />
+                <button
+                  onClick={() => setIsModalVisible(true)}
+                  style={{
+                    backgroundColor: "white",
+                    border: "none",
+                    borderBottom: "1px solid black",
+                    cursor: "pointer",
+                  }}
+                >
+                  Pay now
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         <div>
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
-            {!!docData.image ? (
-              <span
-                onMouseEnter={() => toggleEdit(true)}
-                onMouseLeave={() => toggleEdit(false)}
-              >
-                <S.FileUploadLabel htmlFor="userImage">
-                  <Badge count={showEdit ? <EditOutlined /> : <></>}>
-                    <Avatar
-                      src={`data:image/${
-                        docData.image.contentType
-                      };base64,${new Buffer.from(docData.image.data).toString(
-                        "base64"
-                      )}`}
-                      size={{
-                        xs: 40,
-                        sm: 40,
-                        md: 64,
-                        lg: 64,
-                        xl: 80,
-                        xxl: 100,
-                      }}
-                    />
-                  </Badge>
-                </S.FileUploadLabel>
-                <S.FileUpload
-                  type="file"
-                  id="userImage"
-                  onChange={(e) => setImage(e.target.files[0])}
-                />
-                <br />
-                <br />
-                <span>{image.name}</span>
-              </span>
-            ) : (
-              <span
-                onMouseEnter={() => toggleEdit(true)}
-                onMouseLeave={() => toggleEdit(false)}
-              >
-                <S.FileUploadLabel htmlFor="userImage">
-                  <Badge count={showEdit ? <EditOutlined /> : <></>}>
-                    <Avatar
-                      icon={<UserOutlined />}
-                      size={{
-                        xs: 40,
-                        sm: 40,
-                        md: 64,
-                        lg: 64,
-                        xl: 80,
-                        xxl: 100,
-                      }}
-                    />
-                  </Badge>
-                </S.FileUploadLabel>
-                <S.FileUpload
-                  type="file"
-                  id="userImage"
-                  onChange={(e) => setImage(e.target.files[0])}
-                />
-                <br />
-                <br />
-                <span>{image.name}</span>
-              </span>
-            )}
-          </div>
-
-          <div style={{ textAlign: "center" }}>
-            Your next payment date is :{" "}
-            {moment(docData.payment_valid_till).format("MMMM Do YYYY")}
-            <br />
-            <button
-              onClick={() => setIsModalVisible(true)}
-              style={{
-                backgroundColor: "white",
-                border: "none",
-                borderBottom: "1px solid black",
-                cursor: "pointer",
-              }}
-            >
-              Pay now
-            </button>
-          </div>
           <S.FormRows align="middle">
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
               {!!docData.name && (

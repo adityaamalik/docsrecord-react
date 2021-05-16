@@ -26,7 +26,7 @@ const AddPatient = () => {
       .then((response) => {
         setIslogin(false);
         console.log(response);
-        message.success("Patient added successfully !").then(() => {
+        message.success("Patient added successfully !", 1).then(() => {
           window.location.pathname = "/records";
         });
       })
