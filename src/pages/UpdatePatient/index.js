@@ -5,31 +5,38 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import Input from "../../common/Input";
 import Button from "../../common/Button";
+import { useHistory } from "react-router-dom";
 
 const { Option } = S.FormSelects;
 
 const UpdatePatient = (props) => {
+  const history = useHistory();
+
   const [patient, setPatient] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const { id } = props.location.state;
 
   useEffect(() => {
+    setIsLoading(true);
     if (!!id) {
       axios
         .get(`/patients/${id}`)
         .then((response) => {
           setPatient(response.data);
           console.log(response.data);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.log(err);
+          setIsLoading(false);
         });
     } else {
-      window.location.pathname = "/records";
+      history.push("/records");
     }
-  }, [id]);
+  }, [id, history]);
 
   const onFinish = (values) => {
-    console.log("on finish called");
+    setIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
     values.doctor = doctor;
     axios
@@ -37,9 +44,13 @@ const UpdatePatient = (props) => {
       .then((response) => {
         console.log(response);
         setPatient(response.data);
-        message.success("Patient updated successfully !");
+        message.success("Patient updated successfully !").then(() => {
+          setIsLoading(false);
+          history.push("/records");
+        });
       })
       .catch((err) => {
+        setIsLoading(false);
         console.log(err);
       });
   };
@@ -178,7 +189,9 @@ const UpdatePatient = (props) => {
           </Row>
 
           <Form.Item style={{ textAlign: "center" }}>
-            <Button htmlType="submit">Update Patient Record</Button>
+            <Button disabled={isLoading} htmlType="submit">
+              Update Patient Record
+            </Button>
           </Form.Item>
         </Form>
       </S.Container>

@@ -5,11 +5,12 @@ export const Button = styled.button`
   font-size: 1rem;
   font-weight: 900;
   width: 100%;
-  border: 2px solid black;
+  border: ${(props) => (props.disabled ? "2px solid gray" : "2px solid black")};
+  color: ${(props) => (props.disabled ? "gray" : "black")};
   border-radius: 50px;
   height: 60px;
   outline: none;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "none" : "pointer")};
   margin-top: 0.625rem;
   max-width: 180px;
 

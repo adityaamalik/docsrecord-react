@@ -27,9 +27,13 @@ class Records extends React.Component {
     nextAppointmentDate: new Date(),
     nextAppointmentTime: "12:00",
     images: [],
+    isLoading: false,
   };
 
   componentDidMount() {
+    this.setState({
+      isLoading: true,
+    });
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
@@ -37,13 +41,18 @@ class Records extends React.Component {
       .then((response) => {
         this.setState({
           data: response.data,
+          isLoading: false,
         });
       })
       .catch((err) => {
         if (!!err.response && err.response.status === 401) {
-          message.error("You are unauthorized user, please login first !");
-          // .then(() => (window.location.pathname = "/login"));
+          message
+            .error("You are unauthorized user, please login first !")
+            .then(() => (window.location.pathname = "/"));
         }
+        this.setState({
+          isLoading: false,
+        });
       });
   }
 
@@ -246,6 +255,7 @@ class Records extends React.Component {
     return (
       <S.Container>
         <Table
+          loading={this.state.isLoading}
           rowKey="_id"
           columns={columns}
           dataSource={this.state.data}

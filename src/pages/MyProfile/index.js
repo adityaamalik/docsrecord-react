@@ -26,26 +26,27 @@ const MyProfile = () => {
   const [qualifications, setQualifications] = useState("");
   const [visitCharges, setVisitCharges] = useState("");
   const [image, setImage] = useState({});
-  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [showEdit, toggleEdit] = useState(false);
   useEffect(() => {
-    setIsLoadingData(true);
+    setIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
     axios
       .get(`/doctors/${doctor}`)
       .then((response) => {
         console.log(response.data);
         setDocData(response.data);
-        setIsLoadingData(false);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
-        setIsLoadingData(false);
+        setIsLoading(false);
       });
   }, []);
 
   const onSubmit = () => {
+    setIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
     const data = new FormData();
 
@@ -87,6 +88,7 @@ const MyProfile = () => {
         window.location.pathname = "/myprofile";
       })
       .catch((err) => {
+        setIsLoading(false);
         console.log(err);
         message.error("Some error occured");
       });
@@ -284,7 +286,7 @@ const MyProfile = () => {
         <S.Heading>MY PROFILE</S.Heading>
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           {" "}
-          {isLoadingData ? (
+          {isLoading ? (
             <LoadingOutlined style={{ fontSize: "50px" }} />
           ) : (
             <>
@@ -449,7 +451,9 @@ const MyProfile = () => {
 
           <S.FormRows align="middle">
             <S.InputCols span={24} style={{ textAlign: "center" }}>
-              <Button onClick={onSubmit}>Save Profile Changes</Button>
+              <Button disabled={isLoading} onClick={onSubmit}>
+                Save Profile Changes
+              </Button>
             </S.InputCols>
           </S.FormRows>
 

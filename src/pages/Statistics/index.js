@@ -2,7 +2,11 @@ import * as S from "./styles";
 import Graph from "../../components/Graph";
 import CountUp from "react-countup";
 import { Col, message } from "antd";
-import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
+import {
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -10,8 +14,10 @@ const Statistics = () => {
   const [stats, setStats] = useState({});
   const [monthData, setMonthData] = useState([]);
   const [weekData, setWeekData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
@@ -46,6 +52,8 @@ const Statistics = () => {
         ];
 
         setWeekData(WeekData);
+
+        setIsLoading(false);
       })
       .catch((err) => {
         if (!!err.response && err.response.status === 401) {
@@ -53,103 +61,112 @@ const Statistics = () => {
             .error("You are unauthorized user, please login first !")
             .then(() => (window.location.pathname = "/login"));
         }
+        setIsLoading(false);
       });
   }, []);
 
   return (
     <>
-      <S.CounterContainer>
-        <S.CounterRow align="middle">
-          <Col span={12}>
-            <S.CounterHeading>THIS MONTH</S.CounterHeading>
-          </Col>
-          <Col span={12}>
-            <S.CounterHeading>THIS WEEK</S.CounterHeading>
-          </Col>
-        </S.CounterRow>
-      </S.CounterContainer>
+      {isLoading ? (
+        <div style={{ textAlign: "center", marginTop: "100px" }}>
+          <LoadingOutlined style={{ fontSize: "50px" }} />
+        </div>
+      ) : (
+        <>
+          <S.CounterContainer>
+            <S.CounterRow align="middle">
+              <Col span={12}>
+                <S.CounterHeading>THIS MONTH</S.CounterHeading>
+              </Col>
+              <Col span={12}>
+                <S.CounterHeading>THIS WEEK</S.CounterHeading>
+              </Col>
+            </S.CounterRow>
+          </S.CounterContainer>
 
-      <S.CounterContainer>
-        <S.CounterRow align="middle">
-          <S.CounterCol span={12}>
-            {stats.currentmonth !== undefined && (
-              <CountUp end={stats.currentmonth} duration={4} />
-            )}
-          </S.CounterCol>
-          <S.CounterCol span={12}>
-            {stats.currentweek !== undefined && (
-              <CountUp end={stats.currentweek} duration={4} />
-            )}
-          </S.CounterCol>
-        </S.CounterRow>
-        <S.CounterRow align="middle">
-          <Col span={12}>
-            <span>PATIENTS</span>
-          </Col>
-          <Col span={12}>
-            <span>PATIENTS</span>
-          </Col>
-        </S.CounterRow>
-      </S.CounterContainer>
+          <S.CounterContainer>
+            <S.CounterRow align="middle">
+              <S.CounterCol span={12}>
+                {stats.currentmonth !== undefined && (
+                  <CountUp end={stats.currentmonth} duration={4} />
+                )}
+              </S.CounterCol>
+              <S.CounterCol span={12}>
+                {stats.currentweek !== undefined && (
+                  <CountUp end={stats.currentweek} duration={4} />
+                )}
+              </S.CounterCol>
+            </S.CounterRow>
+            <S.CounterRow align="middle">
+              <Col span={12}>
+                <span>PATIENTS</span>
+              </Col>
+              <Col span={12}>
+                <span>PATIENTS</span>
+              </Col>
+            </S.CounterRow>
+          </S.CounterContainer>
 
-      <S.CounterContainer>
-        <S.CounterRow align="middle" justify="center">
-          {!!stats.monthpercentage && (
-            <S.CounterCol span={12}>
-              <CountUp end={stats.monthpercentage} duration={4} />
-              <span>%</span>
-              {stats.monthpercentage > 0 ? (
-                <ArrowUpOutlined />
-              ) : (
-                <ArrowDownOutlined />
+          <S.CounterContainer>
+            <S.CounterRow align="middle" justify="center">
+              {!!stats.monthpercentage && (
+                <S.CounterCol span={12}>
+                  <CountUp end={stats.monthpercentage} duration={4} />
+                  <span>%</span>
+                  {stats.monthpercentage > 0 ? (
+                    <ArrowUpOutlined />
+                  ) : (
+                    <ArrowDownOutlined />
+                  )}
+                </S.CounterCol>
               )}
-            </S.CounterCol>
-          )}
 
-          {!!stats.weekpercentage && (
-            <S.CounterCol span={12}>
-              <CountUp end={stats.weekpercentage} duration={4} />
-              <span>%</span>
-              {stats.weekpercentage > 0 ? (
-                <ArrowUpOutlined />
-              ) : (
-                <ArrowDownOutlined />
+              {!!stats.weekpercentage && (
+                <S.CounterCol span={12}>
+                  <CountUp end={stats.weekpercentage} duration={4} />
+                  <span>%</span>
+                  {stats.weekpercentage > 0 ? (
+                    <ArrowUpOutlined />
+                  ) : (
+                    <ArrowDownOutlined />
+                  )}
+                </S.CounterCol>
               )}
-            </S.CounterCol>
-          )}
-        </S.CounterRow>
+            </S.CounterRow>
 
-        <S.CounterRow align="middle" justify="center">
-          {!!stats.monthpercentage && (
-            <Col span={12}>
-              <span>SINCE LAST MONTH</span>
-            </Col>
-          )}
-          {!!stats.weekpercentage && (
-            <Col span={12}>
-              <span>SINCE LAST WEEK</span>
-            </Col>
-          )}
-        </S.CounterRow>
-      </S.CounterContainer>
+            <S.CounterRow align="middle" justify="center">
+              {!!stats.monthpercentage && (
+                <Col span={12}>
+                  <span>SINCE LAST MONTH</span>
+                </Col>
+              )}
+              {!!stats.weekpercentage && (
+                <Col span={12}>
+                  <span>SINCE LAST WEEK</span>
+                </Col>
+              )}
+            </S.CounterRow>
+          </S.CounterContainer>
 
-      <S.Container>
-        <h1>Monthly Graph</h1>
-        <Graph data={monthData} type="month" />
-      </S.Container>
+          <S.Container>
+            <h1>Monthly Graph</h1>
+            <Graph data={monthData} type="month" />
+          </S.Container>
 
-      <br />
-      <br />
-      <br />
+          <br />
+          <br />
+          <br />
 
-      <S.Container>
-        <h1>Weekly Graph</h1>
-        <Graph data={weekData} type="week" />
-      </S.Container>
+          <S.Container>
+            <h1>Weekly Graph</h1>
+            <Graph data={weekData} type="week" />
+          </S.Container>
 
-      <br />
-      <br />
-      <br />
+          <br />
+          <br />
+          <br />
+        </>
+      )}
     </>
   );
 };

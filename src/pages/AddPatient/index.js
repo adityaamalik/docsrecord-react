@@ -6,6 +6,7 @@ import {
   PlusOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
+import { useHistory } from "react-router-dom";
 
 import axios from "axios";
 import Input from "../../common/Input";
@@ -14,6 +15,8 @@ import Button from "../../common/Button";
 const { Option } = S.FormSelects;
 
 const AddPatient = () => {
+  const history = useHistory();
+
   const [islogin, setIslogin] = useState(false);
   const onFinish = (values) => {
     setIslogin(true);
@@ -27,7 +30,7 @@ const AddPatient = () => {
         setIslogin(false);
         console.log(response);
         message.success("Patient added successfully !", 1).then(() => {
-          window.location.pathname = "/records";
+          history.push("/records");
         });
       })
       .catch((err) => {

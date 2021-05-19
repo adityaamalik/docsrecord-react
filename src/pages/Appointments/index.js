@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import * as S from "./styles";
 import axios from "axios";
 import moment from "moment";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const Appointments = () => {
   const [records, setRecords] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
@@ -34,6 +37,7 @@ const Appointments = () => {
             );
           })
         );
+        setIsLoading(false);
       })
       .catch((err) => {
         if (!!err.response && err.response.status === 401) {
@@ -80,9 +84,15 @@ const Appointments = () => {
     <>
       <S.Container>
         <S.Heading>
-          {records.length === 0
-            ? "NO UPCOMING APPOINTMENTS"
-            : "UPCOMING APPOINTMENTS"}
+          {isLoading ? (
+            <LoadingOutlined style={{ fontSize: "50px" }} />
+          ) : (
+            <>
+              {records.length === 0
+                ? "NO UPCOMING APPOINTMENTS"
+                : "UPCOMING APPOINTMENTS"}
+            </>
+          )}
         </S.Heading>
 
         <S.AppointmentCardContainer>
