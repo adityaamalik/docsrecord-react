@@ -20,15 +20,20 @@ const UpdatePatient = (props) => {
     setIsLoading(true);
     if (!!id) {
       axios
-        .get(`/patients/${id}`)
+        .get(`https://docsrecord.herokuapp.com/patient/${id}`, {
+          withCredentials: true,
+        })
         .then((response) => {
           setPatient(response.data);
-          console.log(response.data);
           setIsLoading(false);
         })
         .catch((err) => {
-          console.log(err);
           setIsLoading(false);
+          if (!!err.response && err.response.status === 401) {
+            message
+              .error("You are unauthorized user, please login first !", 1)
+              .then(() => (window.location.pathname = "/"));
+          }
         });
     } else {
       history.push("/records");
@@ -40,9 +45,10 @@ const UpdatePatient = (props) => {
     const doctor = localStorage.getItem("docsrecordDoctor");
     values.doctor = doctor;
     axios
-      .put(`/patients/${id}`, values)
+      .put(`https://docsrecord.herokuapp.com/patient/${id}`, values, {
+        withCredentials: true,
+      })
       .then((response) => {
-        console.log(response);
         setPatient(response.data);
         message.success("Patient updated successfully !").then(() => {
           setIsLoading(false);
@@ -51,7 +57,11 @@ const UpdatePatient = (props) => {
       })
       .catch((err) => {
         setIsLoading(false);
-        console.log(err);
+        if (!!err.response && err.response.status === 401) {
+          message
+            .error("You are unauthorized user, please login first !", 1)
+            .then(() => (window.location.pathname = "/"));
+        }
       });
   };
 

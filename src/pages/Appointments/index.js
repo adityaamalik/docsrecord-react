@@ -11,10 +11,10 @@ const Appointments = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const doctor = localStorage.getItem("docsrecordDoctor");
-
     axios
-      .get(`/patients?doctor=${doctor}`)
+      .get(`https://docsrecord.herokuapp.com/patient`, {
+        withCredentials: true,
+      })
       .then((response) => {
         // console.log(response.data);
         const temp = [];
@@ -42,7 +42,7 @@ const Appointments = () => {
       .catch((err) => {
         if (!!err.response && err.response.status === 401) {
           message
-            .error("You are unauthorized user, please login first !")
+            .error("You are unauthorized user, please login first !", 1)
             .then(() => (window.location.pathname = "/login"));
         }
       });

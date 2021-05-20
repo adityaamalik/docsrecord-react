@@ -1,267 +1,102 @@
 import * as S from "./styles";
 import ImageUrl from "../../img/doc.png";
-import { useEffect, useState } from "react";
+// import { useState } from "react";
 import Button from "../../common/Button";
-import Input from "../../common/Input";
-import axios from "axios";
-import { message, Modal, Row, Col, Spin } from "antd";
-import { LoadingOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import BannerImage from "../../img/bannerimage.jpeg";
+// import axios from "axios";
+// import { message, Modal, Row, Col } from "antd";
+// import { CloseCircleOutlined } from "@ant-design/icons";
 
 const Landing = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isMonthlyModalVisible, setIsMonthlyModalVisible] = useState(false);
-  const [isYearlyModalVisible, setIsYearlyModalVisible] = useState(false);
-  const [doctor, setDoctor] = useState({});
-  const [token, setToken] = useState("");
-  const [islogin, setIslogin] = useState(false);
+  // const [isModalVisible, setIsModalVisible] = useState(false);
+  // const [isMonthlyModalVisible, setIsMonthlyModalVisible] = useState(false);
+  // const [isYearlyModalVisible, setIsYearlyModalVisible] = useState(false);
+  // const [doctor, setDoctor] = useState({});
 
-  // states for register
-  const [name, setName] = useState("");
-  const [emailForRegister, setEmailForRegister] = useState("");
-  const [passwordForRegister, setPasswordForRegister] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [phone, setPhone] = useState("");
-  const [isRegister, setIsRegister] = useState(false);
-
-  const [loginForm, toggleLoginForm] = useState(true);
-
-  const [welcomeModal, toggleWelcomeModal] = useState(false);
-
-  useEffect(() => {
-    window.setTimeout(() => {
-      toggleWelcomeModal(true);
-    }, 2000);
-  }, []);
-
-  const onSubmitForRegister = () => {
-    if (!name) {
-      message.error("Name is required");
-      setIslogin(false);
-    } else if (!emailForRegister) {
-      message.error("Email is required");
-      setIslogin(false);
-    } else if (!passwordForRegister) {
-      message.error("Password is required");
-      setIslogin(false);
-    } else if (passwordForRegister !== confirmPassword) {
-      message.error("Password does not match");
-      setIslogin(false);
-    } else if (!phone) {
-      message.error("Phone Number is required");
-      setIslogin(false);
-    } else {
-      setIsRegister(true);
-      axios
-        .post("/doctors/register", {
-          name: name,
-          email: emailForRegister,
-          password: passwordForRegister,
-          phone_number: phone,
-        })
-        .then((response) => {
-          setIsRegister(false);
-
-          localStorage.setItem("docsrecordDoctor", response.data.doctor._id);
-          localStorage.setItem("token", response.data.token);
-
-          window.location.pathname = "/records";
-        })
-        .catch((err) => {
-          setIsRegister(false);
-          console.log(err.message);
-          message.error("Some error occured !");
-        });
-    }
+  const googleLogin = () => {
+    window.open("https://docsrecord.herokuapp.com/auth/google", "_self");
   };
 
-  const onSubmit = () => {
-    setIslogin(true);
+  // const loadScript = (src) => {
+  //   return new Promise((resolve) => {
+  //     const script = document.createElement("script");
+  //     script.src = src;
+  //     script.onload = () => {
+  //       resolve(true);
+  //     };
+  //     script.onerror = () => {
+  //       resolve(false);
+  //     };
+  //     document.body.appendChild(script);
+  //   });
+  // };
 
-    axios
-      .post("/doctors/login", {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        setIslogin(false);
-        var today = new Date();
-        var payment = new Date(response.data.doctor.payment_valid_till);
-        setDoctor(response.data.doctor);
-        if (today > payment) {
-          setToken(response.data.token);
-          setIsModalVisible(true);
-        } else {
-          localStorage.setItem("docsrecordDoctor", response.data.doctor._id);
-          localStorage.setItem("token", response.data.token);
+  // const displayRazorpay = async (subscription) => {
+  //   const res = await loadScript(
+  //     "https://checkout.razorpay.com/v1/checkout.js"
+  //   );
 
-          window.location.pathname = "/records";
-        }
-      })
-      .catch((err) => {
-        setIslogin(false);
-        console.log(err);
-        if (err.response.data === "email incorrect") {
-          message.error("This email is not registered !");
-        } else if (err.response.data === "password incorrect") {
-          message.error("Password is wrong. Please try again !");
-        } else {
-          message.error("Some error occured !");
-        }
-      });
-  };
+  //   if (!res) {
+  //     alert("Razorpay SDK failed to load. Are you online?");
+  //     return;
+  //   }
 
-  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-  let login = (
-    <Button onClick={onSubmit} width="150px" height="35px">
-      SIGN IN
-    </Button>
-  );
-  if (islogin === true) {
-    login = <Spin indicator={antIcon} />;
-  }
+  //   // creating a new order
+  //   const result = await axios.post("/payments/orders", {
+  //     subscription: subscription,
+  //   });
 
-  let register = (
-    <Button onClick={onSubmitForRegister} width="150px" height="35px">
-      REGISTER
-    </Button>
-  );
-  if (isRegister === true) {
-    register = <Spin indicator={antIcon} />;
-  }
+  //   if (!result) {
+  //     alert("Server error. Are you online?");
+  //     return;
+  //   }
 
-  const loadScript = (src) => {
-    return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = src;
-      script.onload = () => {
-        resolve(true);
-      };
-      script.onerror = () => {
-        resolve(false);
-      };
-      document.body.appendChild(script);
-    });
-  };
+  //   // Getting the order details back
+  //   const { amount, id: order_id, currency } = result.data;
 
-  const displayRazorpay = async (subscription) => {
-    const res = await loadScript(
-      "https://checkout.razorpay.com/v1/checkout.js"
-    );
+  //   const options = {
+  //     key: "rzp_test_wWXoxoQf1kjrSm", // Enter the Key ID generated from the Dashboard
+  //     amount: amount * 100,
+  //     currency: currency,
+  //     name: "DOCSRECORD",
+  //     description: `DOCSRECORD ${subscription} subscription.`,
+  //     order_id: order_id,
+  //     handler: async function (response) {
+  //       const data = {
+  //         doctorId: doctor._id,
+  //         orderCreationId: order_id,
+  //         razorpayPaymentId: response.razorpay_payment_id,
+  //         razorpayOrderId: response.razorpay_order_id,
+  //         razorpaySignature: response.razorpay_signature,
+  //         subscription: subscription,
+  //       };
 
-    if (!res) {
-      alert("Razorpay SDK failed to load. Are you online?");
-      return;
-    }
+  //       const result = await axios.post("/payments/success", data);
 
-    // creating a new order
-    const result = await axios.post("/payments/orders", {
-      subscription: subscription,
-    });
+  //       console.log(result.data.statusCode);
+  //       message.success(result.data.msg).then(() => {
+  //         window.location.pathname = "/records";
+  //       });
+  //     },
+  //     prefill: {
+  //       name: doctor.name,
+  //       email: doctor.email,
+  //       contact: doctor.phone_number,
+  //     },
+  //     notes: {
+  //       address: doctor.address,
+  //     },
+  //     theme: {
+  //       color: "#61dafb",
+  //     },
+  //   };
 
-    if (!result) {
-      alert("Server error. Are you online?");
-      return;
-    }
-
-    // Getting the order details back
-    const { amount, id: order_id, currency } = result.data;
-
-    const options = {
-      key: "rzp_test_wWXoxoQf1kjrSm", // Enter the Key ID generated from the Dashboard
-      amount: amount * 100,
-      currency: currency,
-      name: "DOCSRECORD",
-      description: `DOCSRECORD ${subscription} subscription.`,
-      order_id: order_id,
-      handler: async function (response) {
-        const data = {
-          doctorId: doctor._id,
-          orderCreationId: order_id,
-          razorpayPaymentId: response.razorpay_payment_id,
-          razorpayOrderId: response.razorpay_order_id,
-          razorpaySignature: response.razorpay_signature,
-          subscription: subscription,
-        };
-
-        const result = await axios.post("/payments/success", data);
-
-        console.log(result.data.statusCode);
-        message.success(result.data.msg).then(() => {
-          localStorage.setItem("docsrecordDoctor", doctor._id);
-          localStorage.setItem("token", token);
-          window.location.pathname = "/records";
-        });
-      },
-      prefill: {
-        name: doctor.name,
-        email: doctor.email,
-        contact: doctor.phone_number,
-      },
-      notes: {
-        address: doctor.address,
-      },
-      theme: {
-        color: "#61dafb",
-      },
-    };
-
-    const paymentObject = new window.Razorpay(options);
-    paymentObject.open();
-  };
+  //   const paymentObject = new window.Razorpay(options);
+  //   paymentObject.open();
+  // };
 
   return (
     <div style={{ position: "relative" }}>
-      {/* welcome modal */}
-      <Modal
-        footer={null}
-        centered
-        visible={welcomeModal}
-        onCancel={() => toggleWelcomeModal(false)}
-        closable={false}
-      >
-        <div style={{ textAlign: "right" }}>
-          <CloseCircleOutlined
-            style={{ color: "black", fontSize: "20px" }}
-            onClick={() => toggleWelcomeModal(false)}
-          />
-        </div>
-
-        <div style={{ textAlign: "center" }}>
-          <br />
-          <img
-            alt="docsrecord features"
-            src={BannerImage}
-            height="auto"
-            width="100%"
-          />
-          <br />
-          <br />
-          <br />
-          <h1>
-            <strong>30 DAYS FREE TRIAL</strong>
-          </h1>
-        </div>
-
-        <Row justify="center" align="middle" style={{ textAlign: "center" }}>
-          <Col span={11}>
-            <Button
-              width="30"
-              onClick={() => {
-                toggleWelcomeModal(false);
-                toggleLoginForm(false);
-              }}
-            >
-              REGISTER
-            </Button>
-          </Col>
-        </Row>
-      </Modal>
-
-      {/* main modal */}
-      <Modal
+      {/* <Modal
         footer={null}
         centered
         visible={isModalVisible}
@@ -302,7 +137,6 @@ const Landing = () => {
         </p>
       </Modal>
 
-      {/* monthly modal */}
       <Modal
         footer={null}
         centered
@@ -335,7 +169,6 @@ const Landing = () => {
         </p>
       </Modal>
 
-      {/* yearly modal */}
       <Modal
         footer={null}
         centered
@@ -366,7 +199,7 @@ const Landing = () => {
           Contact Support for any queries : +91 - 8130083852 |
           codeclan0100@gmail.com
         </p>
-      </Modal>
+      </Modal> */}
 
       <S.MainRow align="middle" style={{ position: "relative" }}>
         <S.MainCol lg={14} md={24} sm={24} xs={24}>
@@ -382,83 +215,7 @@ const Landing = () => {
           ></div>
         </S.MainCol>
         <S.MainCol lg={8} md={24} sm={24} xs={24}>
-          {loginForm ? (
-            <div>
-              <S.SubHeading>
-                SIGN IN OR{" "}
-                <a href="/#" onClick={() => toggleLoginForm(!loginForm)}>
-                  REGISTER
-                </a>
-              </S.SubHeading>
-
-              <Input
-                type="email"
-                value={email}
-                onChange={(val) => setEmail(val)}
-                label="E-Mail"
-              />
-
-              <Input
-                type="password"
-                value={password}
-                onChange={(val) => setPassword(val)}
-                label="Password"
-              />
-
-              {/* <Button onClick={onSubmit}>SIGN IN</Button> */}
-              {login}
-              <br />
-              <br />
-            </div>
-          ) : (
-            <div>
-              <S.SubHeading>
-                REGISTER OR{" "}
-                <a href="/#" onClick={() => toggleLoginForm(!loginForm)}>
-                  SIGN IN
-                </a>
-              </S.SubHeading>
-
-              <Input
-                type="text"
-                value={name}
-                onChange={(val) => setName(val)}
-                label="Name"
-              />
-
-              <Input
-                type="tel"
-                value={phone}
-                onChange={(val) => setPhone(val)}
-                label="Phone Number"
-              />
-
-              <Input
-                type="email"
-                value={emailForRegister}
-                onChange={(val) => setEmailForRegister(val)}
-                label="E-Mail"
-              />
-
-              <Input
-                type="password"
-                value={passwordForRegister}
-                onChange={(val) => setPasswordForRegister(val)}
-                label="Password"
-              />
-
-              <Input
-                type="password"
-                value={confirmPassword}
-                onChange={(val) => setConfirmPassword(val)}
-                label="Confirm Password"
-              />
-
-              {register}
-              <br />
-              <br />
-            </div>
-          )}
+          <Button onClick={googleLogin}>Sign In with google</Button>
         </S.MainCol>
         <S.MainCol lg={1} md={1} sm={0} xs={0}></S.MainCol>
       </S.MainRow>

@@ -2,8 +2,21 @@ import * as S from "./styles";
 import { Row, Col, Menu, Dropdown } from "antd";
 import Logo from "../../img/doc.png";
 import { CaretRightOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 const menu = () => {
+  const logout = () => {
+    axios
+      .get("https://docsrecord.herokuapp.com/auth/logout", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.data === "done") {
+          window.location.pathname = "/";
+        }
+      });
+  };
+
   return (
     <Menu>
       <Menu.Item key="0">
@@ -39,13 +52,7 @@ const menu = () => {
         </S.Span>
       </Menu.Item>
       <Menu.Item key="6">
-        <S.Span
-          to="/#"
-          onClick={() => {
-            localStorage.clear();
-            window.location.pathname = "/";
-          }}
-        >
+        <S.Span to="/#" onClick={logout}>
           logout
         </S.Span>
       </Menu.Item>

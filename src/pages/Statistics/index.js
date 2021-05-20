@@ -18,10 +18,10 @@ const Statistics = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const doctor = localStorage.getItem("docsrecordDoctor");
-
     axios
-      .get(`/patients/stats/${doctor}`)
+      .get(`https://docsrecord.herokuapp.com/patient/stats`, {
+        withCredentials: true,
+      })
       .then((response) => {
         setStats(response.data);
         const Monthdata = [
@@ -42,13 +42,13 @@ const Statistics = () => {
         setMonthData(Monthdata);
 
         const WeekData = [
-          { week: "Mon", patients: response.data.weekstats[2] },
-          { week: "Tues", patients: response.data.weekstats[3] },
-          { week: "Wed", patients: response.data.weekstats[4] },
-          { week: "Thurs", patients: response.data.weekstats[5] },
-          { week: "Fri", patients: response.data.weekstats[6] },
-          { week: "Sat", patients: response.data.weekstats[0] },
-          { week: "Sun", patients: response.data.weekstats[1] },
+          { week: "Mon", patients: response.data.weekstats[1] },
+          { week: "Tues", patients: response.data.weekstats[2] },
+          { week: "Wed", patients: response.data.weekstats[3] },
+          { week: "Thurs", patients: response.data.weekstats[4] },
+          { week: "Fri", patients: response.data.weekstats[5] },
+          { week: "Sat", patients: response.data.weekstats[6] },
+          { week: "Sun", patients: response.data.weekstats[0] },
         ];
 
         setWeekData(WeekData);
@@ -56,12 +56,12 @@ const Statistics = () => {
         setIsLoading(false);
       })
       .catch((err) => {
+        setIsLoading(false);
         if (!!err.response && err.response.status === 401) {
           message
-            .error("You are unauthorized user, please login first !")
+            .error("You are unauthorized user, please login first !", 1)
             .then(() => (window.location.pathname = "/login"));
         }
-        setIsLoading(false);
       });
   }, []);
 

@@ -1,27 +1,27 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Row, Col, Button } from "antd";
+import { Row, Col, Button, message } from "antd";
 import * as S from "./styles";
 import Logo from "../../img/doc.png";
 
 const PrintBill = (props) => {
   const { patient } = props.location.state;
 
-  console.log("patient");
-  console.log(patient);
   const [doc, setDoc] = useState({});
 
   useEffect(() => {
     if (!!patient.doctor) {
       axios
-        .get(`/doctors/${patient.doctor}`)
+        .get(`https://docsrecord.herokuapp.com/doctor`)
         .then((response) => {
           setDoc(response.data);
-          console.log("Doctor");
-          console.log(response.data);
         })
         .catch((err) => {
-          console.log(err);
+          if (!!err.response && err.response.status === 401) {
+            message
+              .error("You are unauthorized user, please login first !", 1)
+              .then(() => (window.location.pathname = "/"));
+          }
         });
     } else {
       window.location.pathname = "/records";

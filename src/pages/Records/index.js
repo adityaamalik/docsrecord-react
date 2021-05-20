@@ -34,10 +34,11 @@ class Records extends React.Component {
     this.setState({
       isLoading: true,
     });
-    const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
-      .get(`/patients?doctor=${doctor}`)
+      .get(`https://docsrecord.herokuapp.com/patient`, {
+        withCredentials: true,
+      })
       .then((response) => {
         this.setState({
           data: response.data,
@@ -47,7 +48,7 @@ class Records extends React.Component {
       .catch((err) => {
         if (!!err.response && err.response.status === 401) {
           message
-            .error("You are unauthorized user, please login first !")
+            .error("You are unauthorized user, please login first !", 1)
             .then(() => (window.location.pathname = "/"));
         }
         this.setState({
@@ -58,7 +59,9 @@ class Records extends React.Component {
 
   deleteRecord = (id) => {
     axios
-      .delete(`/patients/${id}`)
+      .delete(`https://docsrecord.herokuapp.com/patient/${id}`, {
+        withCredentials: true,
+      })
       .then((response) => {
         console.log(response);
         message.success("Record deleted successfully !", 1);
@@ -190,10 +193,14 @@ class Records extends React.Component {
     let today = new Date(this.state.nextAppointmentDate);
 
     axios
-      .put(`/patients/${id}`, {
-        next_appointment_date: today,
-        next_appointment_time: this.state.nextAppointmentTime,
-      })
+      .put(
+        `https://docsrecord.herokuapp.com/patient/${id}`,
+        {
+          next_appointment_date: today,
+          next_appointment_time: this.state.nextAppointmentTime,
+        },
+        { withCredentials: true }
+      )
       .then((response) => {
         message.success("Next appointment added successfully");
       })

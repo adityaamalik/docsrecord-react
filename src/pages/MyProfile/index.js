@@ -19,7 +19,7 @@ const MyProfile = () => {
   const [isMonthlyModalVisible, setIsMonthlyModalVisible] = useState(false);
   const [isYearlyModalVisible, setIsYearlyModalVisible] = useState(false);
 
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [clinicName, setClinicName] = useState("");
   const [clinicAddress, setClinicAddress] = useState("");
   const [phone, setPhone] = useState("");
@@ -31,27 +31,29 @@ const MyProfile = () => {
   const [showEdit, toggleEdit] = useState(false);
   useEffect(() => {
     setIsLoading(true);
-    const doctor = localStorage.getItem("docsrecordDoctor");
     axios
-      .get(`/doctors/${doctor}`)
+      .get(`https://docsrecord.herokuapp.com/doctor`, { withCredentials: true })
       .then((response) => {
         console.log(response.data);
         setDocData(response.data);
         setIsLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         setIsLoading(false);
+        if (!!err.response && err.response.status === 401) {
+          message
+            .error("You are unauthorized user, please login first !", 1)
+            .then(() => (window.location.pathname = "/"));
+        }
       });
   }, []);
 
   const onSubmit = () => {
     setIsLoading(true);
-    const doctor = localStorage.getItem("docsrecordDoctor");
     const data = new FormData();
 
-    if (name !== "") {
-      data.append("name", name);
+    if (email !== "") {
+      data.append("email", email);
     }
 
     if (clinicName !== "") {
@@ -77,19 +79,23 @@ const MyProfile = () => {
       // data.visit_charges = visitCharges;
     }
 
-    if (!!image) {
+    if (document.getElementById("userImage").value !== null) {
       data.append("image", image);
-      console.log(image);
-      // data.image.push(image);
     }
     axios
-      .put(`/doctors/${doctor}`, data)
+      .put(`https://docsrecord.herokuapp.com/doctor`, data, {
+        withCredentials: true,
+      })
       .then((response) => {
         window.location.pathname = "/myprofile";
       })
       .catch((err) => {
         setIsLoading(false);
-        console.log(err);
+        if (!!err.response && err.response.status === 401) {
+          message
+            .error("You are unauthorized user, please login first !", 1)
+            .then(() => (window.location.pathname = "/"));
+        }
         message.error("Some error occured");
       });
   };
@@ -119,9 +125,13 @@ const MyProfile = () => {
     }
 
     // creating a new order
-    const result = await axios.post("/payments/orders", {
-      subscription: subscription,
-    });
+    const result = await axios.post(
+      "https://docsrecord.herokuapp.com/payment/orders",
+      {
+        subscription: subscription,
+      },
+      { withCredentials: true }
+    );
 
     if (!result) {
       alert("Server error. Are you online?");
@@ -140,7 +150,6 @@ const MyProfile = () => {
       order_id: order_id,
       handler: async function (response) {
         const data = {
-          doctorId: docData._id,
           orderCreationId: order_id,
           razorpayPaymentId: response.razorpay_payment_id,
           razorpayOrderId: response.razorpay_order_id,
@@ -148,7 +157,11 @@ const MyProfile = () => {
           subscription: subscription,
         };
 
-        const result = await axios.post("/payments/success", data);
+        const result = await axios.post(
+          "https://docsrecord.herokuapp.com/payment/success",
+          data,
+          { withCredentials: true }
+        );
 
         if (result) {
           message
@@ -283,7 +296,7 @@ const MyProfile = () => {
         </p>
       </Modal>
       <S.Container>
-        <S.Heading>MY PROFILE</S.Heading>
+        <S.Heading>Hi, {docData.name}</S.Heading>
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           {" "}
           {isLoading ? (
@@ -378,24 +391,25 @@ const MyProfile = () => {
         <div>
           <S.FormRows align="middle">
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
-              {!!docData.name && (
+              {docData.email !== undefined && docData.email !== null && (
                 <Input
-                  type="text"
-                  label="Edit name"
-                  onChange={(val) => setName(val)}
-                  defaultValue={docData.name}
+                  type="email"
+                  label="Edit E-mail"
+                  onChange={(val) => setEmail(val)}
+                  defaultValue={docData.email}
                 />
               )}
             </S.InputCols>
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
-              {!!docData.phone_number && (
-                <Input
-                  type="text"
-                  label="Edit Phone Number"
-                  onChange={(val) => setPhone(val)}
-                  defaultValue={docData.phone_number}
-                />
-              )}
+              {docData.phone_number !== undefined &&
+                docData.phone_number !== null && (
+                  <Input
+                    type="text"
+                    label="Edit Phone Number"
+                    onChange={(val) => setPhone(val)}
+                    defaultValue={docData.phone_number}
+                  />
+                )}
             </S.InputCols>
           </S.FormRows>
 

@@ -20,22 +20,24 @@ const AddPatient = () => {
   const [islogin, setIslogin] = useState(false);
   const onFinish = (values) => {
     setIslogin(true);
-    console.log("Received values of form:", values);
 
-    const doctor = localStorage.getItem("docsrecordDoctor");
-    values.doctor = doctor;
     axios
-      .post("/patients", values)
+      .post("https://docsrecord.herokuapp.com/patient", values, {
+        withCredentials: true,
+      })
       .then((response) => {
         setIslogin(false);
-        console.log(response);
         message.success("Patient added successfully !", 1).then(() => {
           history.push("/records");
         });
       })
       .catch((err) => {
         setIslogin(false);
-        console.log(err);
+        if (!!err.response && err.response.status === 401) {
+          message
+            .error("You are unauthorized user, please login first !", 1)
+            .then(() => (window.location.pathname = "/"));
+        }
       });
   };
 
