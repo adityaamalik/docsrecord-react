@@ -388,14 +388,15 @@ const MyProfile = () => {
               )}
             </S.InputCols>
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
-              {!!docData.phone_number && (
-                <Input
-                  type="text"
-                  label="Edit Phone Number"
-                  onChange={(val) => setPhone(val)}
-                  defaultValue={docData.phone_number}
-                />
-              )}
+              {docData.phone_number !== undefined &&
+                docData.phone_number !== null && (
+                  <Input
+                    type="text"
+                    label="Edit Phone Number"
+                    onChange={(val) => setPhone(val)}
+                    defaultValue={docData.phone_number}
+                  />
+                )}
             </S.InputCols>
           </S.FormRows>
 

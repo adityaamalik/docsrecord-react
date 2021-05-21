@@ -1,12 +1,12 @@
 import * as S from "./styles";
 import ImageUrl from "../../img/doc.png";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
 import axios from "axios";
 import { message, Modal, Row, Col, Spin } from "antd";
 import { LoadingOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import BannerImage from "../../img/bannerimage.jpeg";
+import GoogleLogin from "react-google-login";
 
 const Landing = () => {
   const [email, setEmail] = useState("");
@@ -23,18 +23,20 @@ const Landing = () => {
   const [emailForRegister, setEmailForRegister] = useState("");
   const [passwordForRegister, setPasswordForRegister] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [phone, setPhone] = useState("");
   const [isRegister, setIsRegister] = useState(false);
 
   const [loginForm, toggleLoginForm] = useState(true);
 
-  const [welcomeModal, toggleWelcomeModal] = useState(false);
+  const onGoogleSuccess = (response) => {
+    console.log(response.profileObj);
+    setName(response.profileObj.name);
+    setEmailForRegister(response.profileObj.email);
+  };
 
-  useEffect(() => {
-    window.setTimeout(() => {
-      toggleWelcomeModal(true);
-    }, 2000);
-  }, []);
+  const onGoogleFailure = (err) => {
+    console.log(err);
+    message.error("Some error occured, please try again later !");
+  };
 
   const onSubmitForRegister = () => {
     if (!name) {
@@ -49,9 +51,6 @@ const Landing = () => {
     } else if (passwordForRegister !== confirmPassword) {
       message.error("Password does not match");
       setIslogin(false);
-    } else if (!phone) {
-      message.error("Phone Number is required");
-      setIslogin(false);
     } else {
       setIsRegister(true);
       axios
@@ -59,7 +58,6 @@ const Landing = () => {
           name: name,
           email: emailForRegister,
           password: passwordForRegister,
-          phone_number: phone,
         })
         .then((response) => {
           setIsRegister(false);
@@ -71,8 +69,9 @@ const Landing = () => {
         })
         .catch((err) => {
           setIsRegister(false);
-          console.log(err.message);
-          message.error("Some error occured !");
+          if (err.response.data === "Email Already registered") {
+            message.error("This email is already registered !");
+          }
         });
     }
   };
@@ -214,52 +213,6 @@ const Landing = () => {
 
   return (
     <div style={{ position: "relative" }}>
-      {/* welcome modal */}
-      <Modal
-        footer={null}
-        centered
-        visible={welcomeModal}
-        onCancel={() => toggleWelcomeModal(false)}
-        closable={false}
-      >
-        <div style={{ textAlign: "right" }}>
-          <CloseCircleOutlined
-            style={{ color: "black", fontSize: "20px" }}
-            onClick={() => toggleWelcomeModal(false)}
-          />
-        </div>
-
-        <div style={{ textAlign: "center" }}>
-          <br />
-          <img
-            alt="docsrecord features"
-            src={BannerImage}
-            height="auto"
-            width="100%"
-          />
-          <br />
-          <br />
-          <br />
-          <h1>
-            <strong>30 DAYS FREE TRIAL</strong>
-          </h1>
-        </div>
-
-        <Row justify="center" align="middle" style={{ textAlign: "center" }}>
-          <Col span={11}>
-            <Button
-              width="30"
-              onClick={() => {
-                toggleWelcomeModal(false);
-                toggleLoginForm(false);
-              }}
-            >
-              REGISTER
-            </Button>
-          </Col>
-        </Row>
-      </Modal>
-
       {/* main modal */}
       <Modal
         footer={null}
@@ -405,8 +358,8 @@ const Landing = () => {
                 label="Password"
               />
 
-              {/* <Button onClick={onSubmit}>SIGN IN</Button> */}
               {login}
+              <br />
               <br />
               <br />
             </div>
@@ -419,42 +372,45 @@ const Landing = () => {
                 </a>
               </S.SubHeading>
 
-              <Input
-                type="text"
-                value={name}
-                onChange={(val) => setName(val)}
-                label="Name"
-              />
+              <br />
+              <br />
 
-              <Input
-                type="tel"
-                value={phone}
-                onChange={(val) => setPhone(val)}
-                label="Phone Number"
-              />
+              {emailForRegister === "" ? (
+                <>
+                  <GoogleLogin
+                    clientId="824922868367-uf280onns6u425nfh4d6krq7bu4suu1g.apps.googleusercontent.com"
+                    buttonText="Get started with google"
+                    onSuccess={onGoogleSuccess}
+                    onFailure={onGoogleFailure}
+                    cookiePolicy={"single_host_origin"}
+                  />
+                  <br />
+                </>
+              ) : (
+                <>
+                  <h4>Hi, {name}</h4>
+                  <br />
+                  <h4>{emailForRegister}</h4>
+                  <br />
 
-              <Input
-                type="email"
-                value={emailForRegister}
-                onChange={(val) => setEmailForRegister(val)}
-                label="E-Mail"
-              />
+                  <Input
+                    type="password"
+                    value={passwordForRegister}
+                    onChange={(val) => setPasswordForRegister(val)}
+                    label="Password"
+                  />
 
-              <Input
-                type="password"
-                value={passwordForRegister}
-                onChange={(val) => setPasswordForRegister(val)}
-                label="Password"
-              />
+                  <Input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(val) => setConfirmPassword(val)}
+                    label="Confirm Password"
+                  />
 
-              <Input
-                type="password"
-                value={confirmPassword}
-                onChange={(val) => setConfirmPassword(val)}
-                label="Confirm Password"
-              />
+                  {register}
+                </>
+              )}
 
-              {register}
               <br />
               <br />
             </div>
