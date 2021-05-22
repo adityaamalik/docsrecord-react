@@ -42,13 +42,13 @@ const Statistics = () => {
         setMonthData(Monthdata);
 
         const WeekData = [
-          { week: "Mon", patients: response.data.weekstats[2] },
-          { week: "Tues", patients: response.data.weekstats[3] },
-          { week: "Wed", patients: response.data.weekstats[4] },
-          { week: "Thurs", patients: response.data.weekstats[5] },
-          { week: "Fri", patients: response.data.weekstats[6] },
-          { week: "Sat", patients: response.data.weekstats[0] },
-          { week: "Sun", patients: response.data.weekstats[1] },
+          { week: "Mon", patients: response.data.weekstats[1] },
+          { week: "Tues", patients: response.data.weekstats[2] },
+          { week: "Wed", patients: response.data.weekstats[3] },
+          { week: "Thurs", patients: response.data.weekstats[4] },
+          { week: "Fri", patients: response.data.weekstats[5] },
+          { week: "Sat", patients: response.data.weekstats[6] },
+          { week: "Sun", patients: response.data.weekstats[0] },
         ];
 
         setWeekData(WeekData);

@@ -1,10 +1,10 @@
-import { Row, Col, message } from "antd";
+import { Row, Col, message, Button } from "antd";
 import { useEffect, useState } from "react";
 import * as S from "./styles";
 import axios from "axios";
 import moment from "moment";
 import { LoadingOutlined } from "@ant-design/icons";
-
+import { Link } from "react-router-dom";
 const Appointments = () => {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -14,29 +14,30 @@ const Appointments = () => {
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
-      .get(`/patients?doctor=${doctor}`)
+      .get(`/patients/appointments/${doctor}`)
       .then((response) => {
         // console.log(response.data);
-        const temp = [];
-        response.data.forEach((record) => {
-          if (
-            record.next_appointment_date !== undefined &&
-            record.next_appointment_date !== null
-          ) {
-            console.log(record);
-            var today = moment();
-            var appointdate = moment(record.next_appointment_date);
-            if (appointdate >= today) temp.push(record);
-          }
-        });
-        setRecords(
-          temp.sort((a, b) => {
-            return (
-              new Date(a.next_appointment_date) -
-              new Date(b.next_appointment_date)
-            );
-          })
-        );
+        // const temp = [];
+        // response.data.forEach((record) => {
+        //   if (
+        //     record.next_appointment_date !== undefined &&
+        //     record.next_appointment_date !== null
+        //   ) {
+        //     console.log(record);
+        //     var today = moment();
+        //     var appointdate = moment(record.next_appointment_date);
+        //     if (appointdate >= today) temp.push(record);
+        //   }
+        // });
+        // setRecords(
+        //   temp.sort((a, b) => {
+        //     return (
+        //       new Date(a.next_appointment_date) -
+        //       new Date(b.next_appointment_date)
+        //     );
+        //   })
+        // );
+        setRecords(response.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -47,6 +48,29 @@ const Appointments = () => {
         }
       });
   }, []);
+
+  const Complete = (id) => {
+    // setIsLoading(true);
+    // const doctor = localStorage.getItem("docsrecordDoctor");
+    // values.doctor = doctor;
+
+    var users = records.filter(function (record) {
+      return record._id !== id;
+    });
+    setRecords(users);
+    let today = new Date();
+    today.setDate(today.getDate() - 2);
+    axios
+      .put(`/patients/${id}`, { next_appointment_date: today })
+      .then((response) => {
+        console.log(response);
+
+        message.success("Patient updated successfully !");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const tConvert = (time) => {
     // Check correct time format and split into components
@@ -147,6 +171,20 @@ const Appointments = () => {
                           <Col>Total Cost : ₹ {record.total_cost} /-</Col>
                         </Row>
                       )}
+
+                      <Button onClick={() => Complete(record._id)}>
+                        Completed
+                      </Button>
+                      <Link
+                        to={{
+                          pathname: "/updatepatient",
+                          state: { id: record._id },
+                        }}
+                      >
+                        <Button style={{ marginRight: "5px" }}>
+                          Update Record
+                        </Button>
+                      </Link>
                     </S.AppointmentCard>
                   </Col>
                 );

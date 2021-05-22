@@ -54,6 +54,7 @@ const UpdatePatient = (props) => {
         console.log(err);
       });
   };
+  console.log(patient.name);
 
   return (
     <>
@@ -65,129 +66,114 @@ const UpdatePatient = (props) => {
           autoComplete="off"
           onFinish={onFinish}
         >
-          {patient.name && patient.age && patient.gender && (
-            <Row align="middle">
-              <S.InputCols lg={8} md={8} sm={24} xs={24}>
-                <Form.Item name="name" initialValue={patient.name}>
-                  <Input type="text" label="Name" />
-                </Form.Item>
-              </S.InputCols>
-              <S.InputCols lg={8} md={8} sm={24} xs={24}>
-                <Form.Item name="age" initialValue={patient.age}>
-                  <Input type="number" label="Age" />
-                </Form.Item>
-              </S.InputCols>
-              <S.InputCols lg={8} md={8} sm={24} xs={24}>
-                <Form.Item name="gender" initialValue={patient.gender}>
-                  <S.FormSelects
-                    size="large"
-                    placeholder="Gender"
-                    style={{ width: "100%" }}
-                  >
-                    <Option value="Male">Male</Option>
-                    <Option value="Female">Female</Option>
-                    <Option value="Others">Others</Option>
-                  </S.FormSelects>
-                </Form.Item>
-              </S.InputCols>
-            </Row>
-          )}
-
-          {patient.phone_number && patient.email && (
-            <Row>
-              <S.InputCols lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="phone_number"
-                  initialValue={patient.phone_number}
+          <Row align="middle">
+            <S.InputCols lg={8} md={8} sm={24} xs={24}>
+              <Form.Item name="name" initialValue={patient.name}>
+                <Input type="text" label="Name" />
+              </Form.Item>
+            </S.InputCols>
+            <S.InputCols lg={8} md={8} sm={24} xs={24}>
+              <Form.Item name="age" initialValue={patient.age}>
+                <Input type="number" label="Age" />
+              </Form.Item>
+            </S.InputCols>
+            <S.InputCols lg={8} md={8} sm={24} xs={24}>
+              <Form.Item name="gender" initialValue={patient.gender}>
+                <S.FormSelects
+                  size="large"
+                  placeholder="Gender"
+                  style={{ width: "100%" }}
                 >
-                  <Input type="number" label="Phone Number" />
-                </Form.Item>
-              </S.InputCols>
-
-              <S.InputCols lg={12} md={12} sm={24} xs={24}>
-                <Form.Item name="email" initialValue={patient.email}>
-                  <Input type="email" label="Email" />
-                </Form.Item>
-              </S.InputCols>
-            </Row>
-          )}
-
-          {patient.address && (
-            <Row>
-              <S.InputCols span={24}>
-                <Form.Item name="address" initialValue={patient.address}>
-                  <S.FormTextArea rows={4} placeholder="Address" />
-                </Form.Item>
-              </S.InputCols>
-            </Row>
-          )}
-
-          <Row>
-            {patient.payment_method && (
-              <S.InputCols lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="payment_method"
-                  initialValue={patient.payment_method}
-                >
-                  <Input type="text" label="Payment Method" />
-                </Form.Item>
-              </S.InputCols>
-            )}
+                  <Option value="Male">Male</Option>
+                  <Option value="Female">Female</Option>
+                  <Option value="Others">Others</Option>
+                </S.FormSelects>
+              </Form.Item>
+            </S.InputCols>
           </Row>
-
           <Row>
-            {patient.treatments && (
-              <S.InputCols lg={12} md={12} sm={24} xs={24}>
-                <Form.List name="treatments" initialValue={patient.treatments}>
-                  {(fields, { add, remove }) => (
-                    <>
-                      {fields.map(({ key, name, fieldKey, ...restField }) => (
-                        <Space
-                          key={key}
-                          style={{ display: "flex", marginBottom: 8 }}
-                          align="baseline"
+            <S.InputCols lg={12} md={12} sm={24} xs={24}>
+              <Form.Item
+                name="phone_number"
+                initialValue={patient.phone_number}
+              >
+                <Input type="number" label="Phone Number" />
+              </Form.Item>
+            </S.InputCols>
+
+            <S.InputCols lg={12} md={12} sm={24} xs={24}>
+              <Form.Item name="email" initialValue={patient.email}>
+                <Input type="email" label="Email" />
+              </Form.Item>
+            </S.InputCols>
+          </Row>
+          <Row>
+            <S.InputCols span={24}>
+              <Form.Item name="address" initialValue={patient.address}>
+                <S.FormTextArea rows={4} placeholder="Address" />
+              </Form.Item>
+            </S.InputCols>
+          </Row>
+          <Row>
+            <S.InputCols lg={12} md={12} sm={24} xs={24}>
+              <Form.Item
+                name="payment_method"
+                initialValue={patient.payment_method}
+              >
+                <Input type="text" label="Payment Method" />
+              </Form.Item>
+            </S.InputCols>
+          </Row>
+          <Row>
+            <S.InputCols lg={12} md={12} sm={24} xs={24}>
+              <Form.List name="treatments" initialValue={patient.treatments}>
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name, fieldKey, ...restField }) => (
+                      <Space
+                        key={key}
+                        style={{ display: "flex", marginBottom: 8 }}
+                        align="baseline"
+                      >
+                        <Form.Item
+                          {...restField}
+                          name={[name, "treatment"]}
+                          fieldKey={[fieldKey, "treatment"]}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please fill treatment",
+                            },
+                          ]}
                         >
-                          <Form.Item
-                            {...restField}
-                            name={[name, "treatment"]}
-                            fieldKey={[fieldKey, "treatment"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please fill treatment",
-                              },
-                            ]}
-                          >
-                            <Input label="Treatment" type="text" />
-                          </Form.Item>
-                          <Form.Item
-                            {...restField}
-                            name={[name, "charges"]}
-                            fieldKey={[fieldKey, "charges"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please fill charges",
-                              },
-                            ]}
-                          >
-                            <Input label="Charges" type="number" />
-                          </Form.Item>
-                          <MinusCircleOutlined onClick={() => remove(name)} />
-                        </Space>
-                      ))}
-                      <Form.Item>
-                        <Button onClick={() => add()}>
-                          <PlusOutlined /> Add Treatment
-                        </Button>
-                      </Form.Item>
-                    </>
-                  )}
-                </Form.List>
-              </S.InputCols>
-            )}
+                          <Input label="Treatment" type="text" />
+                        </Form.Item>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "charges"]}
+                          fieldKey={[fieldKey, "charges"]}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please fill charges",
+                            },
+                          ]}
+                        >
+                          <Input label="Charges" type="number" />
+                        </Form.Item>
+                        <MinusCircleOutlined onClick={() => remove(name)} />
+                      </Space>
+                    ))}
+                    <Form.Item>
+                      <Button onClick={() => add()}>
+                        <PlusOutlined /> Add Treatment
+                      </Button>
+                    </Form.Item>
+                  </>
+                )}
+              </Form.List>
+            </S.InputCols>
           </Row>
-
           <Form.Item style={{ textAlign: "center" }}>
             <Button disabled={isLoading} htmlType="submit">
               Update Patient Record
