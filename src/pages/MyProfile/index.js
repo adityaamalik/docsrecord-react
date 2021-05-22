@@ -1,8 +1,7 @@
 import * as S from "./styles";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Input from "../../common/Input";
-import Button from "../../common/Button";
+import Button from "@material-ui/core/Button";
 import { message, Avatar, Badge, Modal, Row, Col } from "antd";
 import moment from "moment";
 import {
@@ -11,8 +10,20 @@ import {
   LoadingOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      margin: theme.spacing(1),
+      width: "95%",
+    },
+  },
+}));
 
 const MyProfile = () => {
+  const classes = useStyles();
   const [docData, setDocData] = useState({});
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -199,13 +210,21 @@ const MyProfile = () => {
         <h3>Click on monthly or yearly button to check the details.</h3>
         <Row justify="center" align="middle" style={{ textAlign: "center" }}>
           <Col span={11}>
-            <Button width="30" onClick={() => setIsMonthlyModalVisible(true)}>
+            <Button
+              variant="outlined"
+              width="30"
+              onClick={() => setIsMonthlyModalVisible(true)}
+            >
               Monthly subscription
             </Button>
           </Col>
           <Col span={2}></Col>
           <Col span={11}>
-            <Button width="30" onClick={() => setIsYearlyModalVisible(true)}>
+            <Button
+              variant="outlined"
+              width="30"
+              onClick={() => setIsYearlyModalVisible(true)}
+            >
               Yearly subscription
             </Button>
           </Col>
@@ -238,7 +257,11 @@ const MyProfile = () => {
         <h3>Amount : ₹ 500</h3>
         <Row justify="center" align="middle" style={{ textAlign: "center" }}>
           <Col span={24}>
-            <Button width="30" onClick={() => displayRazorpay("monthly")}>
+            <Button
+              variant="outlined"
+              width="30"
+              onClick={() => displayRazorpay("monthly")}
+            >
               Continue to payment
             </Button>
           </Col>
@@ -271,7 +294,11 @@ const MyProfile = () => {
         <h3>Amount : ₹ 5000</h3>
         <Row justify="center" align="middle" style={{ textAlign: "center" }}>
           <Col span={24}>
-            <Button width="30" onClick={() => displayRazorpay("yearly")}>
+            <Button
+              variant="outlined"
+              width="30"
+              onClick={() => displayRazorpay("yearly")}
+            >
               Continue to payment
             </Button>
           </Col>
@@ -379,23 +406,27 @@ const MyProfile = () => {
           <S.FormRows align="middle">
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
               {!!docData.name && (
-                <Input
-                  type="text"
-                  label="Edit name"
-                  onChange={(val) => setName(val)}
-                  defaultValue={docData.name}
-                />
+                <form className={classes.root} noValidate autoComplete="off">
+                  <TextField
+                    label="Edit name"
+                    variant="outlined"
+                    onChange={(e) => setName(e.target.value)}
+                    defaultValue={docData.name}
+                  />
+                </form>
               )}
             </S.InputCols>
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
               {docData.phone_number !== undefined &&
                 docData.phone_number !== null && (
-                  <Input
-                    type="text"
-                    label="Edit Phone Number"
-                    onChange={(val) => setPhone(val)}
-                    defaultValue={docData.phone_number}
-                  />
+                  <form className={classes.root} noValidate autoComplete="off">
+                    <TextField
+                      variant="outlined"
+                      label="Edit Phone Number"
+                      onChange={(e) => setPhone(e.target.value)}
+                      defaultValue={docData.phone_number}
+                    />
+                  </form>
                 )}
             </S.InputCols>
           </S.FormRows>
@@ -404,23 +435,27 @@ const MyProfile = () => {
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
               {docData.clinic_name !== undefined &&
                 docData.clinic_name !== null && (
-                  <Input
-                    type="text"
-                    label="Edit clinic name"
-                    defaultValue={docData.clinic_name}
-                    onChange={(val) => setClinicName(val)}
-                  />
+                  <form className={classes.root} noValidate autoComplete="off">
+                    <TextField
+                      variant="outlined"
+                      label="Edit clinic name"
+                      defaultValue={docData.clinic_name}
+                      onChange={(e) => setClinicName(e.target.value)}
+                    />
+                  </form>
                 )}
             </S.InputCols>
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
               {docData.clinic_address !== undefined &&
                 docData.clinic_address !== null && (
-                  <Input
-                    type="text"
-                    label="Edit clinic's address"
-                    defaultValue={docData.clinic_address}
-                    onChange={(val) => setClinicAddress(val)}
-                  />
+                  <form className={classes.root} noValidate autoComplete="off">
+                    <TextField
+                      variant="outlined"
+                      label="Edit clinic's address"
+                      defaultValue={docData.clinic_address}
+                      onChange={(e) => setClinicAddress(e.target.value)}
+                    />
+                  </form>
                 )}
             </S.InputCols>
           </S.FormRows>
@@ -429,30 +464,38 @@ const MyProfile = () => {
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
               {docData.qualifications !== undefined &&
                 docData.qualifications !== null && (
-                  <Input
-                    type="text"
-                    label="Edit qualifications"
-                    defaultValue={docData.qualifications}
-                    onChange={(val) => setQualifications(val)}
-                  />
+                  <form className={classes.root} noValidate autoComplete="off">
+                    <TextField
+                      variant="outlined"
+                      label="Edit qualifications"
+                      defaultValue={docData.qualifications}
+                      onChange={(e) => setQualifications(e.target.value)}
+                    />
+                  </form>
                 )}
             </S.InputCols>
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
               {docData.visit_charges !== undefined &&
                 docData.visit_charges !== null && (
-                  <Input
-                    type="number"
-                    label="Edit visit charges"
-                    defaultValue={docData.visit_charges}
-                    onChange={(val) => setVisitCharges(val)}
-                  />
+                  <form className={classes.root} noValidate autoComplete="off">
+                    <TextField
+                      variant="outlined"
+                      label="Edit visit charges"
+                      defaultValue={docData.visit_charges}
+                      onChange={(e) => setVisitCharges(e.target.value)}
+                    />
+                  </form>
                 )}
             </S.InputCols>
           </S.FormRows>
 
           <S.FormRows align="middle">
             <S.InputCols span={24} style={{ textAlign: "center" }}>
-              <Button disabled={isLoading} onClick={onSubmit}>
+              <Button
+                variant="outlined"
+                disabled={isLoading}
+                onClick={onSubmit}
+              >
                 Save Profile Changes
               </Button>
             </S.InputCols>
