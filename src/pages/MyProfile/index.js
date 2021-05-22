@@ -2,7 +2,11 @@ import * as S from "./styles";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
-import { message, Avatar, Badge, Modal, Row, Col } from "antd";
+import Modal from "@material-ui/core/Modal";
+import Grid from "@material-ui/core/Grid";
+import CancelIcon from "@material-ui/icons/Cancel";
+import { message, Avatar, Badge, Row, Col } from "antd";
+
 import moment from "moment";
 import {
   UserOutlined,
@@ -20,7 +24,31 @@ const useStyles = makeStyles((theme) => ({
       width: "95%",
     },
   },
+
+  paper: {
+    position: "absolute",
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
 }));
+
+// function rand() {
+//   return Math.round(Math.random() * 20) - 10;
+// }
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 const MyProfile = () => {
   const classes = useStyles();
@@ -40,6 +68,10 @@ const MyProfile = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [showEdit, toggleEdit] = useState(false);
+  // getModalStyle is not a pure function, we roll the style only on the first render
+  const [modalStyle] = useState(getModalStyle);
+  const [open, setOpen] = useState(false);
+
   useEffect(() => {
     setIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
@@ -183,20 +215,11 @@ const MyProfile = () => {
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
   };
-
-  return (
-    <>
-      {/* main modal */}
-      <Modal
-        footer={null}
-        centered
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        closable={false}
-        bodyStyle={{ backgroundColor: "#fff" }}
-      >
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <div>
         <div style={{ textAlign: "right" }}>
-          <CloseCircleOutlined
+          <CancelIcon
             style={{ color: "black", fontSize: "20px" }}
             onClick={() => setIsModalVisible(false)}
           />
@@ -208,8 +231,15 @@ const MyProfile = () => {
           {moment(docData.payment_valid_till).format("MMMM Do YYYY")}
         </h3>
         <h3>Click on monthly or yearly button to check the details.</h3>
-        <Row justify="center" align="middle" style={{ textAlign: "center" }}>
-          <Col span={11}>
+
+        <Grid
+          container
+          spacing={3}
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+          <Grid item xs={8} sm={6}>
             <Button
               variant="outlined"
               width="30"
@@ -217,9 +247,9 @@ const MyProfile = () => {
             >
               Monthly subscription
             </Button>
-          </Col>
-          <Col span={2}></Col>
-          <Col span={11}>
+          </Grid>
+
+          <Grid item xs={8} sm={6}>
             <Button
               variant="outlined"
               width="30"
@@ -227,90 +257,99 @@ const MyProfile = () => {
             >
               Yearly subscription
             </Button>
-          </Col>
-        </Row>
+          </Grid>
+        </Grid>
         <br />
         <p>
           Contact Support for any queries : +91 - 8130083852 |
           codeclan0100@gmail.com
         </p>
-      </Modal>
+      </div>
+    </div>
+  );
 
-      {/* monthly modal */}
+  const monthlybody = (
+    <div style={modalStyle} className={classes.paper}>
+      <div style={{ textAlign: "right" }}>
+        <CloseCircleOutlined
+          style={{ color: "black", fontSize: "20px" }}
+          onClick={() => setIsMonthlyModalVisible(false)}
+        />
+      </div>
+
+      <h1>Monthly Plan</h1>
+      <h3>Your subscription will be extended for 1 Month.</h3>
+      <h3>Amount : ₹ 500</h3>
+      <Row justify="center" align="middle" style={{ textAlign: "center" }}>
+        <Col span={24}>
+          <Button
+            variant="outlined"
+            width="30"
+            onClick={() => displayRazorpay("monthly")}
+          >
+            Continue to payment
+          </Button>
+        </Col>
+      </Row>
+      <br />
+      <p>
+        Contact Support for any queries : +91 - 8130083852 |
+        codeclan0100@gmail.com
+      </p>
+    </div>
+  );
+  const yearlybody = (
+    <div style={modalStyle} className={classes.paper}>
+      <div style={{ textAlign: "right" }}>
+        <CloseCircleOutlined
+          style={{ color: "black", fontSize: "20px" }}
+          onClick={() => setIsYearlyModalVisible(false)}
+        />
+      </div>
+
+      <h1>Yearly Plan</h1>
+      <h3>Your subscription will be extended for 1 Year.</h3>
+      <h3>Amount : ₹ 5000</h3>
+      <Row justify="center" align="middle" style={{ textAlign: "center" }}>
+        <Col span={24}>
+          <Button
+            variant="outlined"
+            width="30"
+            onClick={() => displayRazorpay("yearly")}
+          >
+            Continue to payment
+          </Button>
+        </Col>
+      </Row>
+      <br />
+      <p>
+        Contact Support for any queries : +91 - 8130083852 |
+        codeclan0100@gmail.com
+      </p>
+    </div>
+  );
+  return (
+    <>
+      {/* main modal */}
+      <Modal open={isModalVisible} onClose={() => setIsModalVisible(false)}>
+        {body}
+      </Modal>
       <Modal
-        footer={null}
-        centered
-        visible={isMonthlyModalVisible}
-        onCancel={() => setIsMonthlyModalVisible(false)}
-        closable={false}
-        bodyStyle={{ backgroundColor: "#fff" }}
+        open={isMonthlyModalVisible}
+        onClose={() => setIsMonthlyModalVisible(false)}
       >
-        <div style={{ textAlign: "right" }}>
-          <CloseCircleOutlined
-            style={{ color: "black", fontSize: "20px" }}
-            onClick={() => setIsMonthlyModalVisible(false)}
-          />
-        </div>
-
-        <h1>Monthly Plan</h1>
-        <h3>Your subscription will be extended for 1 Month.</h3>
-        <h3>Amount : ₹ 500</h3>
-        <Row justify="center" align="middle" style={{ textAlign: "center" }}>
-          <Col span={24}>
-            <Button
-              variant="outlined"
-              width="30"
-              onClick={() => displayRazorpay("monthly")}
-            >
-              Continue to payment
-            </Button>
-          </Col>
-        </Row>
-        <br />
-        <p>
-          Contact Support for any queries : +91 - 8130083852 |
-          codeclan0100@gmail.com
-        </p>
+        {monthlybody}
       </Modal>
-
-      {/* yearly modal */}
       <Modal
-        footer={null}
-        centered
-        visible={isYearlyModalVisible}
-        onCancel={() => setIsYearlyModalVisible(false)}
-        closable={false}
-        bodyStyle={{ backgroundColor: "#fff" }}
+        open={isYearlyModalVisible}
+        onClose={() => setIsYearlyModalVisible(false)}
       >
-        <div style={{ textAlign: "right" }}>
-          <CloseCircleOutlined
-            style={{ color: "black", fontSize: "20px" }}
-            onClick={() => setIsYearlyModalVisible(false)}
-          />
-        </div>
-
-        <h1>Yearly Plan</h1>
-        <h3>Your subscription will be extended for 1 Year.</h3>
-        <h3>Amount : ₹ 5000</h3>
-        <Row justify="center" align="middle" style={{ textAlign: "center" }}>
-          <Col span={24}>
-            <Button
-              variant="outlined"
-              width="30"
-              onClick={() => displayRazorpay("yearly")}
-            >
-              Continue to payment
-            </Button>
-          </Col>
-        </Row>
-        <br />
-        <p>
-          Contact Support for any queries : +91 - 8130083852 |
-          codeclan0100@gmail.com
-        </p>
+        {yearlybody}
       </Modal>
+
       <S.Container>
         <S.Heading>MY PROFILE</S.Heading>
+
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           {" "}
           {isLoading ? (
@@ -402,8 +441,105 @@ const MyProfile = () => {
           )}
         </div>
 
-        <div>
-          <S.FormRows align="middle">
+        <div style={{ padding: 20 }}>
+          <Grid
+            container
+            spacing={3}
+            direction="row"
+            justify="center"
+            alignItems="center"
+          >
+            <Grid item xs={12} sm={6}>
+              {!!docData.name && (
+                <form className={classes.root} noValidate autoComplete="off">
+                  <TextField
+                    label="Edit name"
+                    variant="outlined"
+                    onChange={(e) => setName(e.target.value)}
+                    defaultValue={docData.name}
+                  />
+                </form>
+              )}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              {docData.phone_number !== undefined &&
+                docData.phone_number !== null && (
+                  <form className={classes.root} noValidate autoComplete="off">
+                    <TextField
+                      variant="outlined"
+                      label="Edit Phone Number"
+                      onChange={(e) => setPhone(e.target.value)}
+                      defaultValue={docData.phone_number}
+                    />
+                  </form>
+                )}
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              {docData.clinic_name !== undefined &&
+                docData.clinic_name !== null && (
+                  <form className={classes.root} noValidate autoComplete="off">
+                    <TextField
+                      variant="outlined"
+                      label="Edit clinic name"
+                      defaultValue={docData.clinic_name}
+                      onChange={(e) => setClinicName(e.target.value)}
+                    />
+                  </form>
+                )}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              {docData.clinic_address !== undefined &&
+                docData.clinic_address !== null && (
+                  <form className={classes.root} noValidate autoComplete="off">
+                    <TextField
+                      variant="outlined"
+                      label="Edit clinic's address"
+                      defaultValue={docData.clinic_address}
+                      onChange={(e) => setClinicAddress(e.target.value)}
+                    />
+                  </form>
+                )}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              {docData.qualifications !== undefined &&
+                docData.qualifications !== null && (
+                  <form className={classes.root} noValidate autoComplete="off">
+                    <TextField
+                      variant="outlined"
+                      label="Edit qualifications"
+                      defaultValue={docData.qualifications}
+                      onChange={(e) => setQualifications(e.target.value)}
+                    />
+                  </form>
+                )}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              {docData.visit_charges !== undefined &&
+                docData.visit_charges !== null && (
+                  <form className={classes.root} noValidate autoComplete="off">
+                    <TextField
+                      variant="outlined"
+                      label="Edit visit charges"
+                      defaultValue={docData.visit_charges}
+                      onChange={(e) => setVisitCharges(e.target.value)}
+                    />
+                  </form>
+                )}
+            </Grid>
+
+            <Grid item>
+              <Button
+                variant="outlined"
+                disabled={isLoading}
+                onClick={onSubmit}
+              >
+                Save Profile Changes
+              </Button>
+            </Grid>
+          </Grid>
+
+          {/* <S.FormRows align="middle">
             <S.InputCols lg={12} md={12} sm={24} xs={24}>
               {!!docData.name && (
                 <form className={classes.root} noValidate autoComplete="off">
@@ -503,7 +639,7 @@ const MyProfile = () => {
 
           <br />
           <br />
-          <br />
+          <br /> */}
         </div>
       </S.Container>
     </>
