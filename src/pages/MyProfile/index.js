@@ -27,11 +27,15 @@ const useStyles = makeStyles((theme) => ({
 
   paper: {
     position: "absolute",
-    width: 400,
+    width: "auto",
+    height: "auto",
     backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
+
     padding: theme.spacing(2, 4, 3),
+    "@media (max-width: 767px)": {
+      width: "75%",
+      height: "75%",
+    },
   },
 }));
 
@@ -70,7 +74,6 @@ const MyProfile = () => {
   const [showEdit, toggleEdit] = useState(false);
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = useState(getModalStyle);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -220,18 +223,19 @@ const MyProfile = () => {
       <div>
         <div style={{ textAlign: "right" }}>
           <CancelIcon
-            style={{ color: "black", fontSize: "20px" }}
+            style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
             onClick={() => setIsModalVisible(false)}
           />
         </div>
 
         <h1>Complete your payment</h1>
-        <h3>
-          Your plan is valid till :{" "}
-          {moment(docData.payment_valid_till).format("MMMM Do YYYY")}
-        </h3>
-        <h3>Click on monthly or yearly button to check the details.</h3>
-
+        <S.ModalDiv>
+          <h3>
+            Your plan is valid till :{" "}
+            {moment(docData.payment_valid_till).format("MMMM Do YYYY")}
+          </h3>
+          <h3>Click on monthly or yearly button to check the details.</h3>
+        </S.ModalDiv>
         <Grid
           container
           spacing={3}
@@ -239,7 +243,7 @@ const MyProfile = () => {
           justify="center"
           alignItems="center"
         >
-          <Grid item xs={8} sm={6}>
+          <Grid item xs={10} sm={6}>
             <Button
               variant="outlined"
               width="30"
@@ -249,7 +253,7 @@ const MyProfile = () => {
             </Button>
           </Grid>
 
-          <Grid item xs={8} sm={6}>
+          <Grid item xs={10} sm={6} alignItems="center">
             <Button
               variant="outlined"
               width="30"
@@ -271,8 +275,8 @@ const MyProfile = () => {
   const monthlybody = (
     <div style={modalStyle} className={classes.paper}>
       <div style={{ textAlign: "right" }}>
-        <CloseCircleOutlined
-          style={{ color: "black", fontSize: "20px" }}
+        <CancelIcon
+          style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
           onClick={() => setIsMonthlyModalVisible(false)}
         />
       </div>
@@ -280,8 +284,15 @@ const MyProfile = () => {
       <h1>Monthly Plan</h1>
       <h3>Your subscription will be extended for 1 Month.</h3>
       <h3>Amount : ₹ 500</h3>
-      <Row justify="center" align="middle" style={{ textAlign: "center" }}>
-        <Col span={24}>
+
+      <Grid
+        container
+        spacing={3}
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item xs={10} sm={6}>
           <Button
             variant="outlined"
             width="30"
@@ -289,8 +300,9 @@ const MyProfile = () => {
           >
             Continue to payment
           </Button>
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
+
       <br />
       <p>
         Contact Support for any queries : +91 - 8130083852 |
@@ -301,8 +313,8 @@ const MyProfile = () => {
   const yearlybody = (
     <div style={modalStyle} className={classes.paper}>
       <div style={{ textAlign: "right" }}>
-        <CloseCircleOutlined
-          style={{ color: "black", fontSize: "20px" }}
+        <CancelIcon
+          style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
           onClick={() => setIsYearlyModalVisible(false)}
         />
       </div>
@@ -310,8 +322,15 @@ const MyProfile = () => {
       <h1>Yearly Plan</h1>
       <h3>Your subscription will be extended for 1 Year.</h3>
       <h3>Amount : ₹ 5000</h3>
-      <Row justify="center" align="middle" style={{ textAlign: "center" }}>
-        <Col span={24}>
+
+      <Grid
+        container
+        spacing={3}
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item xs={10} sm={6}>
           <Button
             variant="outlined"
             width="30"
@@ -319,8 +338,9 @@ const MyProfile = () => {
           >
             Continue to payment
           </Button>
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
+
       <br />
       <p>
         Contact Support for any queries : +91 - 8130083852 |
@@ -451,7 +471,12 @@ const MyProfile = () => {
           >
             <Grid item xs={12} sm={6}>
               {!!docData.name && (
-                <form className={classes.root} noValidate autoComplete="off">
+                <form
+                  className={classes.root}
+                  noValidate
+                  autoComplete="off"
+                  onSubmit={(event) => event.preventDefault()}
+                >
                   <TextField
                     label="Edit name"
                     variant="outlined"
@@ -464,7 +489,12 @@ const MyProfile = () => {
             <Grid item xs={12} sm={6}>
               {docData.phone_number !== undefined &&
                 docData.phone_number !== null && (
-                  <form className={classes.root} noValidate autoComplete="off">
+                  <form
+                    className={classes.root}
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={(event) => event.preventDefault()}
+                  >
                     <TextField
                       variant="outlined"
                       label="Edit Phone Number"
@@ -478,7 +508,12 @@ const MyProfile = () => {
             <Grid item xs={12} sm={6}>
               {docData.clinic_name !== undefined &&
                 docData.clinic_name !== null && (
-                  <form className={classes.root} noValidate autoComplete="off">
+                  <form
+                    className={classes.root}
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={(event) => event.preventDefault()}
+                  >
                     <TextField
                       variant="outlined"
                       label="Edit clinic name"
@@ -491,7 +526,12 @@ const MyProfile = () => {
             <Grid item xs={12} sm={6}>
               {docData.clinic_address !== undefined &&
                 docData.clinic_address !== null && (
-                  <form className={classes.root} noValidate autoComplete="off">
+                  <form
+                    className={classes.root}
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={(event) => event.preventDefault()}
+                  >
                     <TextField
                       variant="outlined"
                       label="Edit clinic's address"
@@ -504,7 +544,12 @@ const MyProfile = () => {
             <Grid item xs={12} sm={6}>
               {docData.qualifications !== undefined &&
                 docData.qualifications !== null && (
-                  <form className={classes.root} noValidate autoComplete="off">
+                  <form
+                    className={classes.root}
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={(event) => event.preventDefault()}
+                  >
                     <TextField
                       variant="outlined"
                       label="Edit qualifications"
@@ -517,7 +562,12 @@ const MyProfile = () => {
             <Grid item xs={12} sm={6}>
               {docData.visit_charges !== undefined &&
                 docData.visit_charges !== null && (
-                  <form className={classes.root} noValidate autoComplete="off">
+                  <form
+                    className={classes.root}
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={(event) => event.preventDefault()}
+                  >
                     <TextField
                       variant="outlined"
                       label="Edit visit charges"
