@@ -12,6 +12,17 @@ export const Container = styled.div`
     marin: 5px;
   }
 `;
+export const GraphC = styled.div`
+  margin: 50px;
+
+  @media only screen and (max-width: 1400px) {
+    margin: 20px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
+`;
 
 export const CounterContainer = styled.div`
   margin: 50px;

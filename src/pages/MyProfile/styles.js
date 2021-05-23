@@ -20,6 +20,11 @@ export const Heading = styled.h1`
     marin-top: 50px;
   }
 `;
+export const ModalDiv = styled.div`
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
+`;
 
 export const InputCols = styled(Col)`
   margin-top: 10px;

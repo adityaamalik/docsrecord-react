@@ -1,5 +1,6 @@
 import * as S from "./styles";
 import Graph from "../../components/Graph";
+import { Line } from "react-chartjs-2";
 import CountUp from "react-countup";
 import { Col, message } from "antd";
 import {
@@ -64,6 +65,20 @@ const Statistics = () => {
         setIsLoading(false);
       });
   }, []);
+  const state = {
+    labels: ["January", "February", "March", "April", "May", "Jun"],
+    datasets: [
+      {
+        label: "Rainfall",
+        fill: false,
+        lineTension: 0.5,
+        backgroundColor: "rgba(75,192,192,1)",
+        borderColor: "rgba(0,0,0,1)",
+        borderWidth: 2,
+        data: [10, 20, 25, 43, 67],
+      },
+    ],
+  };
 
   return (
     <>
@@ -156,10 +171,42 @@ const Statistics = () => {
           <br />
           <br />
           <br />
-
+          <S.GraphC>
+            <Line
+              data={state}
+              options={{
+                title: {
+                  display: true,
+                  text: "Average Rainfall per month",
+                  fontSize: 20,
+                },
+                legend: {
+                  display: true,
+                  position: "right",
+                },
+              }}
+            />
+          </S.GraphC>
           <S.Container>
             <h1>Weekly Graph</h1>
             <Graph data={weekData} type="week" />
+            <Line
+              width={100}
+              height={150}
+              options={{ maintainAspectRatio: false }}
+              data={state}
+              options={{
+                title: {
+                  display: true,
+                  text: "Average Rainfall per month",
+                  fontSize: 20,
+                },
+                legend: {
+                  display: true,
+                  position: "right",
+                },
+              }}
+            />
           </S.Container>
 
           <br />

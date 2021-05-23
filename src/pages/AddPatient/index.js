@@ -1,7 +1,8 @@
 import { message, Spin } from "antd";
 import * as S from "./styles";
 import { useState } from "react";
-import { LoadingOutlined } from "@ant-design/icons";
+
+import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -52,14 +53,61 @@ const AddPatient = () => {
   const [numberOfTreatments, setNumberOfTreatments] = useState([]);
 
   const [islogin, setIslogin] = useState(false);
-  const onFinish = (values) => {
+  const onFinish = () => {
     setIslogin(true);
-    console.log("Received values of form:", values);
+    // console.log("Received values of form:", values);
 
     const doctor = localStorage.getItem("docsrecordDoctor");
-    values.doctor = doctor;
+
+    const data = new FormData();
+    data.append("doctor", doctor);
+    if (!name) {
+    }
+    if (name !== "") {
+      data.append("name", name);
+    }
+
+    if (age !== "") {
+      data.append("age", age);
+    }
+
+    if (gender !== "") {
+      data.append("clinic_address", gender);
+      // data.clinic_address = clinicAddress;
+    }
+
+    if (phone !== "") {
+      data.append("phone_number", phone);
+      // data.phone_number = phone;
+    }
+
+    if (email !== "") {
+      data.append("email", email);
+    }
+
+    if (address !== "") {
+      data.append("address", address);
+      // data.visit_charges = visitCharges;
+    }
+    if (paymentMethod !== "") {
+      data.append("paymnent_method", paymentMethod);
+      // data.visit_charges = visitCharges;
+    }
+    if (charges !== "") {
+      data.append("total_cost", charges);
+      // data.visit_charges = visitCharges;
+    }
+    if (numberOfTreatments !== "") {
+      data.append("total_treatments", numberOfTreatments);
+      // data.visit_charges = visitCharges;
+    }
+    if (treatments) data.append("treatments", treatments);
+    console.log(treatments);
+    console.log(charges);
+    console.log(numberOfTreatments);
+
     axios
-      .post("/patients", values)
+      .post("/patients", data)
       .then((response) => {
         setIslogin(false);
         console.log(response);
@@ -73,14 +121,13 @@ const AddPatient = () => {
       });
   };
 
-  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
   let login = (
     <Button variant="outlined" onClick={onFinish}>
       Add Patient Record
     </Button>
   );
   if (islogin === true) {
-    login = <Spin indicator={antIcon} />;
+    login = <CircularProgress />;
   }
 
   return (
@@ -97,7 +144,12 @@ const AddPatient = () => {
             spacing={3}
           >
             <Grid item lg={4} md={4} sm={12} xs={12}>
-              <form className={classes.root} noValidate autoComplete="off">
+              <form
+                className={classes.root}
+                noValidate
+                autoComplete="off"
+                onSubmit={(event) => event.preventDefault()}
+              >
                 <TextField
                   label="Name"
                   variant="outlined"
@@ -107,7 +159,12 @@ const AddPatient = () => {
               </form>
             </Grid>
             <Grid item lg={4} md={4} sm={12} xs={12}>
-              <form className={classes.root} noValidate autoComplete="off">
+              <form
+                className={classes.root}
+                noValidate
+                autoComplete="off"
+                onSubmit={(event) => event.preventDefault()}
+              >
                 <TextField
                   label="Age"
                   variant="outlined"
@@ -117,7 +174,11 @@ const AddPatient = () => {
               </form>
             </Grid>
             <Grid item lg={4} md={4} sm={12} xs={12}>
-              <FormControl variant="outlined" className={classes.formControl}>
+              <FormControl
+                variant="outlined"
+                className={classes.formControl}
+                onSubmit={(event) => event.preventDefault()}
+              >
                 <InputLabel id="demo-simple-select-outlined-label">
                   Gender
                 </InputLabel>
@@ -144,7 +205,12 @@ const AddPatient = () => {
             spacing={3}
           >
             <Grid item lg={6} md={6} sm={12} xs={12}>
-              <form className={classes.root} noValidate autoComplete="off">
+              <form
+                className={classes.root}
+                noValidate
+                autoComplete="off"
+                onSubmit={(event) => event.preventDefault()}
+              >
                 <TextField
                   label="Phone Number"
                   variant="outlined"
@@ -155,7 +221,12 @@ const AddPatient = () => {
             </Grid>
 
             <Grid item lg={6} md={6} sm={12} xs={12}>
-              <form className={classes.root} noValidate autoComplete="off">
+              <form
+                className={classes.root}
+                noValidate
+                autoComplete="off"
+                onSubmit={(event) => event.preventDefault()}
+              >
                 <TextField
                   label="Email"
                   variant="outlined"
@@ -174,7 +245,12 @@ const AddPatient = () => {
             spacing={3}
           >
             <Grid item xs={12}>
-              <form className={classes.root} noValidate autoComplete="off">
+              <form
+                className={classes.root}
+                noValidate
+                autoComplete="off"
+                onSubmit={(event) => event.preventDefault()}
+              >
                 <TextField
                   id="outlined-multiline-static"
                   label="Address"
@@ -210,15 +286,16 @@ const AddPatient = () => {
                       className={classes.root}
                       noValidate
                       autoComplete="off"
+                      onSubmit={(event) => event.preventDefault()}
                     >
                       <TextField
                         label="Treatment"
                         variant="outlined"
-                        onChangeText={(text) => {
+                        onChange={(e) => {
                           const temp = treatments;
                           temp[
                             numberOfTreatments[numberOfTreatments.length - 1]
-                          ] = text;
+                          ] = e.target.value;
 
                           setTreatments(temp);
                         }}
@@ -230,15 +307,16 @@ const AddPatient = () => {
                       className={classes.root}
                       noValidate
                       autoComplete="off"
+                      onSubmit={(event) => event.preventDefault()}
                     >
                       <TextField
                         label="Charges"
                         variant="outlined"
-                        onChangeText={(text) => {
+                        onChange={(e) => {
                           const temp = charges;
                           temp[
                             numberOfTreatments[numberOfTreatments.length - 1]
-                          ] = text;
+                          ] = e.target.value;
 
                           setCharges(temp);
                         }}
@@ -273,7 +351,12 @@ const AddPatient = () => {
               </Button>
             </Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>
-              <form className={classes.root} noValidate autoComplete="off">
+              <form
+                className={classes.root}
+                noValidate
+                autoComplete="off"
+                onSubmit={(event) => event.preventDefault()}
+              >
                 <TextField
                   label="Payment Method"
                   variant="outlined"
