@@ -2,7 +2,7 @@ const routes = [
   {
     path: ["/", "/landing", "/login", "/signup"],
     exact: true,
-    component: "Landing",
+    component: "Home",
   },
   {
     path: ["/records"],
