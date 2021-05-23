@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { MenuOutlined } from "@ant-design/icons";
+import MenuIcon from "@material-ui/icons/Menu";
 import { Link } from "react-router-dom";
 
 export const Header = styled.header`
@@ -18,7 +18,7 @@ export const Logo = styled.img`
 
 export const Heading = styled(Link)`
   font-size: 30px;
-  color: black;
+  color: #004aad;
   &:hover {
     color: gray;
   }
@@ -27,13 +27,12 @@ export const Heading = styled(Link)`
   }
 `;
 
-export const DropdownIcon = styled(MenuOutlined)`
-  color: black;
-  font-size: 25px;
+export const DropdownIcon = styled(MenuIcon)`
+  color: #004aad;
 `;
 
 export const Span = styled(Link)`
-  color: black;
+  color: #004aad;
   position: relative;
   transition: 0.2s ease-in;
   cursor: pointer;
