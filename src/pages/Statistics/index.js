@@ -1,6 +1,7 @@
 import * as S from "./styles";
-import Graph from "../../components/Graph";
+
 import { Line } from "react-chartjs-2";
+import Grid from "@material-ui/core/Grid";
 import CountUp from "react-countup";
 import { Col, message } from "antd";
 import {
@@ -15,6 +16,8 @@ const Statistics = () => {
   const [stats, setStats] = useState({});
   const [monthData, setMonthData] = useState([]);
   const [weekData, setWeekData] = useState([]);
+  const [monthDataMobile, setMonthDataMobile] = useState([]);
+  const [weekDataMobile, setWeekDataMobile] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -25,34 +28,30 @@ const Statistics = () => {
       .get(`/patients/stats/${doctor}`)
       .then((response) => {
         setStats(response.data);
-        const Monthdata = [
-          { month: "Jan", patients: response.data.monthstats[0] },
-          { month: "Feb", patients: response.data.monthstats[1] },
-          { month: "Mar", patients: response.data.monthstats[2] },
-          { month: "Apr", patients: response.data.monthstats[3] },
-          { month: "May", patients: response.data.monthstats[4] },
-          { month: "Jun", patients: response.data.monthstats[5] },
-          { month: "Jul", patients: response.data.monthstats[6] },
-          { month: "Aug", patients: response.data.monthstats[7] },
-          { month: "Sep", patients: response.data.monthstats[8] },
-          { month: "Oct", patients: response.data.monthstats[9] },
-          { month: "Nov", patients: response.data.monthstats[10] },
-          { month: "Dec", patients: response.data.monthstats[11] },
-        ];
+        // const Monthdata = [
+        //   response.data.monthstats[0],
+        //   response.data.monthstats[1],
+        //   response.data.monthstats[2],
+        //   response.data.monthstats[3],
+        //   response.data.monthstats[4],
+        //   response.data.monthstats[18],
+        //   8,
+        // ];
 
-        setMonthData(Monthdata);
+        setMonthData(response.data.monthstats);
 
         const WeekData = [
-          { week: "Mon", patients: response.data.weekstats[1] },
-          { week: "Tues", patients: response.data.weekstats[2] },
-          { week: "Wed", patients: response.data.weekstats[3] },
-          { week: "Thurs", patients: response.data.weekstats[4] },
-          { week: "Fri", patients: response.data.weekstats[5] },
-          { week: "Sat", patients: response.data.weekstats[6] },
-          { week: "Sun", patients: response.data.weekstats[0] },
+          response.data.weekstats[1],
+          response.data.weekstats[2],
+          response.data.weekstats[3],
+          response.data.weekstats[4],
+          response.data.weekstats[5],
+          response.data.weekstats[6],
+          response.data.weekstats[0],
         ];
 
         setWeekData(WeekData);
+        setWeekDataMobile(WeekData);
 
         setIsLoading(false);
       })
@@ -65,17 +64,59 @@ const Statistics = () => {
         setIsLoading(false);
       });
   }, []);
-  const state = {
-    labels: ["January", "February", "March", "April", "May", "Jun"],
+
+  const Weekstate = {
+    labels: ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"],
     datasets: [
       {
-        label: "Rainfall",
+        label: "Patient",
         fill: false,
-        lineTension: 0.5,
+        lineTension: 0,
         backgroundColor: "rgba(75,192,192,1)",
         borderColor: "rgba(0,0,0,1)",
         borderWidth: 2,
-        data: [10, 20, 25, 43, 67],
+        data: weekData,
+      },
+    ],
+  };
+  const WeekstateMobile = {
+    labels: ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"],
+    datasets: [
+      {
+        label: "Patient",
+        fill: false,
+        lineTension: 0,
+        backgroundColor: "rgba(75,192,192,1)",
+        borderColor: "rgba(0,0,0,1)",
+        borderWidth: 2,
+        data: weekDataMobile,
+      },
+    ],
+  };
+  const Monthstate = {
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
+    datasets: [
+      {
+        label: "Patient",
+        fill: false,
+        lineTension: 0,
+        backgroundColor: "rgba(75,192,192,1)",
+        borderColor: "rgba(0,0,0,1)",
+        borderWidth: 2,
+        data: monthData,
       },
     ],
   };
@@ -88,18 +129,99 @@ const Statistics = () => {
         </div>
       ) : (
         <>
-          <S.CounterContainer>
-            <S.CounterRow align="middle">
-              <Col span={12}>
-                <S.CounterHeading>THIS MONTH</S.CounterHeading>
-              </Col>
-              <Col span={12}>
-                <S.CounterHeading>THIS WEEK</S.CounterHeading>
-              </Col>
-            </S.CounterRow>
-          </S.CounterContainer>
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              <S.CounterHeading>THIS MONTH</S.CounterHeading>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              <S.CounterHeading>THIS WEEK</S.CounterHeading>
+            </Grid>
+          </Grid>
+          {/* <S.CounterRow align="middle">
+            <Col span={12}>
+              <S.CounterHeading>THIS MONTH</S.CounterHeading>
+            </Col>
+            <Col span={12}>
+              <S.CounterHeading>THIS WEEK</S.CounterHeading>
+            </Col>
+          </S.CounterRow> */}
 
-          <S.CounterContainer>
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              <S.CounterHeading2>
+                {stats.currentmonth !== undefined && (
+                  <CountUp end={stats.currentmonth} duration={4} />
+                )}
+              </S.CounterHeading2>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              {" "}
+              <S.CounterHeading2>
+                {stats.currentweek !== undefined && (
+                  <CountUp end={stats.currentweek} duration={4} />
+                )}
+              </S.CounterHeading2>
+            </Grid>
+          </Grid>
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              <span>PATIENTS</span>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              {" "}
+              <span>PATIENTS</span>
+            </Grid>
+          </Grid>
+
+          {/* <S.CounterContainer>
             <S.CounterRow align="middle">
               <S.CounterCol span={12}>
                 {stats.currentmonth !== undefined && (
@@ -120,9 +242,97 @@ const Statistics = () => {
                 <span>PATIENTS</span>
               </Col>
             </S.CounterRow>
-          </S.CounterContainer>
+          </S.CounterContainer> */}
 
-          <S.CounterContainer>
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              <S.CounterHeading2>
+                {!!stats.monthpercentage && (
+                  <Grid>
+                    <CountUp end={stats.monthpercentage} duration={4} />
+                    <span>%</span>
+                    {stats.monthpercentage > 0 ? (
+                      <ArrowUpOutlined />
+                    ) : (
+                      <ArrowDownOutlined />
+                    )}
+                  </Grid>
+                )}
+              </S.CounterHeading2>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              {" "}
+              <S.CounterHeading2>
+                {!!stats.weekpercentage && (
+                  <Grid>
+                    <CountUp end={stats.weekpercentage} duration={4} />
+                    <span>%</span>
+                    {stats.weekpercentage > 0 ? (
+                      <ArrowUpOutlined />
+                    ) : (
+                      <ArrowDownOutlined />
+                    )}
+                  </Grid>
+                )}
+              </S.CounterHeading2>
+            </Grid>
+          </Grid>
+
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              <span>
+                {!!stats.monthpercentage && (
+                  <Grid>
+                    <span>SINCE LAST MONTH</span>
+                  </Grid>
+                )}
+              </span>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              {" "}
+              <span>
+                {!!stats.weekpercentage && (
+                  <Grid>
+                    <span>SINCE LAST WEEK</span>
+                  </Grid>
+                )}
+              </span>
+            </Grid>
+          </Grid>
+
+          {/* <S.CounterContainer>
             <S.CounterRow align="middle" justify="center">
               {!!stats.monthpercentage && (
                 <S.CounterCol span={12}>
@@ -161,40 +371,55 @@ const Statistics = () => {
                 </Col>
               )}
             </S.CounterRow>
-          </S.CounterContainer>
+          </S.CounterContainer> */}
 
-          <S.Container>
+          <S.Graphmobile>
             <h1>Monthly Graph</h1>
-            <Graph data={monthData} type="month" />
-          </S.Container>
-
-          <br />
-          <br />
-          <br />
-          <S.GraphC>
             <Line
-              data={state}
-              options={{
-                title: {
-                  display: true,
-                  text: "Average Rainfall per month",
-                  fontSize: 20,
-                },
-                legend: {
-                  display: true,
-                  position: "right",
-                },
-              }}
-            />
-          </S.GraphC>
-          <S.Container>
-            <h1>Weekly Graph</h1>
-            <Graph data={weekData} type="week" />
-            <Line
-              width={100}
-              height={150}
+              width={25}
+              height={25}
               options={{ maintainAspectRatio: false }}
-              data={state}
+              data={Monthstate}
+              options={{
+                title: {
+                  display: true,
+                  text: "Patients per month",
+                  fontSize: 20,
+                },
+                legend: {
+                  display: true,
+                  position: "right",
+                },
+              }}
+            />
+          </S.Graphmobile>
+          <S.Graphpc>
+            <h1>Monthly Graph</h1>
+            <Line
+              width={15}
+              height={5}
+              options={{ maintainAspectRatio: false }}
+              data={Monthstate}
+              options={{
+                title: {
+                  display: true,
+                  text: "Patients per month",
+                  fontSize: 20,
+                },
+                legend: {
+                  display: true,
+                  position: "right",
+                },
+              }}
+            />
+          </S.Graphpc>
+          <S.Graphmobile>
+            <h1>Weekly Graph</h1>
+            <Line
+              width={25}
+              height={25}
+              options={{ maintainAspectRatio: false }}
+              data={WeekstateMobile}
               options={{
                 title: {
                   display: true,
@@ -207,7 +432,27 @@ const Statistics = () => {
                 },
               }}
             />
-          </S.Container>
+          </S.Graphmobile>
+          <S.Graphpc>
+            <h1>Weekly Graph</h1>
+            <Line
+              width={15}
+              height={5}
+              options={{ maintainAspectRatio: false }}
+              data={Weekstate}
+              options={{
+                title: {
+                  display: true,
+                  text: "Average Rainfall per month",
+                  fontSize: 20,
+                },
+                legend: {
+                  display: true,
+                  position: "right",
+                },
+              }}
+            />
+          </S.Graphpc>
 
           <br />
           <br />
