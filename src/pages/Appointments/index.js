@@ -1,13 +1,37 @@
-import { Row, Col, message, Button } from "antd";
+import { Row, Col, message } from "antd";
 import { useEffect, useState } from "react";
 import * as S from "./styles";
 import axios from "axios";
 import moment from "moment";
 import { LoadingOutlined } from "@ant-design/icons";
+import CardHeader from "@material-ui/core/CardHeader";
 import { Link } from "react-router-dom";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import Button from "@material-ui/core/Button";
+import DeleteIcon from "@material-ui/icons/Delete";
+const useStyles = makeStyles({
+  root: {
+    minWidth: 275,
+  },
+  bullet: {
+    display: "inline-block",
+    margin: "0 2px",
+    transform: "scale(0.8)",
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+});
+
 const Appointments = () => {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const classes = useStyles();
 
   useEffect(() => {
     setIsLoading(true);
@@ -16,27 +40,6 @@ const Appointments = () => {
     axios
       .get(`/patients/appointments/${doctor}`)
       .then((response) => {
-        // console.log(response.data);
-        // const temp = [];
-        // response.data.forEach((record) => {
-        //   if (
-        //     record.next_appointment_date !== undefined &&
-        //     record.next_appointment_date !== null
-        //   ) {
-        //     console.log(record);
-        //     var today = moment();
-        //     var appointdate = moment(record.next_appointment_date);
-        //     if (appointdate >= today) temp.push(record);
-        //   }
-        // });
-        // setRecords(
-        //   temp.sort((a, b) => {
-        //     return (
-        //       new Date(a.next_appointment_date) -
-        //       new Date(b.next_appointment_date)
-        //     );
-        //   })
-        // );
         setRecords(response.data);
         setIsLoading(false);
       })
@@ -89,23 +92,61 @@ const Appointments = () => {
 
   const title = (name, date, time, gender) => {
     return (
-      <Row>
-        <Col span={12}>
+      <Grid
+        container
+        spacing={3}
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item xs={5} sm={5} alignItems="center">
           <strong>{name}</strong>
-        </Col>
-        <Col span={12} style={{ textAlign: "right" }}>
+        </Grid>
+        <Grid
+          item
+          xs={5}
+          sm={5}
+          container
+          direction="column"
+          justify="center"
+          alignItems="flex-end"
+        >
           Date : {moment(date).format("MMMM Do YYYY")}
-        </Col>
-        <Col span={12}>({gender})</Col>
-        <Col span={12} style={{ textAlign: "right" }}>
+        </Grid>
+        <Grid item xs={5} sm={5} alignItems="center" direction="column">
+          ({gender})
+        </Grid>
+        <Grid
+          item
+          xs={5}
+          sm={5}
+          container
+          direction="column"
+          justify="center"
+          alignItems="flex-end"
+        >
           {!!time && <>Time : {tConvert(time)}</>}
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
+
+      // <Row>
+      //   <Col span={12}>
+      //     <strong>{name}</strong>
+      //   </Col>
+      //   <Col span={12} style={{ textAlign: "right" }}>
+      //     Date : {moment(date).format("MMMM Do YYYY")}
+      //   </Col>
+      //   <Col span={12}>({gender})</Col>
+      //   <Col span={12} style={{ textAlign: "right" }}>
+      //     {!!time && <>Time : {tConvert(time)}</>}
+      //   </Col>
+      // </Row>
     );
   };
 
   return (
     <>
+      {" "}
       <S.Container>
         <S.Heading>
           {isLoading ? (
@@ -118,7 +159,145 @@ const Appointments = () => {
             </>
           )}
         </S.Heading>
+        <Grid
+          container
+          spacing={3}
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+          {!!records &&
+            records.length !== 0 &&
+            records.map((record, index) => {
+              return (
+                <Grid item xs={10} sm={4} alignItems="center">
+                  <Card className={classes.root} variant="outlined">
+                    {/* <CardHeader
+                    title={title(
+                      record.name,
+                      record.next_appointment_date,
+                      record.next_appointment_time,
+                      record.gender
+                    )}
+                    subheader="Appointment"
+                  /> */}
+                    <S.CardDiv>
+                      {title(
+                        record.name,
+                        record.next_appointment_date,
+                        record.next_appointment_time,
+                        record.gender
+                      )}
+                    </S.CardDiv>
+                    <Grid
+                      container
+                      direction="column"
+                      justify="center"
+                      alignItems="flex-start"
+                      spacing={3}
+                    >
+                      <Grid item xs={10} sm={8} alignItems="center">
+                        <S.CardDiv>Patient no : {index + 1}</S.CardDiv>
+                      </Grid>
+                      <Grid item xs={10} sm={8} alignItems="center">
+                        <S.CardDiv>
+                          {" "}
+                          Phone Number : +91 - {record.phone_number}
+                        </S.CardDiv>
+                      </Grid>
+                    </Grid>
 
+                    {!!record.treatments && (
+                      <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-start"
+                      >
+                        <Grid item xs={4} sm={4} alignItems="center">
+                          {" "}
+                          <S.CardDiv>
+                            <strong>Treatment</strong>
+                          </S.CardDiv>
+                        </Grid>
+                        <Grid item xs={4} sm={4} alignItems="center">
+                          {" "}
+                          <S.CardDiv>
+                            <strong>Charges</strong>
+                          </S.CardDiv>
+                        </Grid>
+                      </Grid>
+                    )}
+                    {!!record.treatments &&
+                      record.treatments.map((treatment, i) => {
+                        return (
+                          <Grid
+                            container
+                            direction="row"
+                            justify="flex-start"
+                            alignItems="flex-start"
+                          >
+                            <Grid item xs={4} sm={4} alignItems="center">
+                              {" "}
+                              <S.CardDiv>{treatment.treatment}</S.CardDiv>
+                            </Grid>
+                            <Grid item xs={4} sm={4} alignItems="center">
+                              {" "}
+                              <S.CardDiv>₹ {treatment.charges} /-</S.CardDiv>
+                            </Grid>
+                          </Grid>
+                        );
+                      })}
+
+                    {!!record.total_cost && (
+                      // <Grid
+                      //   container
+                      //   spacing={3}
+                      //   direction="row"
+                      //   justify="center"
+                      //   alignItems="flex-start"
+                      // >
+                      <Grid
+                        item
+                        xs={10}
+                        sm={8}
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-start"
+                      >
+                        {" "}
+                        <S.CardDiv>
+                          Total Cost : ₹ {record.total_cost} /-
+                        </S.CardDiv>
+                      </Grid>
+                      // </Grid>
+                    )}
+
+                    <S.CardDiv>
+                      <DeleteIcon
+                        fontSize="large"
+                        onClick={() => Complete(record._id)}
+                      />
+
+                      <Link
+                        to={{
+                          pathname: "/updatepatient",
+                          state: { id: record._id },
+                        }}
+                      >
+                        <Button style={{ marginRight: "5px" }} color="primary">
+                          Update Record
+                        </Button>
+                      </Link>
+                    </S.CardDiv>
+                  </Card>
+                </Grid>
+              );
+            })}{" "}
+        </Grid>
+      </S.Container>
+      {/* <S.Container>
         <S.AppointmentCardContainer>
           <S.CustomRow>
             {!!records &&
@@ -191,7 +370,7 @@ const Appointments = () => {
               })}
           </S.CustomRow>
         </S.AppointmentCardContainer>
-      </S.Container>
+      </S.Container> */}
     </>
   );
 };
