@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, TextField } from "@material-ui/core";
+import { Button, TextField, Modal, Grid } from "@material-ui/core";
 import GoogleLogin from "react-google-login";
 import axios from "axios";
+import CancelIcon from "@material-ui/icons/Cancel";
+import * as S from "./styles";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,10 +14,34 @@ const useStyles = makeStyles((theme) => ({
       width: "90%",
     },
   },
+  paper: {
+    position: "absolute",
+    width: "auto",
+    height: "auto",
+    backgroundColor: theme.palette.background.paper,
+
+    padding: theme.spacing(2, 4, 3),
+    "@media (max-width: 767px)": {
+      width: "75%",
+      height: "75%",
+    },
+  },
 }));
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 const Home = () => {
   const classes = useStyles();
+  const [modalStyle] = useState(getModalStyle);
 
   // to toggle login and register form
   const [registerForm, toggleRegisterForm] = useState(false);
@@ -124,8 +151,237 @@ const Home = () => {
       });
   };
 
+  const loadScript = (src) => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
+
+  const displayRazorpay = async (subscription) => {
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+
+    if (!res) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
+
+    // creating a new order
+    const result = await axios.post("/payments/orders", {
+      subscription: subscription,
+    });
+
+    if (!result) {
+      alert("Server error. Are you online?");
+      return;
+    }
+
+    // Getting the order details back
+    const { amount, id: order_id, currency } = result.data;
+
+    const options = {
+      key: "rzp_test_wWXoxoQf1kjrSm", // Enter the Key ID generated from the Dashboard
+      amount: amount * 100,
+      currency: currency,
+      name: "DOCSRECORD",
+      description: `DOCSRECORD ${subscription} subscription.`,
+      order_id: order_id,
+      handler: async function (response) {
+        const data = {
+          doctorId: doctor._id,
+          orderCreationId: order_id,
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpayOrderId: response.razorpay_order_id,
+          razorpaySignature: response.razorpay_signature,
+          subscription: subscription,
+        };
+
+        const result = await axios.post("/payments/success", data);
+
+        if (result) {
+          alert("Payment successful !");
+          localStorage.setItem("token", token);
+          localStorage.setItem("docsrecordDoctor", doctor._id);
+          window.location.pathname = "/records";
+        }
+      },
+      prefill: {
+        name: doctor.name,
+        email: doctor.email,
+        contact: doctor.phone_number,
+      },
+      notes: {
+        address: doctor.address,
+      },
+      theme: {
+        color: "#61dafb",
+      },
+    };
+
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
+  };
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <div>
+        <div style={{ textAlign: "right" }}>
+          <CancelIcon
+            style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
+            onClick={() => setIsModalVisible(false)}
+          />
+        </div>
+
+        <h1>Complete your payment</h1>
+        <S.ModalDiv>
+          <h3>
+            Your plan expired on :{" "}
+            {moment(doctor.payment_valid_till).format("MMMM Do YYYY")}
+          </h3>
+          <h3>
+            Please buy a monthly or yearly plan to continue using DOCSRECORD.
+          </h3>
+        </S.ModalDiv>
+        <Grid
+          container
+          spacing={3}
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+          <Grid item xs={10} sm={6}>
+            <Button
+              variant="outlined"
+              width="30"
+              onClick={() => setIsMonthlyModalVisible(true)}
+            >
+              Monthly subscription
+            </Button>
+          </Grid>
+
+          <Grid item xs={10} sm={6} alignItems="center">
+            <Button
+              variant="outlined"
+              width="30"
+              onClick={() => setIsYearlyModalVisible(true)}
+            >
+              Yearly subscription
+            </Button>
+          </Grid>
+        </Grid>
+        <br />
+        <p>
+          Contact Support for any queries : +91 - 8130083852 |
+          codeclan0100@gmail.com
+        </p>
+      </div>
+    </div>
+  );
+
+  const monthlybody = (
+    <div style={modalStyle} className={classes.paper}>
+      <div style={{ textAlign: "right" }}>
+        <CancelIcon
+          style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
+          onClick={() => setIsMonthlyModalVisible(false)}
+        />
+      </div>
+
+      <h1>Monthly Plan</h1>
+      <h3>Your subscription will be extended for 1 Month.</h3>
+      <h3>Amount : ₹ 500</h3>
+
+      <Grid
+        container
+        spacing={3}
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item xs={10} sm={6}>
+          <Button
+            variant="outlined"
+            width="30"
+            onClick={() => displayRazorpay("monthly")}
+          >
+            Continue to payment
+          </Button>
+        </Grid>
+      </Grid>
+
+      <br />
+      <p>
+        Contact Support for any queries : +91 - 8130083852 |
+        docsrecordmail@gmail.com
+      </p>
+    </div>
+  );
+  const yearlybody = (
+    <div style={modalStyle} className={classes.paper}>
+      <div style={{ textAlign: "right" }}>
+        <CancelIcon
+          style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
+          onClick={() => setIsYearlyModalVisible(false)}
+        />
+      </div>
+
+      <h1>Yearly Plan</h1>
+      <h3>Your subscription will be extended for 1 Year.</h3>
+      <h3>Amount : ₹ 5000</h3>
+
+      <Grid
+        container
+        spacing={3}
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item xs={10} sm={6}>
+          <Button
+            variant="outlined"
+            width="30"
+            onClick={() => displayRazorpay("yearly")}
+          >
+            Continue to payment
+          </Button>
+        </Grid>
+      </Grid>
+
+      <br />
+      <p>
+        Contact Support for any queries : +91 - 8130083852 |
+        docsrecordmail@gmail.com
+      </p>
+    </div>
+  );
+
   return (
     <>
+      {/* main modal */}
+      <Modal open={isModalVisible} onClose={() => setIsModalVisible(false)}>
+        {body}
+      </Modal>
+      <Modal
+        open={isMonthlyModalVisible}
+        onClose={() => setIsMonthlyModalVisible(false)}
+      >
+        {monthlybody}
+      </Modal>
+      <Modal
+        open={isYearlyModalVisible}
+        onClose={() => setIsYearlyModalVisible(false)}
+      >
+        {yearlybody}
+      </Modal>
+
       <header className="header-area">
         <div className="navbar-area headroom">
           <div className="container">
@@ -159,19 +415,19 @@ const Home = () => {
                   >
                     <ul id="nav" className="navbar-nav m-auto">
                       <li className="nav-item active">
-                        <a href="#home">HOME</a>
+                        <a href="/#home">HOME</a>
                       </li>
                       <li className="nav-item">
-                        <a href="#about">ABOUT</a>
+                        <a href="/#about">ABOUT</a>
                       </li>
                       <li className="nav-item">
-                        <a href="#services">FEATURES</a>
+                        <a href="/#services">FEATURES</a>
                       </li>
                       <li className="nav-item">
-                        <a href="#pricing">PRICING</a>
+                        <a href="/#pricing">PRICING</a>
                       </li>
                       <li className="nav-item">
-                        <a href="#contact">CONTACT</a>
+                        <a href="/#contact">CONTACT</a>
                       </li>
                     </ul>
                   </div>
@@ -781,7 +1037,7 @@ const Home = () => {
                   </ul>
                 </div>
                 <div className="pricing-btn pt-70">
-                  <a className="main-btn main-btn-2" href="#">
+                  <a className="main-btn main-btn-2" href="/#">
                     GET STARTED FOR FREE
                   </a>
                 </div>
@@ -809,7 +1065,7 @@ const Home = () => {
                   </ul>
                 </div>
                 <div className="pricing-btn pt-70">
-                  <a className="main-btn" href="#">
+                  <a className="main-btn" href="/#">
                     GET STARTED FOR FREE
                   </a>
                 </div>
@@ -838,7 +1094,7 @@ const Home = () => {
                   </ul>
                 </div>
                 <div className="pricing-btn pt-70">
-                  <a className="main-btn main-btn-2" href="#">
+                  <a className="main-btn main-btn-2" href="/#">
                     GET STARTED FOR FREE
                   </a>
                 </div>
@@ -928,7 +1184,7 @@ const Home = () => {
             <div className="row">
               <div className="col-lg-3 col-sm-6 order-sm-1 order-lg-1">
                 <div className="footer-about pt-40">
-                  <a href="#">
+                  <a href="/#">
                     <img src="assets/images/logo.png" alt="Logo" />
                   </a>
                   <p className="text">
@@ -988,22 +1244,22 @@ const Home = () => {
 
                     <ul className="social mt-40">
                       <li>
-                        <a href="#">
+                        <a href="/#">
                           <i className="lni-facebook"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="#">
+                        <a href="/#">
                           <i className="lni-twitter"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="#">
+                        <a href="/#">
                           <i className="lni-instagram"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="#">
+                        <a href="/#">
                           <i className="lni-linkedin"></i>
                         </a>
                       </li>
@@ -1019,7 +1275,7 @@ const Home = () => {
         </div>
       </footer>
 
-      <a href="#" className="back-to-top">
+      <a href="/#" className="back-to-top">
         <i className="lni-chevron-up"></i>
       </a>
     </>
