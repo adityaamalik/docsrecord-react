@@ -44,6 +44,26 @@ const routes = [
     exact: true,
     component: "PrintPrescription",
   },
+  {
+    path: ["/termsofservice"],
+    exact: true,
+    component: "TermsOfService",
+  },
+  {
+    path: ["/privacypolicy"],
+    exact: true,
+    component: "PrivacyPolicy",
+  },
+  {
+    path: ["/refundpolicy"],
+    exact: true,
+    component: "RefundPolicy",
+  },
+  {
+    path: ["/aboutus"],
+    exact: true,
+    component: "AboutUs",
+  },
 ];
 
 export default routes;

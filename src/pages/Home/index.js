@@ -960,16 +960,16 @@ const Home = () => {
                   </div>
                   <ul>
                     <li>
-                      <a href="#">Pricing policy</a>
+                      <a href="/privacypolicy">Privacy policy</a>
                     </li>
                     <li>
-                      <a href="#">Refund Policy</a>
+                      <a href="refundpolicy">Refund Policy</a>
                     </li>
                     <li>
-                      <a href="#">About Us</a>
+                      <a href="termsofservice">Terms Of Service</a>
                     </li>
                     <li>
-                      <a href="#">Team</a>
+                      <a href="/aboutus">About Us</a>
                     </li>
                   </ul>
                 </div>
