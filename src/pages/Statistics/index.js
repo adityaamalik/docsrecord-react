@@ -16,6 +16,8 @@ const Statistics = () => {
   const [stats, setStats] = useState({});
   const [monthData, setMonthData] = useState([]);
   const [weekData, setWeekData] = useState([]);
+  const [monthDataMobile, setMonthDataMobile] = useState([]);
+  const [weekDataMobile, setWeekDataMobile] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -49,6 +51,7 @@ const Statistics = () => {
         ];
 
         setWeekData(WeekData);
+        setWeekDataMobile(WeekData);
 
         setIsLoading(false);
       })
@@ -73,6 +76,20 @@ const Statistics = () => {
         borderColor: "rgba(0,0,0,1)",
         borderWidth: 2,
         data: weekData,
+      },
+    ],
+  };
+  const WeekstateMobile = {
+    labels: ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"],
+    datasets: [
+      {
+        label: "Patient",
+        fill: false,
+        lineTension: 0,
+        backgroundColor: "rgba(75,192,192,1)",
+        borderColor: "rgba(0,0,0,1)",
+        borderWidth: 2,
+        data: weekDataMobile,
       },
     ],
   };
@@ -366,7 +383,7 @@ const Statistics = () => {
               options={{
                 title: {
                   display: true,
-                  text: "Average Rainfall per month",
+                  text: "Patients per month",
                   fontSize: 20,
                 },
                 legend: {
@@ -386,7 +403,7 @@ const Statistics = () => {
               options={{
                 title: {
                   display: true,
-                  text: "Average Rainfall per month",
+                  text: "Patients per month",
                   fontSize: 20,
                 },
                 legend: {
@@ -402,7 +419,7 @@ const Statistics = () => {
               width={25}
               height={25}
               options={{ maintainAspectRatio: false }}
-              data={Weekstate}
+              data={WeekstateMobile}
               options={{
                 title: {
                   display: true,
