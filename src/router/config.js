@@ -7,7 +7,7 @@ const routes = [
   {
     path: ["/records"],
     exact: true,
-    component: "Records",
+    component: "MaterialRecords",
   },
   {
     path: ["/addpatient"],
