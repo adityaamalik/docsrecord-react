@@ -16,6 +16,7 @@ import {
   Grid,
   Button,
 } from "@material-ui/core";
+import BackupIcon from "@material-ui/icons/Backup";
 import { Link } from "react-router-dom";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -67,6 +68,9 @@ const Records = () => {
 
   const [patient, setPatient] = useState({});
 
+  const [images, setImages] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
 
@@ -104,6 +108,7 @@ const Records = () => {
       .then((response) => {
         console.log(response.data);
         setPatient(response.data);
+        setImages(response.data.images);
         setModalContentLoading(false);
       })
       .catch((err) => {
@@ -147,6 +152,35 @@ const Records = () => {
       });
   };
 
+  const onUploadPhotos = (id) => {
+    setModalContentLoading(true);
+    const formData = new FormData();
+
+    for (let image of selectedImages) {
+      formData.append("images", image);
+    }
+
+    axios
+      .put(`/patients/${id}`, formData)
+      .then((response) => {
+        const temp = records.filter((d) => {
+          return d._id !== response.data._id;
+        });
+        temp.unshift(response.data);
+        setRecords(temp);
+        setSelectedImages([]);
+        setImages(response.data.images);
+        document.getElementById("images").value = null;
+        setModalContentLoading(false);
+        alert("Successfully uploaded the photos");
+      })
+      .catch((err) => {
+        setModalContentLoading(false);
+        alert("Some error occured");
+      });
+    setModalContentLoading(false);
+  };
+
   const columns = [
     { id: "name", label: "Name", minWidth: 100, align: "center" },
     {
@@ -167,7 +201,10 @@ const Records = () => {
     <>
       <Modal
         open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          setModalOpen(false);
+          setSelectedImages([]);
+        }}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
@@ -358,7 +395,88 @@ const Records = () => {
                 </>
               )}
 
-              <div style={{ textAlign: "center" }}>
+              <hr />
+
+              <div
+                style={{
+                  textAlign: "center",
+                  marginTop: "30px",
+                  marginBottom: "30px",
+                }}
+              >
+                <label
+                  htmlFor="images"
+                  style={{
+                    cursor: "pointer",
+                    border: "1px solid gray",
+                    padding: "5px",
+                    borderRadius: "5px",
+                  }}
+                >
+                  Select images
+                  <BackupIcon style={{ marginLeft: "5px" }} />
+                </label>
+                <input
+                  id="images"
+                  onChange={(e) => {
+                    let arr = [];
+                    for (let file of e.target.files) {
+                      arr.push(file);
+                    }
+                    setSelectedImages(arr);
+                  }}
+                  type="file"
+                  multiple
+                  style={{
+                    position: "absolute",
+                    opacity: 0,
+                    zIndex: -1,
+                    width: "100%",
+                  }}
+                />
+              </div>
+
+              <div
+                style={{
+                  textAlign: "center",
+                  marginBottom: "30px",
+                }}
+              >
+                <Button
+                  disabled={selectedImages.length === 0 ? true : false}
+                  variant="outlined"
+                  size="small"
+                  onClick={() => onUploadPhotos(patient._id)}
+                >
+                  {selectedImages.length === 0 ? (
+                    "Upload Patient Photos"
+                  ) : (
+                    <>Upload {selectedImages.length} Photos</>
+                  )}
+                </Button>
+              </div>
+
+              <Grid container>
+                {!!images &&
+                  images.map((image, index) => {
+                    return (
+                      <Grid item md={4} xs={6} key={index}>
+                        <img
+                          src={`data:image/${
+                            image.contentType
+                          };base64,${image.data.toString("base64")}`}
+                          alt="patient gallery"
+                          style={{
+                            width: "auto",
+                            height: "100px",
+                          }}
+                        />
+                      </Grid>
+                    );
+                  })}
+              </Grid>
+
+              <div style={{ textAlign: "center", marginTop: "30px" }}>
                 <Link
                   to={{
                     pathname: "/printbill",
