@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
+
 // import { useHistory } from "react-router-dom";
 import { Grid, Snackbar } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -227,7 +228,8 @@ const MyProfile = () => {
     <div style={modalStyle} className={classes.paper}>
       <div>
         <div style={{ textAlign: "right" }}>
-          <CancelIcon
+          <i
+            className="lni-cross-circle"
             style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
             onClick={() => setIsModalVisible(false)}
           />
@@ -280,7 +282,8 @@ const MyProfile = () => {
   const monthlybody = (
     <div style={modalStyle} className={classes.paper}>
       <div style={{ textAlign: "right" }}>
-        <CancelIcon
+        <i
+          className="lni-cross-circle"
           style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
           onClick={() => setIsMonthlyModalVisible(false)}
         />
@@ -318,7 +321,8 @@ const MyProfile = () => {
   const yearlybody = (
     <div style={modalStyle} className={classes.paper}>
       <div style={{ textAlign: "right" }}>
-        <CancelIcon
+        <i
+          className="lni-cross-circle"
           style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
           onClick={() => setIsYearlyModalVisible(false)}
         />

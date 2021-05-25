@@ -14,6 +14,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
+    padding: "15px",
   },
   bullet: {
     display: "inline-block",
@@ -54,15 +55,7 @@ const Appointments = () => {
       });
   }, []);
 
-  const Complete = (id) => {
-    // setIsLoading(true);
-    // const doctor = localStorage.getItem("docsrecordDoctor");
-    // values.doctor = doctor;
-
-    var users = records.filter(function (record) {
-      return record._id !== id;
-    });
-    setRecords(users);
+  const complete = (id) => {
     let today = new Date();
     today.setDate(today.getDate() - 2);
     axios
@@ -76,81 +69,53 @@ const Appointments = () => {
       })
       .catch((err) => {
         console.log(err);
+        setCompletedError(true);
       });
-  };
-
-  const tConvert = (time) => {
-    // Check correct time format and split into components
-    time = time
-      .toString()
-      .match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
-
-    if (time.length > 1) {
-      // If time format correct
-      time = time.slice(1); // Remove full string match value
-      time[5] = +time[0] < 12 ? " AM" : " PM"; // Set AM/PM
-      time[0] = +time[0] % 12 || 12; // Adjust hours
-    }
-    return time.join(""); // return adjusted time or original string
   };
 
   const title = (name, date, time, gender) => {
     return (
-      <Grid
-        container
-        spacing={3}
-        direction="row"
-        justify="center"
-        alignItems="center"
-      >
-        <Grid item xs={5} sm={5} alignItems="center">
-          <strong>{name}</strong>
+      <Grid container justify="space-around">
+        <Grid item xs={10}>
+          <strong style={{ fontSize: "20px" }}>{name}</strong>
         </Grid>
-        <Grid
-          item
-          xs={5}
-          sm={5}
-          container
-          direction="column"
-          justify="center"
-          alignItems="flex-end"
-        >
-          Date : {moment(date).format("MMMM Do YYYY")}
+        <Grid item xs={2}>
+          {gender}
         </Grid>
-        <Grid item xs={5} sm={5} alignItems="center" direction="column">
-          ({gender})
+        <Grid item xs={9}>
+          Date : {moment(date).format("Do MMM YYYY")}
         </Grid>
-        <Grid
-          item
-          xs={5}
-          sm={5}
-          container
-          direction="column"
-          justify="center"
-          alignItems="flex-end"
-        >
-          {!!time && <>Time : {tConvert(time)}</>}
+        <Grid item xs={3}>
+          {!!time && <>{time}</>}
         </Grid>
       </Grid>
-
-      // <Row>
-      //   <Col span={12}>
-      //     <strong>{name}</strong>
-      //   </Col>
-      //   <Col span={12} style={{ textAlign: "right" }}>
-      //     Date : {moment(date).format("MMMM Do YYYY")}
-      //   </Col>
-      //   <Col span={12}>({gender})</Col>
-      //   <Col span={12} style={{ textAlign: "right" }}>
-      //     {!!time && <>Time : {tConvert(time)}</>}
-      //   </Col>
-      // </Row>
     );
   };
 
   return (
     <>
-      {" "}
+      <Snackbar
+        open={authError || completedError || completedSuccess}
+        autoHideDuration={2000}
+        onClose={() => {
+          setAuthError(false);
+          setCompletedError(false);
+          setCompletedSuccess(false);
+        }}
+      >
+        <Alert
+          onClose={() => {
+            setAuthError(false);
+            setCompletedError(false);
+            setCompletedSuccess(false);
+          }}
+          severity={authError || completedError ? "error" : "success"}
+        >
+          {authError && "You are unauthorized, please login first!"}
+          {completedError && "Cannot mark as completed, try again please !"}
+          {completedSuccess && "Appointment marked as completed !"}
+        </Alert>
+      </Snackbar>
       <S.Container>
         <Snackbar
           open={success || error}
@@ -175,28 +140,13 @@ const Appointments = () => {
             </>
           )}
         </S.Heading>
-        <Grid
-          container
-          spacing={3}
-          direction="row"
-          justify="center"
-          alignItems="center"
-        >
+        <Grid container spacing={2}>
           {!!records &&
             records.length !== 0 &&
             records.map((record, index) => {
               return (
-                <Grid item xs={10} sm={4} alignItems="center">
+                <Grid item md={4} sm={6} xs={12} alignItems="center">
                   <Card className={classes.root} variant="outlined">
-                    {/* <CardHeader
-                    title={title(
-                      record.name,
-                      record.next_appointment_date,
-                      record.next_appointment_time,
-                      record.gender
-                    )}
-                    subheader="Appointment"
-                  /> */}
                     <S.CardDiv>
                       {title(
                         record.name,
@@ -205,188 +155,83 @@ const Appointments = () => {
                         record.gender
                       )}
                     </S.CardDiv>
-                    <Grid
-                      container
-                      direction="column"
-                      justify="center"
-                      alignItems="flex-start"
-                      spacing={3}
-                    >
-                      <Grid item xs={10} sm={8} alignItems="center">
-                        <S.CardDiv>Patient no : {index + 1}</S.CardDiv>
+                    <hr />
+                    <Grid container>
+                      <Grid item xs={12}>
+                        Patient no : {index + 1}
                       </Grid>
-                      <Grid item xs={10} sm={8} alignItems="center">
-                        <S.CardDiv>
-                          {" "}
-                          Phone Number : +91 - {record.phone_number}
-                        </S.CardDiv>
+                      <Grid item xs={12}>
+                        Phone Number : +91 - {record.phone_number}
                       </Grid>
                     </Grid>
 
-                    {!!record.treatments && (
-                      <Grid
-                        container
-                        direction="row"
-                        justify="flex-start"
-                        alignItems="flex-start"
-                      >
-                        <Grid item xs={4} sm={4} alignItems="center">
-                          {" "}
-                          <S.CardDiv>
-                            <strong>Treatment</strong>
-                          </S.CardDiv>
-                        </Grid>
-                        <Grid item xs={4} sm={4} alignItems="center">
-                          {" "}
-                          <S.CardDiv>
-                            <strong>Charges</strong>
-                          </S.CardDiv>
-                        </Grid>
-                      </Grid>
-                    )}
-                    {!!record.treatments &&
-                      record.treatments.map((treatment, i) => {
-                        return (
-                          <Grid
-                            container
-                            direction="row"
-                            justify="flex-start"
-                            alignItems="flex-start"
-                          >
-                            <Grid item xs={4} sm={4} alignItems="center">
-                              {" "}
-                              <S.CardDiv>{treatment.treatment}</S.CardDiv>
-                            </Grid>
-                            <Grid item xs={4} sm={4} alignItems="center">
-                              {" "}
-                              <S.CardDiv>₹ {treatment.charges} /-</S.CardDiv>
-                            </Grid>
-                          </Grid>
-                        );
-                      })}
-
-                    {!!record.total_cost && (
-                      // <Grid
-                      //   container
-                      //   spacing={3}
-                      //   direction="row"
-                      //   justify="center"
-                      //   alignItems="flex-start"
-                      // >
-                      <Grid
-                        item
-                        xs={10}
-                        sm={8}
-                        container
-                        direction="row"
-                        justify="flex-start"
-                        alignItems="flex-start"
-                      >
-                        {" "}
-                        <S.CardDiv>
-                          Total Cost : ₹ {record.total_cost} /-
-                        </S.CardDiv>
-                      </Grid>
-                      // </Grid>
-                    )}
-
-                    <S.CardDiv>
-                      <DeleteIcon
-                        fontSize="large"
-                        onClick={() => Complete(record._id)}
-                      />
-
-                      <Link
-                        to={{
-                          pathname: "/updatepatient",
-                          state: { id: record._id },
-                        }}
-                      >
-                        <Button style={{ marginRight: "5px" }} color="primary">
-                          Update Record
-                        </Button>
-                      </Link>
-                    </S.CardDiv>
-                  </Card>
-                </Grid>
-              );
-            })}{" "}
-        </Grid>
-      </S.Container>
-      {/* <S.Container>
-        <S.AppointmentCardContainer>
-          <S.CustomRow>
-            {!!records &&
-              records.length !== 0 &&
-              records.map((record, index) => {
-                return (
-                  <Col lg={8} md={12} sm={24} xs={24} key={index}>
-                    <S.AppointmentCard
-                      size="small"
-                      title={title(
-                        record.name,
-                        record.next_appointment_date,
-                        record.next_appointment_time,
-                        record.gender
-                      )}
-                    >
-                      <Row style={{ marginBottom: "20px" }}>
-                        <Col>Patient no : {index + 1}</Col>
-                      </Row>
-
-                      {!!record.phone_number && (
-                        <Row style={{ marginBottom: "20px" }}>
-                          <Col>Phone Number : +91 - {record.phone_number}</Col>
-                        </Row>
-                      )}
-
+                    <div style={{ textAlign: "center", marginTop: "10px" }}>
                       {!!record.treatments && (
-                        <Row style={{ marginBottom: "20px" }}>
-                          <Col span={12}>
-                            <strong>Treatment</strong>
-                          </Col>
-                          <Col span={12}>
-                            <strong>Charges</strong>
-                          </Col>
-                        </Row>
+                        <Grid container>
+                          <Grid item xs={6}>
+                            <S.CardDiv>
+                              <strong>Treatment</strong>
+                            </S.CardDiv>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <S.CardDiv>
+                              <strong>Charges</strong>
+                            </S.CardDiv>
+                          </Grid>
+                        </Grid>
                       )}
+                    </div>
 
+                    <div style={{ textAlign: "center" }}>
                       {!!record.treatments &&
                         record.treatments.map((treatment, i) => {
                           return (
-                            <Row key={i}>
-                              <Col span={12}>{treatment.treatment}</Col>
-                              <Col span={12}>₹ {treatment.charges} /-</Col>
-                            </Row>
+                            <Grid container>
+                              <Grid item xs={6}>
+                                <S.CardDiv>{treatment.treatment}</S.CardDiv>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <S.CardDiv>₹ {treatment.charges} /-</S.CardDiv>
+                              </Grid>
+                            </Grid>
                           );
                         })}
+                    </div>
 
-                      {!!record.total_cost && (
-                        <Row style={{ marginBottom: "20px" }}>
-                          <Col>Total Cost : ₹ {record.total_cost} /-</Col>
-                        </Row>
-                      )}
+                    {!!record.total_cost && (
+                      <Grid item xs={12}>
+                        <S.CardDiv>
+                          <strong>Total Cost : ₹ {record.total_cost} /-</strong>
+                        </S.CardDiv>
+                      </Grid>
+                    )}
 
-                      <Button onClick={() => Complete(record._id)}>
-                        Completed
-                      </Button>
-                      <Link
-                        to={{
-                          pathname: "/updatepatient",
-                          state: { id: record._id },
+                    <div style={{ textAlign: "right" }}>
+                      <Button
+                        style={{
+                          borderRadius: "50px",
+                          color: "#004aad",
                         }}
+                        onClick={() => complete(record._id)}
+                        col
                       >
-                        <Button style={{ marginRight: "5px" }}>
-                          Update Record
-                        </Button>
-                      </Link>
-                    </S.AppointmentCard>
-                  </Col>
-                );
-              })}
-          </S.CustomRow>
-        </S.AppointmentCardContainer>
-      </S.Container> */}
+                        <i
+                          className="lni-check-mark-circle"
+                          style={{
+                            fontWeight: "bolder",
+                            fontSize: "20px",
+                            marginRight: "5px",
+                          }}
+                        />
+                        MARK AS COMPLETED
+                      </Button>
+                    </div>
+                  </Card>
+                </Grid>
+              );
+            })}
+        </Grid>
+      </S.Container>
     </>
   );
 };

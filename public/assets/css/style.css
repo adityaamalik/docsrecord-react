@@ -85,7 +85,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 800;
   color: #404040;
   margin: 0px;
@@ -128,7 +128,7 @@ p {
   line-height: 24px;
   color: #798795;
   margin: 0px;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .bg_cover {
@@ -143,7 +143,7 @@ p {
 .main-btn {
   display: inline-block;
   font-weight: 700;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
@@ -718,7 +718,7 @@ p {
   transition: all 0.3s ease-out 0s;
   padding: 10px 0;
   position: relative;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .navbar-nav .nav-item a {
@@ -1049,7 +1049,7 @@ p {
   text-transform: uppercase;
   letter-spacing: 5px;
   color: #004aad;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 @media (max-width: 767px) {
   .about-title .welcome {
@@ -1124,7 +1124,7 @@ p {
   font-weight: 700;
   line-height: 50px;
   color: #222;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 @media only screen and (min-width: 576px) and (max-width: 767px) {
   .single-counter .counter-content .counter-count {
@@ -1132,7 +1132,7 @@ p {
   }
 }
 .single-counter .counter-content .text {
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
 }
 .single-counter.counter-color-1 .counter-shape .shape-1,
@@ -1704,7 +1704,7 @@ p {
 }
 .our-services-tab .nav .nav-item a span {
   font-size: 14px;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
   padding-left: 15px;
 }
@@ -1743,7 +1743,7 @@ p {
   font-size: 24px !important;
   font-weight: 700;
   color: #222;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 .our-services-tab
   .our-services-content
@@ -1778,7 +1778,7 @@ p {
 .single-service-2 .service-content .title a {
   font-weight: 600;
   font-size: 18px;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
   color: #222;
 }
 .single-service-2 .service-content .text {
@@ -1853,7 +1853,7 @@ p {
 .single-pricing .pricing-price .price {
   font-size: 42px;
   color: #222;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 .single-pricing .pricing-price .price b {
   font-weight: 800;
@@ -1862,7 +1862,7 @@ p {
   font-size: 18px;
   color: #004aad;
   font-weight: 700;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 .single-pricing .pricing-title {
   display: -webkit-flex;
@@ -1887,7 +1887,7 @@ p {
 .single-pricing .pricing-title .title {
   font-weight: 600;
   font-size: 24px;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
   padding-left: 10px;
 }
 .single-pricing .pricing-list ul li {
@@ -1991,7 +1991,7 @@ p {
 .single-testimonial .testimonial-text .text {
   font-size: 24px;
   font-weight: 400;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
   line-height: 36px;
   color: #222;
   padding-bottom: 25px;
@@ -2179,7 +2179,7 @@ p {
 .contact-wrapper-form .contact-title {
   font-size: 32px;
   font-weight: 700;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
   color: #000;
 }
 @media (max-width: 767px) {
@@ -2415,7 +2415,7 @@ p {
   color: #fff;
   font-size: 32px;
   font-weight: 300;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
   line-height: 48px;
   display: block;
 }
@@ -2460,7 +2460,7 @@ p {
   font-size: 14px;
   font-weight: 700;
   color: #222;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 .blog-details-content .blog-share .social li {
   display: inline-block;
@@ -2587,7 +2587,7 @@ p {
 .blog-details-comment-form .comment-form-title {
   font-size: 32px;
   font-weight: 700;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
   color: #000;
 }
 @media (max-width: 767px) {
@@ -2676,7 +2676,7 @@ p {
 .blog-category .category-more a {
   font-size: 14px;
   font-weight: 400;
-  font-family: "Nunito", sans-serif;
+  font-family: "Roboto", sans-serif;
   color: #222;
   -webkit-transition: all 0.3s ease-out 0s;
   -moz-transition: all 0.3s ease-out 0s;

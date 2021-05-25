@@ -5,8 +5,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import DeleteIcon from "@material-ui/icons/Delete";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
 import {
   Paper,
   TextField,
@@ -356,6 +354,7 @@ const AddPatient = () => {
                 </Grid>
                 <Grid item xs={2}>
                   <Button
+                    variant="outlined"
                     onClick={() => {
                       if (currTreatment !== "") {
                         const temp = {
@@ -373,7 +372,10 @@ const AddPatient = () => {
                       }
                     }}
                   >
-                    <AddCircleIcon color="primary" />
+                    <i
+                      className="lni-plus"
+                      style={{ fontWeight: "bolder", color: "#004aad" }}
+                    ></i>
                   </Button>
                 </Grid>
               </Grid>
@@ -423,13 +425,17 @@ const AddPatient = () => {
                     </Grid>
                     <Grid item xs={2}>
                       <Button
+                        variant="outlined"
                         onClick={() =>
                           setTreatments(
                             treatments.filter((t) => t.id !== treatment.id)
                           )
                         }
                       >
-                        <DeleteIcon color="error" />
+                        <i
+                          className="lni-minus"
+                          style={{ fontWeight: "bolder", color: "red" }}
+                        ></i>
                       </Button>
                     </Grid>
                   </Grid>

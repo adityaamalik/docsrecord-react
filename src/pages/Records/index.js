@@ -1,589 +1,672 @@
-import React from "react";
-import {
-  Table,
-  Input,
-  Button,
-  Space,
-  Row,
-  Col,
-  message,
-  Image,
-  Avatar,
-} from "antd";
-import Highlighter from "react-highlight-words";
-import { SearchOutlined, CloudUploadOutlined } from "@ant-design/icons";
-import * as S from "./styles";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
-import DatePicker from "react-date-picker";
-import TimePicker from "react-time-picker";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Modal,
+  CircularProgress,
+  Grid,
+  Button,
+  Snackbar,
+} from "@material-ui/core";
+import { Link } from "react-router-dom";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import { Alert } from "@material-ui/lab";
 
-class Records extends React.Component {
-  state = {
-    searchText: "",
-    searchedColumn: "",
-    data: [],
-    nextAppointmentDate: new Date(),
-    nextAppointmentTime: "12:00",
-    images: [],
-    isLoading: false,
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+  },
+  container: {
+    maxHeight: "80vh",
+  },
+  paper: {
+    position: "absolute",
+    width: "90%",
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    overflow: "scroll",
+    height: "90%",
+  },
+}));
+
+const getModalStyle = () => {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
   };
+};
 
-  componentDidMount() {
-    this.setState({
-      isLoading: true,
-    });
+const Records = () => {
+  const classes = useStyles();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage] = useState(10);
+
+  const [modalStyle] = useState(getModalStyle);
+  const [records, setRecords] = useState([]);
+  const [isLoading, toggleIsLoading] = useState(false);
+
+  const [modalContentLoading, setModalContentLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [patient, setPatient] = useState({});
+
+  const [images, setImages] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState(new Date());
+
+  const [selectedTimeString, setSelectedTimeString] = useState("");
+
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [deleteError, setDeleteError] = useState(false);
+
+  const [appointmentSuccess, setAppointmentSuccess] = useState(false);
+  const [appointmentError, setAppointmentError] = useState(false);
+
+  const [imageSuccess, setImageSuccess] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    toggleIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     axios
       .get(`/patients?doctor=${doctor}`)
       .then((response) => {
-        this.setState({
-          data: response.data,
-          isLoading: false,
-        });
+        setRecords(response.data);
+        toggleIsLoading(false);
       })
       .catch((err) => {
+        toggleIsLoading(false);
         if (!!err.response && err.response.status === 401) {
-          message
-            .error("You are unauthorized user, please login first !")
-            .then(() => (window.location.pathname = "/"));
+          alert("You are unauthorized user, please login first !");
+          window.location.pathname = "/";
         }
-        this.setState({
-          isLoading: false,
-        });
       });
-  }
+  }, []);
 
-  deleteRecord = (id) => {
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleModalOpen = (id) => {
+    setModalOpen(true);
+    setModalContentLoading(true);
+
+    axios
+      .get(`/patients/${id}`)
+      .then((response) => {
+        console.log(response.data);
+        setPatient(response.data);
+        setImages(response.data.images);
+        setModalContentLoading(false);
+      })
+      .catch((err) => {
+        setModalContentLoading(false);
+        if (!!err.response && err.response.status === 401) {
+          alert("You are unauthorized user, please login first !");
+          window.location.pathname = "/";
+        }
+      });
+  };
+
+  const deleteRecord = (id) => {
     axios
       .delete(`/patients/${id}`)
       .then((response) => {
-        console.log(response);
-        message.success("Record deleted successfully !", 1);
-        const newData = this.state.data.filter((item) => {
+        setModalOpen(false);
+        setDeleteSuccess(true);
+        const newData = records.filter((item) => {
           return item._id !== id;
         });
 
-        this.setState({
-          data: newData,
-        });
+        setRecords(newData);
       })
       .catch((err) => {
         console.log(err.response);
-        message.error("Cannot delete the record. Try again !");
+        setDeleteError(true);
       });
   };
 
-  tConvert = (time) => {
-    // Check correct time format and split into components
-    time = time
-      .toString()
-      .match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
-
-    if (time.length > 1) {
-      // If time format correct
-      time = time.slice(1); // Remove full string match value
-      time[5] = +time[0] < 12 ? " AM" : " PM"; // Set AM/PM
-      time[0] = +time[0] % 12 || 12; // Adjust hours
-    }
-    return time.join(""); // return adjusted time or original string
-  };
-
-  getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
-      <div style={{ padding: 8 }}>
-        <Input
-          ref={(node) => {
-            this.searchInput = node;
-          }}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            this.handleSearch(selectedKeys, confirm, dataIndex)
-          }
-          style={{ width: 188, marginBottom: 8, display: "block" }}
-        />
-        <Space>
-          <Button
-            onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => this.handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              this.setState({
-                searchText: selectedKeys[0],
-                searchedColumn: dataIndex,
-              });
-            }}
-          >
-            Filter
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered) => (
-      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        ? record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
-        : "",
-    onFilterDropdownVisibleChange: (visible) => {
-      if (visible) {
-        setTimeout(() => this.searchInput.select(), 100);
-      }
-    },
-    render: (text) =>
-      this.state.searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[this.state.searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
-      ),
-  });
-
-  handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    this.setState({
-      searchText: selectedKeys[0],
-      searchedColumn: dataIndex,
-    });
-  };
-
-  handleReset = (clearFilters) => {
-    clearFilters();
-    this.setState({ searchText: "" });
-  };
-
-  setNextAppointment = (id) => {
-    let today = new Date(this.state.nextAppointmentDate);
-
+  const setNextAppointment = (id) => {
     axios
       .put(`/patients/${id}`, {
-        next_appointment_date: today,
-        next_appointment_time: this.state.nextAppointmentTime,
+        next_appointment_date: selectedDate,
+        next_appointment_time: selectedTimeString,
       })
       .then((response) => {
-        message.success("Next appointment added successfully");
+        setAppointmentSuccess(true);
       })
       .catch((err) => {
         console.log(err.response);
+        setAppointmentError(true);
       });
   };
 
-  onUploadPhotos = (id) => {
+  const onUploadPhotos = (id) => {
+    setModalContentLoading(true);
     const formData = new FormData();
 
-    for (let image of this.state.images) {
+    for (let image of selectedImages) {
       formData.append("images", image);
     }
 
     axios
       .put(`/patients/${id}`, formData)
       .then((response) => {
-        const temp = this.state.data.filter((d) => {
+        const temp = records.filter((d) => {
           return d._id !== response.data._id;
         });
         temp.unshift(response.data);
-        this.setState({
-          data: temp,
-          images: [],
-        });
+        setRecords(temp);
+        setSelectedImages([]);
+        setImages(response.data.images);
         document.getElementById("images").value = null;
-        message.success("Successfully uploaded the photos");
+        setModalContentLoading(false);
+        setImageSuccess(true);
       })
       .catch((err) => {
-        message.error("Some error occured");
+        setModalContentLoading(false);
+        setImageError(true);
       });
+    setModalContentLoading(false);
   };
 
-  render() {
-    const columns = [
-      {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
-        width: "33%",
-        ...this.getColumnSearchProps("name"),
-      },
-      {
-        title: "Phone Number",
-        dataIndex: "phone_number",
-        key: "phone_number",
-        width: "33%",
-        ...this.getColumnSearchProps("phone_number"),
-      },
-      {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
-        ...this.getColumnSearchProps("address"),
-      },
-    ];
+  const columns = [
+    { id: "name", label: "Name", minWidth: 100, align: "center" },
+    {
+      id: "phone_number",
+      label: "Phone Number",
+      minWidth: 100,
+      align: "center",
+    },
+    {
+      id: "address",
+      label: "Address",
+      minWidth: 100,
+      align: "center",
+    },
+  ];
 
-    return (
-      <S.Container>
-        <Table
-          loading={this.state.isLoading}
-          rowKey="_id"
-          columns={columns}
-          dataSource={this.state.data}
-          expandable={{
-            expandedRowRender: (record) => (
-              <div key={record._key}>
-                <S.ExpandableContainer>
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="12">
-                      <S.Label>Date of visit :</S.Label>
-                    </S.ExpandableCol>
-                    <S.ExpandableCol span="12">
-                      <S.RightLabel>
-                        {moment(record.visit_date).format("DD-MM-YYYY")}
-                      </S.RightLabel>
-                    </S.ExpandableCol>
-                  </S.ExpandableRow>
+  return (
+    <>
+      <Snackbar
+        open={
+          deleteSuccess ||
+          deleteError ||
+          appointmentSuccess ||
+          appointmentError ||
+          imageSuccess ||
+          imageError
+        }
+        autoHideDuration={2000}
+        onClose={() => {
+          setDeleteSuccess(false);
+          setDeleteError(false);
+          setImageSuccess(false);
+          setImageError(false);
+          setAppointmentError(false);
+          setAppointmentSuccess(false);
+        }}
+      >
+        <Alert
+          onClose={() => {
+            setDeleteSuccess(false);
+            setDeleteError(false);
+            setImageSuccess(false);
+            setImageError(false);
+            setAppointmentError(false);
+            setAppointmentSuccess(false);
+          }}
+          severity={
+            deleteError || appointmentError || imageError ? "error" : "success"
+          }
+        >
+          {deleteError && "Cannot delete the record !"}
+          {deleteSuccess && "Successfully deleted the record !"}
+          {appointmentError && "Cannot set the new appointment !"}
+          {appointmentSuccess && "Appointment updated successfully !"}
+          {imageError && "Cannot upload images"}
+          {imageSuccess && "Successfully uploaded the images !"}
+        </Alert>
+      </Snackbar>
+      <Modal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setSelectedImages([]);
+        }}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div style={modalStyle} className={classes.paper}>
+          {modalContentLoading ? (
+            <>
+              <div style={{ textAlign: "center" }}>
+                <CircularProgress />
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{ textAlign: "center" }}>
+                <h3>PATIENT INFO</h3>
+              </div>
+              <Grid container>
+                <Grid item xs={6}>
+                  Date of visit
+                </Grid>
+                <Grid item xs={6}>
+                  <p>
+                    {!!patient.visit_date && (
+                      <>{moment(patient.visit_date).format("DD-MM-YYYY")}</>
+                    )}
+                  </p>
+                </Grid>
+              </Grid>
+              <Grid container>
+                <Grid item xs={6}>
+                  Name
+                </Grid>
+                <Grid item xs={6}>
+                  <p>{!!patient.name && <>{patient.name}</>}</p>
+                </Grid>
+              </Grid>
+              <Grid container>
+                <Grid item xs={6}>
+                  Age
+                </Grid>
+                <Grid item xs={6}>
+                  <p>{!!patient.age && <>{patient.age}</>}</p>
+                </Grid>
+              </Grid>
+              <Grid container>
+                <Grid item xs={6}>
+                  Gender
+                </Grid>
+                <Grid item xs={6}>
+                  <p>{!!patient.gender && <>{patient.gender}</>}</p>
+                </Grid>
+              </Grid>
+              <Grid container>
+                <Grid item xs={6}>
+                  E-Mail
+                </Grid>
+                <Grid item xs={6}>
+                  <p>{!!patient.email && <>{patient.email}</>}</p>
+                </Grid>
+              </Grid>
+              <Grid container>
+                <Grid item xs={6}>
+                  Phone Number
+                </Grid>
+                <Grid item xs={6}>
+                  <p>{!!patient.phone_number && <>{patient.phone_number}</>}</p>
+                </Grid>
+              </Grid>
+              <Grid container>
+                <Grid item xs={6}>
+                  Address
+                </Grid>
+                <Grid item xs={6}>
+                  <p>{!!patient.address && <>{patient.address}</>}</p>
+                </Grid>
+              </Grid>
+              <Grid container>
+                <Grid item xs={6}>
+                  Payment Method
+                </Grid>
+                <Grid item xs={6}>
+                  <p>
+                    {!!patient.payment_method && <>{patient.payment_method}</>}
+                  </p>
+                </Grid>
+              </Grid>
+              <Grid container>
+                <Grid item xs={6}>
+                  Total Treatments
+                </Grid>
+                <Grid item xs={6}>
+                  <p>
+                    {!!patient.total_treatments && (
+                      <>{patient.total_treatments}</>
+                    )}
+                  </p>
+                </Grid>
+              </Grid>
 
-                  {record.age && (
-                    <S.ExpandableRow align="middle" justify="center">
-                      <S.ExpandableCol span="12">
-                        <S.Label>Age :</S.Label>
-                      </S.ExpandableCol>
-                      <S.ExpandableCol span="12">
-                        <S.RightLabel>{record.age}</S.RightLabel>
-                      </S.ExpandableCol>
-                    </S.ExpandableRow>
+              <Grid container>
+                <Grid item xs={6}>
+                  Total Cost
+                </Grid>
+                <Grid item xs={6}>
+                  <p>
+                    {!!patient.total_cost && <>₹ {patient.total_cost} /-</>}
+                  </p>
+                </Grid>
+              </Grid>
+
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <Grid container>
+                  <Grid item xs={6}>
+                    Next Appointment Date
+                  </Grid>
+                  <Grid item xs={6}>
+                    <KeyboardDatePicker
+                      clearable
+                      value={selectedDate}
+                      label="Appointment Date"
+                      onChange={(date) => setSelectedDate(date)}
+                      minDate={new Date()}
+                      format="MM/dd/yyyy"
+                    />
+                  </Grid>
+                </Grid>
+              </MuiPickersUtilsProvider>
+
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <Grid container>
+                  <Grid item xs={6}>
+                    Next Appointment Time
+                  </Grid>
+                  <Grid item xs={6}>
+                    <KeyboardTimePicker
+                      margin="normal"
+                      id="time-picker"
+                      label="Appointment Time"
+                      value={selectedTime}
+                      onChange={(date) => {
+                        setSelectedTime(date);
+                        setSelectedTimeString(
+                          moment(date.getTime(), "x").format("hh:mm A")
+                        );
+                      }}
+                      KeyboardButtonProps={{
+                        "aria-label": "change time",
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </MuiPickersUtilsProvider>
+
+              <Grid container>
+                <Grid item xs={6}></Grid>
+                <Grid item xs={6}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => setNextAppointment(patient._id)}
+                  >
+                    Update
+                  </Button>
+                </Grid>
+              </Grid>
+
+              {!!patient.treatments && (
+                <>
+                  <Grid container style={{ marginTop: "30px" }}>
+                    <Grid item xs={6}>
+                      TREATMENTS
+                    </Grid>
+                    <Grid item xs={6}>
+                      CHARGES
+                    </Grid>
+                  </Grid>
+                  {patient.treatments.map((treatment, index) => {
+                    return (
+                      <Grid container key={index}>
+                        <Grid item xs={6}>
+                          <p>{treatment.treatment}</p>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <p>₹ {treatment.charges} /-</p>
+                        </Grid>
+                      </Grid>
+                    );
+                  })}
+                </>
+              )}
+
+              <hr />
+
+              <div
+                style={{
+                  textAlign: "center",
+                  marginTop: "30px",
+                  marginBottom: "30px",
+                }}
+              >
+                <label
+                  htmlFor="images"
+                  style={{
+                    cursor: "pointer",
+                    border: "1px solid gray",
+                    padding: "5px",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <i
+                    className="lni-cloud-upload"
+                    style={{
+                      marginRight: "5px",
+                      fontSize: "25px",
+                      fontWeight: "bolder",
+                    }}
+                  />
+                  <span>Select images</span>
+                </label>
+                <input
+                  id="images"
+                  onChange={(e) => {
+                    let arr = [];
+                    for (let file of e.target.files) {
+                      arr.push(file);
+                    }
+                    setSelectedImages(arr);
+                  }}
+                  type="file"
+                  multiple
+                  style={{
+                    position: "absolute",
+                    opacity: 0,
+                    zIndex: -1,
+                    width: "100%",
+                  }}
+                />
+              </div>
+
+              <div
+                style={{
+                  textAlign: "center",
+                  marginBottom: "30px",
+                }}
+              >
+                <Button
+                  disabled={selectedImages.length === 0 ? true : false}
+                  variant="outlined"
+                  size="small"
+                  onClick={() => onUploadPhotos(patient._id)}
+                >
+                  {selectedImages.length === 0 ? (
+                    "Upload Patient Photos"
+                  ) : (
+                    <>Upload {selectedImages.length} Photos</>
                   )}
+                </Button>
+              </div>
 
-                  {record.gender && (
-                    <S.ExpandableRow align="middle" justify="center">
-                      <S.ExpandableCol span="12">
-                        <S.Label>Gender :</S.Label>
-                      </S.ExpandableCol>
-                      <S.ExpandableCol span="12">
-                        <S.RightLabel>{record.gender}</S.RightLabel>
-                      </S.ExpandableCol>
-                    </S.ExpandableRow>
-                  )}
-
-                  {record.email && (
-                    <S.ExpandableRow align="middle" justify="center">
-                      <S.ExpandableCol span="12">
-                        <S.Label>E-mail :</S.Label>
-                      </S.ExpandableCol>
-                      <S.ExpandableCol span="12">
-                        <S.RightLabel>{record.email}</S.RightLabel>
-                      </S.ExpandableCol>
-                    </S.ExpandableRow>
-                  )}
-
-                  {record.total_cost && (
-                    <S.ExpandableRow align="middle" justify="center">
-                      <S.ExpandableCol span="12">
-                        <S.Label>Total Cost :</S.Label>
-                      </S.ExpandableCol>
-                      <S.ExpandableCol span="12">
-                        <S.RightLabel>₹ {record.total_cost} /-</S.RightLabel>
-                      </S.ExpandableCol>
-                    </S.ExpandableRow>
-                  )}
-
-                  {record.treatments && (
-                    <S.ExpandableRow align="middle" justify="center">
-                      <S.ExpandableCol span="12">
-                        <S.Label>Total Treatments :</S.Label>
-                      </S.ExpandableCol>
-                      <S.ExpandableCol span="12">
-                        <S.RightLabel>{record.treatments.length}</S.RightLabel>
-                      </S.ExpandableCol>
-                    </S.ExpandableRow>
-                  )}
-                  {record.next_appointment_date && (
-                    <S.ExpandableRow align="middle" justify="center">
-                      <S.ExpandableCol span="12">
-                        <S.Label>Next Appointment :</S.Label>
-                      </S.ExpandableCol>
-                      <S.ExpandableCol span="12">
-                        <S.RightLabel>
-                          {moment(record.next_appointment_date).format(
-                            "MMMM Do YYYY"
-                          )}{" "}
-                          {!!record.next_appointment_time && (
-                            <>({this.tConvert(record.next_appointment_time)})</>
-                          )}
-                        </S.RightLabel>
-                      </S.ExpandableCol>
-                    </S.ExpandableRow>
-                  )}
-
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="12">
-                      <S.Label>Set Appointment :</S.Label>
-                    </S.ExpandableCol>
-                    <S.ExpandableCol span="12">
-                      <S.RightLabel>
-                        <Row align="middle">
-                          <Col lg={8} md={24} sm={24} xs={24}>
-                            Appointment date :
-                          </Col>
-                          <Col lg={16} md={24} sm={24} xs={24}>
-                            <S.Picker>
-                              <DatePicker
-                                className="form-control"
-                                onChange={(date) => {
-                                  this.setState({
-                                    nextAppointmentDate: date,
-                                  });
-                                }}
-                                value={this.state.nextAppointmentDate}
-                              />
-                            </S.Picker>
-                          </Col>
-                        </Row>
-                      </S.RightLabel>
-                    </S.ExpandableCol>
-                  </S.ExpandableRow>
-
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="12"></S.ExpandableCol>
-                    <S.ExpandableCol span="12">
-                      <S.RightLabel>
-                        <Row>
-                          <Col lg={8} md={24} sm={24} xs={24}>
-                            Appointment time :
-                          </Col>
-                          <Col lg={16} md={24} sm={24} xs={24}>
-                            <S.Picker>
-                              <TimePicker
-                                amPmAriaLabel="Select AM/PM"
-                                className="form-control"
-                                locale="en-US"
-                                hourPlaceholder="hh"
-                                minutePlaceholder="mm"
-                                onChange={(value) =>
-                                  this.setState({
-                                    ...this.state,
-                                    nextAppointmentTime: value,
-                                  })
-                                }
-                                value={this.state.nextAppointmentTime}
-                              />
-                            </S.Picker>
-                          </Col>
-                        </Row>
-                      </S.RightLabel>
-                    </S.ExpandableCol>
-                  </S.ExpandableRow>
-
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span="12"></S.ExpandableCol>
-                    <S.ExpandableCol span="12">
-                      <Button
-                        type="default"
-                        size="small"
-                        onClick={() => this.setNextAppointment(record._id)}
-                      >
-                        Update
-                      </Button>
-                    </S.ExpandableCol>
-                  </S.ExpandableRow>
-
-                  <br />
-                  <S.ExpandableRow align="middle" justify="center">
-                    <S.ExpandableCol span={12}>
-                      <S.Label>Upload Patient Images : </S.Label>
-                    </S.ExpandableCol>
-                    <S.ExpandableCol span={12}>
-                      <S.FileUploadLabel htmlFor="images">
-                        <Avatar
-                          icon={<CloudUploadOutlined />}
-                          size={40}
+              <Grid container>
+                {!!images &&
+                  images.map((image, index) => {
+                    return (
+                      <Grid item md={4} xs={6} key={index}>
+                        <img
+                          src={`data:image/${
+                            image.contentType
+                          };base64,${image.data.toString("base64")}`}
+                          alt="patient gallery"
                           style={{
-                            backgroundColor: "transparent",
-                            color: "black",
+                            width: "auto",
+                            height: "100px",
                           }}
                         />
-                      </S.FileUploadLabel>
-                      <S.FileUpload
-                        required
-                        id="images"
-                        type="file"
-                        multiple
-                        onChange={(e) => {
-                          let arr = [];
-                          for (let file of e.target.files) {
-                            arr.push(file);
-                          }
-                          this.setState({
-                            ...this.state,
-                            images: [...arr],
-                          });
-                        }}
-                      />
-                      <span style={{ marginRight: "10px" }}>
-                        {this.state.images.length !== 0 &&
-                          this.state.images.length + " images selected"}
-                      </span>
-                      <Button
-                        size="small"
-                        onClick={() => this.onUploadPhotos(record._id)}
-                        disabled={this.state.images.length > 0 ? false : true}
-                      >
-                        Upload Photos
-                      </Button>
-                    </S.ExpandableCol>
-                  </S.ExpandableRow>
+                      </Grid>
+                    );
+                  })}
+              </Grid>
 
-                  <S.ExpandableRow align="middle">
-                    {!!record.images &&
-                      record.images.map((img, index) => {
-                        return (
-                          <S.ExpandableCol
-                            key={index}
-                            lg={6}
-                            md={12}
-                            sm={12}
-                            xs={12}
-                          >
-                            <Image
-                              src={`data:image/${
-                                img.contentType
-                              };base64,${img.data.toString("base64")}`}
-                              alt="gallery image"
-                              style={{
-                                margin: "10px",
-                                maxWidth: "80%",
-                                maxHeight: "80%",
-                                height: "auto",
-                              }}
-                            />
-                          </S.ExpandableCol>
-                        );
-                      })}
-                  </S.ExpandableRow>
+              <div style={{ textAlign: "center", marginTop: "30px" }}>
+                <Link
+                  to={{
+                    pathname: "/printbill",
+                    state: { patient: patient },
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ marginRight: "5px", marginTop: "5px" }}
+                    size="small"
+                  >
+                    Print Bill
+                  </Button>
+                </Link>
 
-                  {record.treatments && (
-                    <S.ExpandableRow align="middle" justify="center">
-                      <S.ExpandableCol span="24">
-                        <S.Label>Treatments</S.Label>
-                        <hr />
-                      </S.ExpandableCol>
-                    </S.ExpandableRow>
-                  )}
+                <Link
+                  to={{
+                    pathname: "/printprescription",
+                    state: { patient: patient },
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    style={{ marginRight: "5px", marginTop: "5px" }}
+                  >
+                    Print Prescription
+                  </Button>
+                </Link>
+              </div>
+              <br />
+              <div style={{ textAlign: "center" }}>
+                <Link
+                  to={{
+                    pathname: "/updatepatient",
+                    state: { id: patient._id },
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ marginRight: "5px", marginTop: "5px" }}
+                    size="small"
+                  >
+                    Update Record
+                  </Button>
+                </Link>
 
-                  {record.treatments &&
-                    record.treatments.map((treatment, index) => {
+                <Button
+                  onClick={() => deleteRecord(patient._id)}
+                  variant="contained"
+                  color="secondary"
+                  size="small"
+                  style={{ marginRight: "5px", marginTop: "5px" }}
+                >
+                  Delete Patient
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      </Modal>
+      <Paper className={classes.root}>
+        <TableContainer className={classes.container}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {isLoading ? (
+                <TableRow style={{ textAlign: "center" }}>
+                  <TableCell></TableCell>
+                  <TableCell align="center">
+                    <CircularProgress />
+                  </TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              ) : (
+                <>
+                  {records
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
                       return (
-                        <div key={index}>
-                          <S.ExpandableRow>
-                            <S.ExpandableCol span="24">
-                              <S.RightLabel>
-                                <Row>
-                                  <Col span={12}>Treatment :</Col>
-                                  <Col span={12}>{treatment.treatment}</Col>
-                                </Row>
-                                <Row>
-                                  <Col span={12}>Charges :</Col>
-                                  <Col span={12}>₹ {treatment.charges} /-</Col>
-                                </Row>
-                              </S.RightLabel>
-                            </S.ExpandableCol>
-                          </S.ExpandableRow>
-                          <hr />
-                        </div>
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={row._id}
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleModalOpen(row._id)}
+                        >
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === "number"
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
                       );
                     })}
-
-                  <S.ExpandableRow
-                    align="middle"
-                    justify="center"
-                    style={{ textAlign: "center", marginTop: "20px" }}
-                  >
-                    <S.ExpandableCol span="24">
-                      <Link
-                        to={{
-                          pathname: "/printbill",
-                          state: { patient: record },
-                        }}
-                      >
-                        <Button style={{ marginRight: "5px" }}>
-                          Print Bill
-                        </Button>
-                      </Link>
-                      <Link
-                        to={{
-                          pathname: "/printprescription",
-                          state: { patient: record },
-                        }}
-                      >
-                        <Button>Print Prescription</Button>
-                      </Link>
-                    </S.ExpandableCol>
-                  </S.ExpandableRow>
-
-                  <S.ExpandableRow
-                    align="middle"
-                    justify="center"
-                    style={{ textAlign: "center", marginTop: "20px" }}
-                  >
-                    <S.ExpandableCol span="24">
-                      <Link
-                        to={{
-                          pathname: "/updatepatient",
-                          state: { id: record._id },
-                        }}
-                      >
-                        <Button style={{ marginRight: "5px" }}>
-                          Update Record
-                        </Button>
-                      </Link>
-                      <Button
-                        danger
-                        onClick={() => this.deleteRecord(record._id)}
-                      >
-                        Delete Record
-                      </Button>
-                    </S.ExpandableCol>
-                  </S.ExpandableRow>
-                </S.ExpandableContainer>
-              </div>
-            ),
-          }}
-          pagination={{ pphoneSize: 10 }}
+                </>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10]}
+          component="div"
+          count={records.length}
+          rowsPerPage={10}
+          page={page}
+          onChangePage={handleChangePage}
         />
-      </S.Container>
-    );
-  }
-}
+      </Paper>
+    </>
+  );
+};
 
 export default Records;

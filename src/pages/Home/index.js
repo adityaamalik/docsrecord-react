@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, TextField } from "@material-ui/core";
+import { Button, TextField, Modal, Grid } from "@material-ui/core";
 import GoogleLogin from "react-google-login";
 import axios from "axios";
+import * as S from "./styles";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,10 +13,34 @@ const useStyles = makeStyles((theme) => ({
       width: "90%",
     },
   },
+  paper: {
+    position: "absolute",
+    width: "auto",
+    height: "auto",
+    backgroundColor: theme.palette.background.paper,
+
+    padding: theme.spacing(2, 4, 3),
+    "@media (max-width: 767px)": {
+      width: "75%",
+      height: "75%",
+    },
+  },
 }));
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 const Home = () => {
   const classes = useStyles();
+  const [modalStyle] = useState(getModalStyle);
 
   // to toggle login and register form
   const [registerForm, toggleRegisterForm] = useState(false);
@@ -124,8 +150,240 @@ const Home = () => {
       });
   };
 
+  const loadScript = (src) => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
+
+  const displayRazorpay = async (subscription) => {
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+
+    if (!res) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
+
+    // creating a new order
+    const result = await axios.post("/payments/orders", {
+      subscription: subscription,
+    });
+
+    if (!result) {
+      alert("Server error. Are you online?");
+      return;
+    }
+
+    // Getting the order details back
+    const { amount, id: order_id, currency } = result.data;
+
+    const options = {
+      key: "rzp_test_wWXoxoQf1kjrSm", // Enter the Key ID generated from the Dashboard
+      amount: amount * 100,
+      currency: currency,
+      name: "DOCSRECORD",
+      description: `DOCSRECORD ${subscription} subscription.`,
+      order_id: order_id,
+      handler: async function (response) {
+        const data = {
+          doctorId: doctor._id,
+          orderCreationId: order_id,
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpayOrderId: response.razorpay_order_id,
+          razorpaySignature: response.razorpay_signature,
+          subscription: subscription,
+        };
+
+        const result = await axios.post("/payments/success", data);
+
+        if (result) {
+          alert("Payment successful !");
+          localStorage.setItem("token", token);
+          localStorage.setItem("docsrecordDoctor", doctor._id);
+          window.location.pathname = "/records";
+        }
+      },
+      prefill: {
+        name: doctor.name,
+        email: doctor.email,
+        contact: doctor.phone_number,
+      },
+      notes: {
+        address: doctor.address,
+      },
+      theme: {
+        color: "#61dafb",
+      },
+    };
+
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
+  };
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <div>
+        <div style={{ textAlign: "right" }}>
+          <i
+            className="lni-cross-circle"
+            style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
+            onClick={() => setIsModalVisible(false)}
+          />
+        </div>
+
+        <h1>Complete your payment</h1>
+        <S.ModalDiv>
+          <h3>
+            Your plan expired on :{" "}
+            {moment(doctor.payment_valid_till).format("MMMM Do YYYY")}
+          </h3>
+          <h3>
+            Please buy a monthly or yearly plan to continue using DOCSRECORD.
+          </h3>
+        </S.ModalDiv>
+        <Grid
+          container
+          spacing={3}
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+          <Grid item xs={10} sm={6}>
+            <Button
+              variant="outlined"
+              width="30"
+              onClick={() => setIsMonthlyModalVisible(true)}
+            >
+              Monthly subscription
+            </Button>
+          </Grid>
+
+          <Grid item xs={10} sm={6} alignItems="center">
+            <Button
+              variant="outlined"
+              width="30"
+              onClick={() => setIsYearlyModalVisible(true)}
+            >
+              Yearly subscription
+            </Button>
+          </Grid>
+        </Grid>
+        <br />
+        <p>
+          Contact Support for any queries : +91 - 8130083852 |
+          codeclan0100@gmail.com
+        </p>
+      </div>
+    </div>
+  );
+
+  const monthlybody = (
+    <div style={modalStyle} className={classes.paper}>
+      <div style={{ textAlign: "right" }}>
+        <i
+          className="lni-cross-circle"
+          style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
+          onClick={() => setIsMonthlyModalVisible(false)}
+        />
+      </div>
+
+      <h1>Monthly Plan</h1>
+      <h3>Your subscription will be extended for 1 Month.</h3>
+      <h3>Amount : ₹ 500</h3>
+
+      <Grid
+        container
+        spacing={3}
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item xs={10} sm={6}>
+          <Button
+            variant="outlined"
+            width="30"
+            onClick={() => displayRazorpay("monthly")}
+          >
+            Continue to payment
+          </Button>
+        </Grid>
+      </Grid>
+
+      <br />
+      <p>
+        Contact Support for any queries : +91 - 8130083852 |
+        docsrecordmail@gmail.com
+      </p>
+    </div>
+  );
+  const yearlybody = (
+    <div style={modalStyle} className={classes.paper}>
+      <div style={{ textAlign: "right" }}>
+        <i
+          className="lni-cross-circle"
+          style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
+          onClick={() => setIsYearlyModalVisible(false)}
+        />
+      </div>
+
+      <h1>Yearly Plan</h1>
+      <h3>Your subscription will be extended for 1 Year.</h3>
+      <h3>Amount : ₹ 5000</h3>
+
+      <Grid
+        container
+        spacing={3}
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item xs={10} sm={6}>
+          <Button
+            variant="outlined"
+            width="30"
+            onClick={() => displayRazorpay("yearly")}
+          >
+            Continue to payment
+          </Button>
+        </Grid>
+      </Grid>
+
+      <br />
+      <p>
+        Contact Support for any queries : +91 - 8130083852 |
+        docsrecordmail@gmail.com
+      </p>
+    </div>
+  );
+
   return (
     <>
+      {/* main modal */}
+      <Modal open={isModalVisible} onClose={() => setIsModalVisible(false)}>
+        {body}
+      </Modal>
+      <Modal
+        open={isMonthlyModalVisible}
+        onClose={() => setIsMonthlyModalVisible(false)}
+      >
+        {monthlybody}
+      </Modal>
+      <Modal
+        open={isYearlyModalVisible}
+        onClose={() => setIsYearlyModalVisible(false)}
+      >
+        {yearlybody}
+      </Modal>
+
       <header className="header-area">
         <div className="navbar-area headroom">
           <div className="container">
@@ -159,19 +417,19 @@ const Home = () => {
                   >
                     <ul id="nav" className="navbar-nav m-auto">
                       <li className="nav-item active">
-                        <a href="#home">HOME</a>
+                        <a href="/#home">HOME</a>
                       </li>
                       <li className="nav-item">
-                        <a href="#about">ABOUT</a>
+                        <a href="/#about">ABOUT</a>
                       </li>
                       <li className="nav-item">
-                        <a href="#services">FEATURES</a>
+                        <a href="/#services">FEATURES</a>
                       </li>
                       <li className="nav-item">
-                        <a href="#pricing">PRICING</a>
+                        <a href="/#pricing">PRICING</a>
                       </li>
                       <li className="nav-item">
-                        <a href="#contact">CONTACT</a>
+                        <a href="/#contact">CONTACT</a>
                       </li>
                     </ul>
                   </div>
@@ -200,21 +458,11 @@ const Home = () => {
             <div className="row">
               <div className="col-lg-7">
                 <div className="header-hero-content">
-                  <h1
-                    className="hero-title wow fadeInUp"
-                    data-wow-duration="1s"
-                    data-wow-delay="0.2s"
-                  >
+                  <h1 className="hero-title">
                     <b>DOCS</b>
                     <span>RECORD</span>
                   </h1>
-                  <p
-                    className="text wow fadeInUp"
-                    data-wow-duration="1s"
-                    data-wow-delay="0.5s"
-                  >
-                    MANAGE RECORDS. THE COOL WAY ! 😉
-                  </p>
+                  <p className="text">MANAGE RECORDS. THE COOL WAY ! 😉</p>
 
                   {/* login form */}
                   {registerForm ? (
@@ -309,7 +557,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="header-hero-image d-flex align-items-center wow fadeInRightBig">
+          <div className="header-hero-image d-flex align-items-center">
             <div className="image">
               <img src="assets/images/hero-image.png" alt="Hero" />
             </div>
@@ -321,7 +569,7 @@ const Home = () => {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-9">
-              <div className="about-title text-center wow fadeInUp">
+              <div className="about-title text-center">
                 <h6 className="welcome">WELCOME</h6>
                 <h3 className="title">
                   <span>DOCSRECORD</span> is an easier, affordable, convenient
@@ -348,11 +596,7 @@ const Home = () => {
                 <div className="about-counter pt-60">
                   <div className="row">
                     <div className="col-sm-4">
-                      <div
-                        className="single-counter counter-color-1 mt-30 d-flex wow fadeInUp"
-                        data-wow-duration="1s"
-                        data-wow-delay="0.3s"
-                      >
+                      <div className="single-counter counter-color-1 mt-30 d-flex">
                         <div className="counter-shape">
                           <span className="shape-1"></span>
                           <span className="shape-2"></span>
@@ -366,11 +610,7 @@ const Home = () => {
                       </div>
                     </div>
                     <div className="col-sm-4">
-                      <div
-                        className="single-counter counter-color-2 mt-30 d-flex wow fadeInUp"
-                        data-wow-duration="1s"
-                        data-wow-delay="0.6s"
-                      >
+                      <div className="single-counter counter-color-2 mt-30 d-flex">
                         <div className="counter-shape">
                           <span className="shape-1"></span>
                           <span className="shape-2"></span>
@@ -384,11 +624,7 @@ const Home = () => {
                       </div>
                     </div>
                     <div className="col-sm-4">
-                      <div
-                        className="single-counter counter-color-3 mt-30 d-flex wow fadeInUp"
-                        data-wow-duration="1s"
-                        data-wow-delay="0.9s"
-                      >
+                      <div className="single-counter counter-color-3 mt-30 d-flex ">
                         <div className="counter-shape">
                           <span className="shape-1"></span>
                           <span className="shape-2"></span>
@@ -413,11 +649,7 @@ const Home = () => {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-xl-5 col-lg-6 col-md-8 col-sm-9">
-              <div
-                className="section-title text-center wow fadeInUp"
-                data-wow-duration="1s"
-                data-wow-delay="0.2s"
-              >
+              <div className="section-title text-center ">
                 <h6 className="sub-title">FEATURES</h6>
                 <h4 className="title">
                   Lots of features <span>to fulfill your needs.</span>
@@ -429,9 +661,7 @@ const Home = () => {
             <div className="col-lg-12">
               <div className="our-services-tab pt-30">
                 <ul
-                  className="nav justify-content-center wow fadeIn"
-                  data-wow-duration="1s"
-                  data-wow-delay="0.5s"
+                  className="nav justify-content-center "
                   id="myTab"
                   role="tablist"
                 >
@@ -659,21 +889,13 @@ const Home = () => {
         <div className="container">
           <div className="row">
             <div className="col-lg-6 col-md-8">
-              <div
-                className="section-title wow fadeInUp"
-                data-wow-duration="1s"
-                data-wow-delay="0.2s"
-              >
+              <div className="section-title">
                 <h6 className="sub-title">Why Us</h6>
                 <h4 className="title">The reasons to choose us.</h4>
               </div>
             </div>
           </div>
-          <div
-            className="service-wrapper mt-60 wow fadeInUp"
-            data-wow-duration="1s"
-            data-wow-delay="0.6s"
-          >
+          <div className="service-wrapper mt-60">
             <div className="row no-gutters justify-content-center">
               <div className="col-lg-4 col-md-7">
                 <div className="single-service d-flex">
@@ -745,11 +967,7 @@ const Home = () => {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-5 col-md-8 col-sm-9">
-              <div
-                className="section-title text-center pb-20 wow fadeInUpBig"
-                data-wow-duration="1s"
-                data-wow-delay="0.2s"
-              >
+              <div className="section-title text-center pb-20 ">
                 <h6 className="sub-title">Pricing Plans</h6>
                 <h4 className="title">
                   PROVIDING BEST PRICING <span>FOR YOUR CLINIC.</span>
@@ -759,11 +977,7 @@ const Home = () => {
           </div>
           <div className="row no-gutters justify-content-center">
             <div className="col-lg-4 col-md-7 col-sm-9">
-              <div
-                className="single-pricing text-center pricing-color-1 mt-30 wow fadeIn"
-                data-wow-duration="1s"
-                data-wow-delay="0.3s"
-              >
+              <div className="single-pricing text-center pricing-color-1 mt-30">
                 <div className="pricing-price">
                   <span className="price">
                     <span className="symbol">₹</span> <b>500</b>
@@ -781,18 +995,14 @@ const Home = () => {
                   </ul>
                 </div>
                 <div className="pricing-btn pt-70">
-                  <a className="main-btn main-btn-2" href="#">
+                  <a className="main-btn main-btn-2" href="/#">
                     GET STARTED FOR FREE
                   </a>
                 </div>
               </div>
             </div>
             <div className="col-lg-4 col-md-7 col-sm-9">
-              <div
-                className="single-pricing text-center pricing-active pricing-color-2 mt-30 wow fadeIn"
-                data-wow-duration="1s"
-                data-wow-delay="0.6s"
-              >
+              <div className="single-pricing text-center pricing-active pricing-color-2 mt-30">
                 <div className="pricing-price">
                   <span className="price">
                     <b>FREE</b>
@@ -809,18 +1019,14 @@ const Home = () => {
                   </ul>
                 </div>
                 <div className="pricing-btn pt-70">
-                  <a className="main-btn" href="#">
+                  <a className="main-btn" href="/#">
                     GET STARTED FOR FREE
                   </a>
                 </div>
               </div>
             </div>
             <div className="col-lg-4 col-md-7 col-sm-9">
-              <div
-                className="single-pricing text-center pricing-color-3 mt-30 wow fadeIn"
-                data-wow-duration="1s"
-                data-wow-delay="0.9s"
-              >
+              <div className="single-pricing text-center pricing-color-3 mt-30">
                 <div className="pricing-price">
                   <span className="price">
                     <span className="symbol">₹</span> <b>5000</b>
@@ -838,7 +1044,7 @@ const Home = () => {
                   </ul>
                 </div>
                 <div className="pricing-btn pt-70">
-                  <a className="main-btn main-btn-2" href="#">
+                  <a className="main-btn main-btn-2" href="/#">
                     GET STARTED FOR FREE
                   </a>
                 </div>
@@ -852,11 +1058,7 @@ const Home = () => {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-4">
-              <div
-                className="section-title text-center pb-20 wow fadeInUp"
-                data-wow-duration="1s"
-                data-wow-delay="0.3s"
-              >
+              <div className="section-title text-center pb-20">
                 <h6 className="sub-title">Our Contact</h6>
                 <h4 className="title">
                   Get In <span>Touch.</span>
@@ -867,11 +1069,7 @@ const Home = () => {
           <div className="contact-info pt-30">
             <div className="row">
               <div className="col-lg-4 col-md-6">
-                <div
-                  className="single-contact-info contact-color-1 mt-30 d-flex  wow fadeInUp"
-                  data-wow-duration="1s"
-                  data-wow-delay="0.3s"
-                >
+                <div className="single-contact-info contact-color-1 mt-30 d-flex ">
                   <div className="contact-info-icon">
                     <i className="lni-map-marker"></i>
                   </div>
@@ -884,11 +1082,7 @@ const Home = () => {
                 </div>
               </div>
               <div className="col-lg-4 col-md-6">
-                <div
-                  className="single-contact-info contact-color-2 mt-30 d-flex  wow fadeInUp"
-                  data-wow-duration="1s"
-                  data-wow-delay="0.6s"
-                >
+                <div className="single-contact-info contact-color-2 mt-30 d-flex">
                   <div className="contact-info-icon">
                     <i className="lni-envelope"></i>
                   </div>
@@ -899,11 +1093,7 @@ const Home = () => {
                 </div>
               </div>
               <div className="col-lg-4 col-md-6">
-                <div
-                  className="single-contact-info contact-color-3 mt-30 d-flex  wow fadeInUp"
-                  data-wow-duration="1s"
-                  data-wow-delay="0.9s"
-                >
+                <div className="single-contact-info contact-color-3 mt-30 d-flex">
                   <div className="contact-info-icon">
                     <i className="lni-phone"></i>
                   </div>
@@ -928,7 +1118,7 @@ const Home = () => {
             <div className="row">
               <div className="col-lg-3 col-sm-6 order-sm-1 order-lg-1">
                 <div className="footer-about pt-40">
-                  <a href="#">
+                  <a href="/#">
                     <img src="assets/images/logo.png" alt="Logo" />
                   </a>
                   <p className="text">
@@ -960,16 +1150,16 @@ const Home = () => {
                   </div>
                   <ul>
                     <li>
-                      <a href="#">Pricing policy</a>
+                      <a href="/privacypolicy">Privacy policy</a>
                     </li>
                     <li>
-                      <a href="#">Refund Policy</a>
+                      <a href="refundpolicy">Refund Policy</a>
                     </li>
                     <li>
-                      <a href="#">About Us</a>
+                      <a href="termsofservice">Terms Of Service</a>
                     </li>
                     <li>
-                      <a href="#">Team</a>
+                      <a href="/aboutus">About Us</a>
                     </li>
                   </ul>
                 </div>
@@ -988,22 +1178,22 @@ const Home = () => {
 
                     <ul className="social mt-40">
                       <li>
-                        <a href="#">
+                        <a href="/#">
                           <i className="lni-facebook"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="#">
+                        <a href="/#">
                           <i className="lni-twitter"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="#">
+                        <a href="/#">
                           <i className="lni-instagram"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="#">
+                        <a href="/#">
                           <i className="lni-linkedin"></i>
                         </a>
                       </li>
@@ -1019,7 +1209,7 @@ const Home = () => {
         </div>
       </footer>
 
-      <a href="#" className="back-to-top">
+      <a href="/#" className="back-to-top">
         <i className="lni-chevron-up"></i>
       </a>
     </>

@@ -7,7 +7,7 @@ const routes = [
   {
     path: ["/records"],
     exact: true,
-    component: "MaterialRecords",
+    component: "Records",
   },
   {
     path: ["/addpatient"],
@@ -43,6 +43,26 @@ const routes = [
     path: ["/printprescription"],
     exact: true,
     component: "PrintPrescription",
+  },
+  {
+    path: ["/termsofservice"],
+    exact: true,
+    component: "TermsOfService",
+  },
+  {
+    path: ["/privacypolicy"],
+    exact: true,
+    component: "PrivacyPolicy",
+  },
+  {
+    path: ["/refundpolicy"],
+    exact: true,
+    component: "RefundPolicy",
+  },
+  {
+    path: ["/aboutus"],
+    exact: true,
+    component: "AboutUs",
   },
 ];
 
