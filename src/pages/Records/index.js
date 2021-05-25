@@ -75,7 +75,7 @@ const Records = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
 
-  const [selectedTimeString, setSelectedTimeString] = useState("");
+  const [selectedTimeString, setSelectedTimeString] = useState("12:00 PM");
 
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [deleteError, setDeleteError] = useState(false);

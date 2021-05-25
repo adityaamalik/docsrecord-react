@@ -115,21 +115,37 @@ const UpdatePatient = (props) => {
     let data = {};
     data["doctor"] = doctor;
 
-    data.name = name;
+    if (name !== "") {
+      data.name = name;
+    }
 
-    data.age = age;
+    if (age !== "") {
+      data.age = age;
+    }
 
-    data.gender = gender;
+    if (gender !== "") {
+      data.gender = gender;
+    }
 
-    data.phone_number = phone;
+    if (phone !== "") {
+      data.phone_number = phone;
+    }
 
-    data.email = email;
+    if (email !== "") {
+      data.email = email;
+    }
 
-    data.address = address;
+    if (address !== "") {
+      data.address = address;
+    }
 
-    data.payment_method = paymentMethod;
+    if (paymentMethod !== "") {
+      data.payment_method = paymentMethod;
+    }
 
-    data.treatments = t;
+    if (t.length !== 0) {
+      data.treatments = t;
+    }
 
     axios
       .put(`/patients/${id}`, data)
