@@ -23,15 +23,6 @@ const Statistics = () => {
       .get(`/patients/stats/${doctor}`)
       .then((response) => {
         setStats(response.data);
-        // const Monthdata = [
-        //   response.data.monthstats[0],
-        //   response.data.monthstats[1],
-        //   response.data.monthstats[2],
-        //   response.data.monthstats[3],
-        //   response.data.monthstats[4],
-        //   response.data.monthstats[18],
-        //   8,
-        // ];
 
         setMonthData(response.data.monthstats);
 
@@ -243,9 +234,9 @@ const Statistics = () => {
                     <CountUp end={stats.monthpercentage} duration={4} />
                     <span>%</span>
                     {stats.monthpercentage > 0 ? (
-                      <i class="lni lni-stats-up"></i>
+                      <i className="ni-arrow-up"></i>
                     ) : (
-                      <i class="lni lni-stats-down"></i>
+                      <i className="lni-arrow-down"></i>
                     )}
                   </Grid>
                 )}
@@ -267,9 +258,9 @@ const Statistics = () => {
                     <CountUp end={stats.weekpercentage} duration={4} />
                     <span>%</span>
                     {stats.weekpercentage > 0 ? (
-                      <i class="lni lni-stats-up"></i>
+                      <i className="lni-arrow-up"></i>
                     ) : (
-                      <i class="lni lni-stats-down"></i>
+                      <i className="lni-arrow-down"></i>
                     )}
                   </Grid>
                 )}

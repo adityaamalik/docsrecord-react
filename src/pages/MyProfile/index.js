@@ -256,7 +256,7 @@ const MyProfile = () => {
             </Button>
           </Grid>
 
-          <Grid item xs={10} sm={6} alignItems="center">
+          <Grid item xs={10} sm={6}>
             <Button
               variant="outlined"
               width="30"
@@ -269,7 +269,7 @@ const MyProfile = () => {
         <br />
         <p>
           Contact Support for any queries : +91 - 8130083852 |
-          codeclan0100@gmail.com
+          docsrecordmail@gmail.com
         </p>
       </div>
     </div>
@@ -310,7 +310,7 @@ const MyProfile = () => {
       <br />
       <p>
         Contact Support for any queries : +91 - 8130083852 |
-        codeclan0100@gmail.com
+        docsrecordmail@gmail.com
       </p>
     </div>
   );
@@ -349,7 +349,7 @@ const MyProfile = () => {
       <br />
       <p>
         Contact Support for any queries : +91 - 8130083852 |
-        codeclan0100@gmail.com
+        docsrecordmail@gmail.com
       </p>
     </div>
   );
@@ -432,17 +432,7 @@ const MyProfile = () => {
                 Your next payment date is :{" "}
                 {moment(docData.payment_valid_till).format("MMMM Do YYYY")}
                 <br />
-                <button
-                  onClick={() => setIsModalVisible(true)}
-                  style={{
-                    backgroundColor: "white",
-                    border: "none",
-                    borderBottom: "1px solid black",
-                    cursor: "pointer",
-                  }}
-                >
-                  Pay now
-                </button>
+                <Button onClick={() => setIsModalVisible(true)}>Pay now</Button>
               </div>
             </>
           )}
