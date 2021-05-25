@@ -1,9 +1,10 @@
 import * as S from "./styles";
 
 import { Line } from "react-chartjs-2";
-import Grid from "@material-ui/core/Grid";
+import { Grid, Snackbar } from "@material-ui/core";
 import CountUp from "react-countup";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { Alert } from "@material-ui/lab";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -14,6 +15,8 @@ const Statistics = () => {
   const [weekData, setWeekData] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [authError, setAuthError] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -42,9 +45,10 @@ const Statistics = () => {
       })
       .catch((err) => {
         if (!!err.response && err.response.status === 401) {
-          // message
-          //   .error("You are unauthorized user, please login first !")
-          //   .then(() => (window.location.pathname = "/login"));
+          setAuthError(true);
+          setTimeout(() => {
+            window.location.pathname = "/";
+          }, 1000);
         }
         setIsLoading(false);
       });
@@ -101,6 +105,22 @@ const Statistics = () => {
         </div>
       ) : (
         <>
+          <Snackbar
+            open={authError}
+            autoHideDuration={2000}
+            onClose={() => {
+              setAuthError(false);
+            }}
+          >
+            <Alert
+              onClose={() => {
+                setAuthError(false);
+              }}
+              severity="error"
+            >
+              {authError && "You are unauthorized user, please login first !"}
+            </Alert>
+          </Snackbar>
           <Grid
             container
             style={{ marginTop: "100px" }}

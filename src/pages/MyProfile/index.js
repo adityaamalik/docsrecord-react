@@ -1,11 +1,7 @@
 import * as S from "./styles";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Button from "@material-ui/core/Button";
-import Modal from "@material-ui/core/Modal";
-
-// import { useHistory } from "react-router-dom";
-import { Grid, Snackbar } from "@material-ui/core";
+import { Grid, Snackbar, Modal, Button } from "@material-ui/core";
 
 import Avatar from "@material-ui/core/Avatar";
 import { Alert } from "@material-ui/lab";
@@ -73,6 +69,9 @@ const MyProfile = () => {
   const [showEdit, toggleEdit] = useState(false);
   const [modalStyle] = useState(getModalStyle);
 
+  const [authError, setAuthError] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
   useEffect(() => {
     setIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
@@ -84,9 +83,12 @@ const MyProfile = () => {
         setIsLoading(false);
       })
       .catch((err) => {
-        console.log(err);
-        setError(true);
+        setAuthError(true);
+
         setIsLoading(false);
+        setTimeout(() => {
+          window.location.pathname = "/";
+        }, 1000);
       });
   }, []);
 
@@ -125,7 +127,6 @@ const MyProfile = () => {
     if (!!image) {
       data.append("image", image);
       console.log(image);
-      // data.image.push(image);
     }
     axios
       .put(`/doctors/${doctor}`, data)
@@ -199,11 +200,10 @@ const MyProfile = () => {
         const result = await axios.post("/payments/success", data);
 
         if (result) {
-          // message
-          //   .success("Payment successful !")
-          //   .then(() => (window.location.pathname = "/myprofile"));
-          alert("Payment successful !");
-          window.location.pathname = "/myprofile";
+          setPaymentSuccess(true);
+          setTimeout(() => {
+            window.location.pathname = "/myprofile";
+          }, []);
         }
       },
       prefill: {
@@ -359,15 +359,18 @@ const MyProfile = () => {
     <>
       {" "}
       <Snackbar
-        open={success || error}
+        open={success || error || authError || paymentSuccess}
         autoHideDuration={2000}
         onClose={() => setSuccess(false)}
       >
         <Alert
           onClose={() => setSuccess(false)}
-          severity={error ? "error" : "success"}
+          severity={error || authError ? "error" : "success"}
         >
-          {error ? "Some error occured !" : "Patient Updated Successfully"}
+          {error && "Some error occured !"}
+          {success && "Profile updated successfully !"}
+          {authError && "You are not authorized, please login again !"}
+          {paymentSuccess && "Payment successful !"}
         </Alert>
       </Snackbar>
       {/* main modal */}
