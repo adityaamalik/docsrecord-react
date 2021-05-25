@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Header = () => {
   return (
     <div className="navbar-area">
@@ -5,9 +7,9 @@ const Header = () => {
         <div className="row">
           <div className="col-lg-12">
             <nav className="navbar navbar-expand-lg">
-              <a className="navbar-brand" href="/records">
+              <Link className="navbar-brand" href="/records">
                 <img src="assets/images/logo.png" alt="Logo" width="200px" />
-              </a>
+              </Link>
               <button
                 className="navbar-toggler"
                 type="button"
@@ -28,19 +30,19 @@ const Header = () => {
               >
                 <ul id="nav" className="navbar-nav m-auto">
                   <li className="nav-item">
-                    <a href="/records">RECORDS</a>
+                    <Link to="/records">RECORDS</Link>
                   </li>
                   <li className="nav-item">
-                    <a href="/addpatient">ADD PATIENT</a>
+                    <Link to="/addpatient">ADD PATIENT</Link>
                   </li>
                   <li className="nav-item">
-                    <a href="/appointments">APPOINTMENTS</a>
+                    <Link to="/appointments">APPOINTMENTS</Link>
                   </li>
                   <li className="nav-item">
-                    <a href="/myprofile">MY PROFILE</a>
+                    <Link to="/myprofile">MY PROFILE</Link>
                   </li>
                   <li className="nav-item">
-                    <a href="/statistics">STATISTICS</a>
+                    <Link to="/statistics">STATISTICS</Link>
                   </li>
                   <li className="nav-item">
                     <a
