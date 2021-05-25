@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Row, Col } from "antd";
 
 export const Container = styled.div`
   margin: 50px;
@@ -47,18 +46,6 @@ export const CounterContainer = styled.div`
   }
 `;
 
-export const CounterRow = styled(Row)`
-  text-align: center;
-`;
-
-export const CounterCol = styled(Col)`
-  font-size: 80px;
-
-  @media only screen and (max-width: 768px) {
-    font-size: 30px;
-  }
-`;
-
 export const CounterHeading = styled.span`
   font-size: 40px;
   @media only screen and (max-width: 768px) {
@@ -70,5 +57,13 @@ export const CounterHeading2 = styled.span`
   font-size: 80px;
   @media only screen and (max-width: 768px) {
     font-size: 30px;
+  }
+`;
+
+export const CounterHeading3 = styled.span`
+  font-size: 60px;
+  @media only screen and (max-width: 768px) {
+    margin: 10px;
+    font-size: 40px;
   }
 `;

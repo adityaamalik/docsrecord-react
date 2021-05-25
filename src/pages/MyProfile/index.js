@@ -6,14 +6,13 @@ import Modal from "@material-ui/core/Modal";
 
 // import { useHistory } from "react-router-dom";
 import { Grid, Snackbar } from "@material-ui/core";
-import CancelIcon from "@material-ui/icons/Cancel";
 
 import Avatar from "@material-ui/core/Avatar";
 import { Alert } from "@material-ui/lab";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
-import EditIcon from "@material-ui/icons/Edit";
 
+import Badge from "@material-ui/core/Badge";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 
@@ -43,10 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// function rand() {
-//   return Math.round(Math.random() * 20) - 10;
-// }
-
 function getModalStyle() {
   const top = 50;
   const left = 50;
@@ -66,7 +61,7 @@ const MyProfile = () => {
   const [isMonthlyModalVisible, setIsMonthlyModalVisible] = useState(false);
   const [isYearlyModalVisible, setIsYearlyModalVisible] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error] = useState(false);
+  const [error, setError] = useState(false);
   const [name, setName] = useState("");
   const [clinicName, setClinicName] = useState("");
   const [clinicAddress, setClinicAddress] = useState("");
@@ -75,8 +70,7 @@ const MyProfile = () => {
   const [visitCharges, setVisitCharges] = useState("");
   const [image, setImage] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
-  // getModalStyle is not a pure function, we roll the style only on the first render
+  const [showEdit, toggleEdit] = useState(false);
   const [modalStyle] = useState(getModalStyle);
 
   useEffect(() => {
@@ -91,7 +85,7 @@ const MyProfile = () => {
       })
       .catch((err) => {
         console.log(err);
-
+        setError(true);
         setIsLoading(false);
       });
   }, []);
@@ -141,6 +135,7 @@ const MyProfile = () => {
       })
       .catch((err) => {
         setIsLoading(false);
+        setError(true);
         console.log(err);
       });
   };
@@ -205,6 +200,7 @@ const MyProfile = () => {
           // message
           //   .success("Payment successful !")
           //   .then(() => (window.location.pathname = "/myprofile"));
+          alert("Payment successful !");
           window.location.pathname = "/myprofile";
         }
       },
@@ -399,17 +395,25 @@ const MyProfile = () => {
             <>
               <div style={{ textAlign: "center", marginTop: "20px" }}>
                 {!!docData.image ? (
-                  <span>
+                  <span
+                    onMouseEnter={() => toggleEdit(true)}
+                    onMouseLeave={() => toggleEdit(false)}
+                  >
                     <S.FileUploadLabel htmlFor="userImage">
-                      <Avatar
-                        src={`data:image/${
-                          docData.image.contentType
-                        };base64,${new Buffer.from(docData.image.data).toString(
-                          "base64"
-                        )}`}
-                        className={classes.large}
-                      />
-                      <EditIcon />
+                      <Badge
+                        badgeContent={
+                          showEdit ? <i className="lni-pencil" /> : <></>
+                        }
+                      >
+                        <Avatar
+                          src={`data:image/${
+                            docData.image.contentType
+                          };base64,${new Buffer.from(
+                            docData.image.data
+                          ).toString("base64")}`}
+                          className={classes.large}
+                        />
+                      </Badge>
                     </S.FileUploadLabel>
                     <S.FileUpload
                       type="file"
@@ -566,6 +570,7 @@ const MyProfile = () => {
                 variant="outlined"
                 disabled={isLoading}
                 onClick={onSubmit}
+                color="primary"
               >
                 Save Profile Changes
               </Button>

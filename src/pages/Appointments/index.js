@@ -4,13 +4,13 @@ import axios from "axios";
 import moment from "moment";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { Grid, Snackbar } from "@material-ui/core";
+// import { Link } from "react-router-dom";
+
 import { makeStyles } from "@material-ui/core/styles";
+
+import { Card, Button, Grid, Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import Card from "@material-ui/core/Card";
-import Button from "@material-ui/core/Button";
-import DeleteIcon from "@material-ui/icons/Delete";
+
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
@@ -36,6 +36,11 @@ const Appointments = () => {
   const [success, setSuccess] = useState(false);
   const [error] = useState(false);
   const history = useHistory();
+
+  const [authError, setAuthError] = useState(false);
+  const [completedSuccess, setCompletedSuccess] = useState(false);
+  const [completedError, setCompletedError] = useState(false);
+
   useEffect(() => {
     setIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
@@ -52,6 +57,12 @@ const Appointments = () => {
         //     .error("You are unauthorized user, please login first !")
         //     .then(() => (window.location.pathname = "/login"));
         // }
+        if (!!err.response && err.response.status === 401) {
+          setAuthError(true);
+          setTimeout(() => {
+            window.location.pathname = "/";
+          }, 1000);
+        }
       });
   }, []);
 
@@ -66,6 +77,11 @@ const Appointments = () => {
         setTimeout(() => {
           history.push("/records");
         }, 2000);
+        var users = records.filter(function (record) {
+          return record._id !== id;
+        });
+        setRecords(users);
+        setCompletedSuccess(true);
       })
       .catch((err) => {
         console.log(err);
