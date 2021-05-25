@@ -181,7 +181,7 @@ const MyProfile = () => {
     const { amount, id: order_id, currency } = result.data;
 
     const options = {
-      key: "rzp_test_wWXoxoQf1kjrSm", // Enter the Key ID generated from the Dashboard
+      key: "rzp_live_zEnN96qi9MGBtF", // Enter the Key ID generated from the Dashboard
       amount: amount * 100,
       currency: currency,
       name: "DOCSRECORD",
