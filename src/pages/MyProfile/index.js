@@ -131,7 +131,9 @@ const MyProfile = () => {
       .put(`/doctors/${doctor}`, data)
       .then((response) => {
         setSuccess(true);
-        window.location.pathname = "/myprofile";
+        setTimeout(() => {
+          window.location.pathname = "/myprofile";
+        }, 1000);
       })
       .catch((err) => {
         setIsLoading(false);
@@ -423,9 +425,36 @@ const MyProfile = () => {
                     <br />
                     <br />
                     <span>{image.name}</span>
+                    {!!document?.getElementById("userImage")?.value && (
+                      <Button onClick={onSubmit}>Upload image</Button>
+                    )}
                   </span>
                 ) : (
-                  <span></span>
+                  <span
+                    onMouseEnter={() => toggleEdit(true)}
+                    onMouseLeave={() => toggleEdit(false)}
+                  >
+                    <S.FileUploadLabel htmlFor="userImage">
+                      <Badge
+                        badgeContent={
+                          showEdit ? <i className="lni-pencil" /> : <></>
+                        }
+                      >
+                        <Avatar className={classes.large} />
+                      </Badge>
+                    </S.FileUploadLabel>
+                    <S.FileUpload
+                      type="file"
+                      id="userImage"
+                      onChange={(e) => setImage(e.target.files[0])}
+                    />
+                    <br />
+                    <br />
+                    <span>{image.name}</span>
+                    {!!document?.getElementById("userImage")?.value && (
+                      <Button onClick={onSubmit}>Upload image</Button>
+                    )}
+                  </span>
                 )}
               </div>
               <div style={{ textAlign: "center" }}>
@@ -566,108 +595,6 @@ const MyProfile = () => {
               </Button>
             </Grid>
           </Grid>
-
-          {/* <S.FormRows align="middle">
-            <S.InputCols lg={12} md={12} sm={24} xs={24}>
-              {!!docData.name && (
-                <form className={classes.root} noValidate autoComplete="off">
-                  <TextField
-                    label="Edit name"
-                    variant="outlined"
-                    onChange={(e) => setName(e.target.value)}
-                    defaultValue={docData.name}
-                  />
-                </form>
-              )}
-            </S.InputCols>
-            <S.InputCols lg={12} md={12} sm={24} xs={24}>
-              {docData.phone_number !== undefined &&
-                docData.phone_number !== null && (
-                  <form className={classes.root} noValidate autoComplete="off">
-                    <TextField
-                      variant="outlined"
-                      label="Edit Phone Number"
-                      onChange={(e) => setPhone(e.target.value)}
-                      defaultValue={docData.phone_number}
-                    />
-                  </form>
-                )}
-            </S.InputCols>
-          </S.FormRows>
-
-          <S.FormRows align="middle">
-            <S.InputCols lg={12} md={12} sm={24} xs={24}>
-              {docData.clinic_name !== undefined &&
-                docData.clinic_name !== null && (
-                  <form className={classes.root} noValidate autoComplete="off">
-                    <TextField
-                      variant="outlined"
-                      label="Edit clinic name"
-                      defaultValue={docData.clinic_name}
-                      onChange={(e) => setClinicName(e.target.value)}
-                    />
-                  </form>
-                )}
-            </S.InputCols>
-            <S.InputCols lg={12} md={12} sm={24} xs={24}>
-              {docData.clinic_address !== undefined &&
-                docData.clinic_address !== null && (
-                  <form className={classes.root} noValidate autoComplete="off">
-                    <TextField
-                      variant="outlined"
-                      label="Edit clinic's address"
-                      defaultValue={docData.clinic_address}
-                      onChange={(e) => setClinicAddress(e.target.value)}
-                    />
-                  </form>
-                )}
-            </S.InputCols>
-          </S.FormRows>
-
-          <S.FormRows align="middle">
-            <S.InputCols lg={12} md={12} sm={24} xs={24}>
-              {docData.qualifications !== undefined &&
-                docData.qualifications !== null && (
-                  <form className={classes.root} noValidate autoComplete="off">
-                    <TextField
-                      variant="outlined"
-                      label="Edit qualifications"
-                      defaultValue={docData.qualifications}
-                      onChange={(e) => setQualifications(e.target.value)}
-                    />
-                  </form>
-                )}
-            </S.InputCols>
-            <S.InputCols lg={12} md={12} sm={24} xs={24}>
-              {docData.visit_charges !== undefined &&
-                docData.visit_charges !== null && (
-                  <form className={classes.root} noValidate autoComplete="off">
-                    <TextField
-                      variant="outlined"
-                      label="Edit visit charges"
-                      defaultValue={docData.visit_charges}
-                      onChange={(e) => setVisitCharges(e.target.value)}
-                    />
-                  </form>
-                )}
-            </S.InputCols>
-          </S.FormRows>
-
-          <S.FormRows align="middle">
-            <S.InputCols span={24} style={{ textAlign: "center" }}>
-              <Button
-                variant="outlined"
-                disabled={isLoading}
-                onClick={onSubmit}
-              >
-                Save Profile Changes
-              </Button>
-            </S.InputCols>
-          </S.FormRows>
-
-          <br />
-          <br />
-          <br /> */}
         </div>
       </S.Container>
     </>
