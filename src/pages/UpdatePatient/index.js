@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import * as S from "./styles";
-
 import axios from "axios";
-
-// import Button from "../../common/Button";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -19,8 +16,6 @@ import {
   Snackbar,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import DeleteIcon from "@material-ui/icons/Delete";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -93,6 +88,7 @@ const UpdatePatient = (props) => {
         })
         .catch((err) => {
           console.log(err);
+          setError(true);
           setIsLoading(false);
         });
     } else {
@@ -113,7 +109,7 @@ const UpdatePatient = (props) => {
       console.log(a);
       t.push(a);
     });
-    // console.log(t);
+
     const doctor = localStorage.getItem("docsrecordDoctor");
 
     let data = {};
@@ -146,9 +142,7 @@ const UpdatePatient = (props) => {
       data.payment_method = paymentMethod;
     }
 
-    if (t.length !== 0) {
-      data.treatments = t;
-    }
+    data.treatments = t;
 
     axios
       .put(`/patients/${id}`, data)
@@ -161,6 +155,7 @@ const UpdatePatient = (props) => {
         }, 2000);
       })
       .catch((err) => {
+        setError(true);
         setIsLoading(false);
         console.log(err);
       });
@@ -422,7 +417,10 @@ const UpdatePatient = (props) => {
                       }
                     }}
                   >
-                    <AddCircleIcon color="primary" />
+                    <i
+                      className="lni-plus"
+                      style={{ fontWeight: "bolder", color: "#004aad" }}
+                    ></i>
                   </Button>
                 </Grid>
               </Grid>
@@ -478,7 +476,10 @@ const UpdatePatient = (props) => {
                           )
                         }
                       >
-                        <DeleteIcon color="error" />
+                        <i
+                          className="lni-minus"
+                          style={{ fontWeight: "bolder", color: "red" }}
+                        ></i>
                       </Button>
                     </Grid>
                   </Grid>
@@ -501,277 +502,5 @@ const UpdatePatient = (props) => {
     </>
   );
 };
-//   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-//   let login = (
-//     <Button variant="outlined" onClick={onFinish}>
-//       Update Patient
-//     </Button>
-//   );
-//   if (islogin === true) {
-//     login = <Spin indicator={antIcon} />;
-//   }
-//   return (
-//     <>
-//       <S.Container>
-//         <S.Heading>Update PATIENT</S.Heading>
-
-//         <div className="classes.root">
-//           <Grid
-//             container
-//             direction="row"
-//             justify="center"
-//             alignItems="center"
-//             spacing={3}
-//           >
-//             <Grid item lg={4} md={4} sm={12} xs={12}>
-//               {patient.name !== undefined && patient.name !== null && (
-//                 <form
-//                   className={classes.root}
-//                   noValidate
-//                   autoComplete="off"
-//                   onSubmit={(event) => event.preventDefault()}
-//                 >
-//                   <TextField
-//                     label="Name"
-//                     variant="outlined"
-//                     onChange={(e) => setName(e.target.value)}
-//                     defaultValue={patient.name}
-//                   />
-//                 </form>
-//               )}
-//             </Grid>
-//             <Grid item lg={4} md={4} sm={12} xs={12}>
-//               {patient.age !== undefined && patient.age !== null && (
-//                 <form
-//                   className={classes.root}
-//                   noValidate
-//                   autoComplete="off"
-//                   onSubmit={(event) => event.preventDefault()}
-//                 >
-//                   <TextField
-//                     label="Age"
-//                     variant="outlined"
-//                     onChange={(e) => setAge(e.target.value)}
-//                     defaultValue={patient.age}
-//                   />
-//                 </form>
-//               )}
-//             </Grid>
-
-//             <Grid item lg={4} md={4} sm={12} xs={12}>
-//               {patient.gender !== undefined && patient.gender !== null && (
-//                 <FormControl
-//                   variant="outlined"
-//                   className={classes.formControl}
-//                   onSubmit={(event) => event.preventDefault()}
-//                 >
-//                   <InputLabel id="demo-simple-select-outlined-label">
-//                     Gender
-//                   </InputLabel>
-//                   <Select
-//                     labelId="demo-simple-select-outlined-label"
-//                     id="demo-simple-select-outlined"
-//                     defaultValue={patient.gender}
-//                     onChange={(e) => setGender(e.target.value)}
-//                     label="Age"
-//                   >
-//                     <MenuItem value="male">Male</MenuItem>
-//                     <MenuItem value="female">Female</MenuItem>
-//                     <MenuItem value="others">Others</MenuItem>
-//                   </Select>
-//                 </FormControl>
-//               )}
-//             </Grid>
-//           </Grid>
-
-//           <Grid
-//             container
-//             direction="row"
-//             justify="center"
-//             alignItems="center"
-//             spacing={3}
-//           >
-//             <Grid item lg={6} md={6} sm={12} xs={12}>
-//               {patient.phone_number !== undefined &&
-//                 patient.phone_number !== null && (
-//                   <form
-//                     className={classes.root}
-//                     noValidate
-//                     autoComplete="off"
-//                     onSubmit={(event) => event.preventDefault()}
-//                   >
-//                     <TextField
-//                       label="Phone Number"
-//                       variant="outlined"
-//                       onChange={(e) => setPhone(e.target.value)}
-//                       defaultValue={patient.phone_number}
-//                     />
-//                   </form>
-//                 )}
-//             </Grid>
-
-//             <Grid item lg={6} md={6} sm={12} xs={12}>
-//               {patient.email !== undefined && patient.email !== null && (
-//                 <form
-//                   className={classes.root}
-//                   noValidate
-//                   autoComplete="off"
-//                   onSubmit={(event) => event.preventDefault()}
-//                 >
-//                   <TextField
-//                     label="Email"
-//                     variant="outlined"
-//                     onChange={(e) => setEmail(e.target.value)}
-//                     defaultValue={patient.email}
-//                   />
-//                 </form>
-//               )}
-//             </Grid>
-//           </Grid>
-
-//           <Grid
-//             container
-//             direction="row"
-//             justify="center"
-//             alignItems="center"
-//             spacing={3}
-//           >
-//             <Grid item xs={12}>
-//               {patient.address !== undefined && patient.address !== null && (
-//                 <form
-//                   className={classes.root}
-//                   noValidate
-//                   autoComplete="off"
-//                   onSubmit={(event) => event.preventDefault()}
-//                 >
-//                   <TextField
-//                     id="outlined-multiline-static"
-//                     label="Address"
-//                     multiline
-//                     rows={4}
-//                     defaultValue={patient.address}
-//                     onChange={(e) => setAddress(e.target.value)}
-//                     variant="outlined"
-//                   />
-//                 </form>
-//               )}
-//             </Grid>
-//           </Grid>
-
-//           <Grid
-//             container
-//             direction="row"
-//             justify="center"
-//             alignItems="center"
-//             spacing={3}
-//           >
-//             <Grid item lg={6} md={6} sm={12} xs={12}>
-//               {numberOfTreatments.map((id, index) => (
-//                 <Grid
-//                   container
-//                   direction="row"
-//                   justify="center"
-//                   alignItems="center"
-//                   spacing={3}
-//                   key={index}
-//                 >
-//                   <Grid item xs={5}>
-//                     <form
-//                       className={classes.root}
-//                       noValidate
-//                       autoComplete="off"
-//                       onSubmit={(event) => event.preventDefault()}
-//                     >
-//                       <TextField
-//                         label="Treatment"
-//                         variant="outlined"
-//                         onChangeText={(text) => {
-//                           const temp = treatments;
-//                           temp[
-//                             numberOfTreatments[numberOfTreatments.length - 1]
-//                           ] = text;
-
-//                           setTreatments(temp);
-//                         }}
-//                       />
-//                     </form>
-//                   </Grid>
-//                   <Grid item xs={5}>
-//                     <form
-//                       className={classes.root}
-//                       noValidate
-//                       autoComplete="off"
-//                       onSubmit={(event) => event.preventDefault()}
-//                     >
-//                       <TextField
-//                         label="Charges"
-//                         variant="outlined"
-//                         onChangeText={(text) => {
-//                           const temp = charges;
-//                           temp[
-//                             numberOfTreatments[numberOfTreatments.length - 1]
-//                           ] = text;
-
-//                           setCharges(temp);
-//                         }}
-//                       />
-//                     </form>
-//                   </Grid>
-//                   <Grid item xs={2}>
-//                     <Button
-//                       onClick={() => {
-//                         setNumberOfTreatments(
-//                           numberOfTreatments.filter((t) => {
-//                             return t !== id;
-//                           })
-//                         );
-//                       }}
-//                     >
-//                       -
-//                     </Button>
-//                   </Grid>
-//                 </Grid>
-//               ))}
-//               <Button
-//                 onClick={() => {
-//                   setNumberOfTreatments([
-//                     ...numberOfTreatments,
-//                     numberOfTreatments.length,
-//                   ]);
-//                 }}
-//                 variant="outlined"
-//               >
-//                 + Add Treatment
-//               </Button>
-//             </Grid>
-//             <Grid item lg={6} md={6} sm={12} xs={12}>
-//               {patient.payment_method !== undefined &&
-//                 patient.payment_method !== null && (
-//                   <form
-//                     className={classes.root}
-//                     noValidate
-//                     autoComplete="off"
-//                     onSubmit={(event) => event.preventDefault()}
-//                   >
-//                     <TextField
-//                       label="Payment Method"
-//                       variant="outlined"
-//                       onChange={(e) => setPaymentMethod(e.target.value)}
-//                       defaultValue={patient.payment_method}
-//                     />
-//                   </form>
-//                 )}
-//             </Grid>
-//           </Grid>
-
-//           <div style={{ textAlign: "center" }}>{login}</div>
-//         </div>
-//       </S.Container>
-
-//       <br />
-//       <br />
-//     </>
-//   );
-// };
 
 export default UpdatePatient;

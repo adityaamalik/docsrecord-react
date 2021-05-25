@@ -3,12 +3,8 @@ import * as S from "./styles";
 import { Line } from "react-chartjs-2";
 import Grid from "@material-ui/core/Grid";
 import CountUp from "react-countup";
-import { Col, message } from "antd";
-import {
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-  LoadingOutlined,
-} from "@ant-design/icons";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -16,8 +12,7 @@ const Statistics = () => {
   const [stats, setStats] = useState({});
   const [monthData, setMonthData] = useState([]);
   const [weekData, setWeekData] = useState([]);
-  const [monthDataMobile, setMonthDataMobile] = useState([]);
-  const [weekDataMobile, setWeekDataMobile] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -51,15 +46,14 @@ const Statistics = () => {
         ];
 
         setWeekData(WeekData);
-        setWeekDataMobile(WeekData);
 
         setIsLoading(false);
       })
       .catch((err) => {
         if (!!err.response && err.response.status === 401) {
-          message
-            .error("You are unauthorized user, please login first !")
-            .then(() => (window.location.pathname = "/login"));
+          // message
+          //   .error("You are unauthorized user, please login first !")
+          //   .then(() => (window.location.pathname = "/login"));
         }
         setIsLoading(false);
       });
@@ -79,20 +73,7 @@ const Statistics = () => {
       },
     ],
   };
-  const WeekstateMobile = {
-    labels: ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"],
-    datasets: [
-      {
-        label: "Patient",
-        fill: false,
-        lineTension: 0,
-        backgroundColor: "rgba(75,192,192,1)",
-        borderColor: "rgba(0,0,0,1)",
-        borderWidth: 2,
-        data: weekDataMobile,
-      },
-    ],
-  };
+
   const Monthstate = {
     labels: [
       "Jan",
@@ -125,7 +106,7 @@ const Statistics = () => {
     <>
       {isLoading ? (
         <div style={{ textAlign: "center", marginTop: "100px" }}>
-          <LoadingOutlined style={{ fontSize: "50px" }} />
+          <CircularProgress />
         </div>
       ) : (
         <>
@@ -190,7 +171,9 @@ const Statistics = () => {
               {" "}
               <S.CounterHeading2>
                 {stats.currentweek !== undefined && (
-                  <CountUp end={stats.currentweek} duration={4} />
+                  <div>
+                    <CountUp end={stats.currentweek} duration={4} />
+                  </div>
                 )}
               </S.CounterHeading2>
             </Grid>
@@ -260,9 +243,9 @@ const Statistics = () => {
                     <CountUp end={stats.monthpercentage} duration={4} />
                     <span>%</span>
                     {stats.monthpercentage > 0 ? (
-                      <ArrowUpOutlined />
+                      <i class="lni lni-stats-up"></i>
                     ) : (
-                      <ArrowDownOutlined />
+                      <i class="lni lni-stats-down"></i>
                     )}
                   </Grid>
                 )}
@@ -284,9 +267,9 @@ const Statistics = () => {
                     <CountUp end={stats.weekpercentage} duration={4} />
                     <span>%</span>
                     {stats.weekpercentage > 0 ? (
-                      <ArrowUpOutlined />
+                      <i class="lni lni-stats-up"></i>
                     ) : (
-                      <ArrowDownOutlined />
+                      <i class="lni lni-stats-down"></i>
                     )}
                   </Grid>
                 )}
@@ -332,125 +315,100 @@ const Statistics = () => {
             </Grid>
           </Grid>
 
-          {/* <S.CounterContainer>
-            <S.CounterRow align="middle" justify="center">
-              {!!stats.monthpercentage && (
-                <S.CounterCol span={12}>
-                  <CountUp end={stats.monthpercentage} duration={4} />
-                  <span>%</span>
-                  {stats.monthpercentage > 0 ? (
-                    <ArrowUpOutlined />
-                  ) : (
-                    <ArrowDownOutlined />
-                  )}
-                </S.CounterCol>
-              )}
-
-              {!!stats.weekpercentage && (
-                <S.CounterCol span={12}>
-                  <CountUp end={stats.weekpercentage} duration={4} />
-                  <span>%</span>
-                  {stats.weekpercentage > 0 ? (
-                    <ArrowUpOutlined />
-                  ) : (
-                    <ArrowDownOutlined />
-                  )}
-                </S.CounterCol>
-              )}
-            </S.CounterRow>
-
-            <S.CounterRow align="middle" justify="center">
-              {!!stats.monthpercentage && (
-                <Col span={12}>
-                  <span>SINCE LAST MONTH</span>
-                </Col>
-              )}
-              {!!stats.weekpercentage && (
-                <Col span={12}>
-                  <span>SINCE LAST WEEK</span>
-                </Col>
-              )}
-            </S.CounterRow>
-          </S.CounterContainer> */}
-
           <S.Graphmobile>
-            <h1>Monthly Graph</h1>
+            <S.CounterHeading3>Monthly Graph</S.CounterHeading3>
             <Line
               width={25}
               height={25}
-              options={{ maintainAspectRatio: false }}
+              options={
+                ({
+                  maintainAspectRatio: false,
+                },
+                {
+                  title: {
+                    display: true,
+                    text: "Patients per month",
+                    fontSize: 20,
+                  },
+                  legend: {
+                    display: true,
+                    position: "right",
+                  },
+                })
+              }
               data={Monthstate}
-              options={{
-                title: {
-                  display: true,
-                  text: "Patients per month",
-                  fontSize: 20,
-                },
-                legend: {
-                  display: true,
-                  position: "right",
-                },
-              }}
             />
           </S.Graphmobile>
           <S.Graphpc>
-            <h1>Monthly Graph</h1>
+            <S.CounterHeading3>Monthly Graph</S.CounterHeading3>
             <Line
               width={15}
               height={5}
-              options={{ maintainAspectRatio: false }}
+              options={
+                ({
+                  maintainAspectRatio: false,
+                },
+                {
+                  title: {
+                    display: true,
+                    text: "Patients per month",
+                    fontSize: 20,
+                  },
+                  legend: {
+                    display: true,
+                    position: "right",
+                  },
+                })
+              }
               data={Monthstate}
-              options={{
-                title: {
-                  display: true,
-                  text: "Patients per month",
-                  fontSize: 20,
-                },
-                legend: {
-                  display: true,
-                  position: "right",
-                },
-              }}
             />
           </S.Graphpc>
           <S.Graphmobile>
-            <h1>Weekly Graph</h1>
+            <S.CounterHeading3>Weekly Graph</S.CounterHeading3>
             <Line
               width={25}
               height={25}
-              options={{ maintainAspectRatio: false }}
-              data={WeekstateMobile}
-              options={{
-                title: {
-                  display: true,
-                  text: "Average Rainfall per month",
-                  fontSize: 20,
+              options={
+                ({
+                  maintainAspectRatio: false,
                 },
-                legend: {
-                  display: true,
-                  position: "right",
-                },
-              }}
+                {
+                  title: {
+                    display: true,
+                    text: "Patients per month",
+                    fontSize: 20,
+                  },
+                  legend: {
+                    display: true,
+                    position: "right",
+                  },
+                })
+              }
+              data={Weekstate}
             />
           </S.Graphmobile>
           <S.Graphpc>
-            <h1>Weekly Graph</h1>
+            <S.CounterHeading3>Weekly Graph</S.CounterHeading3>
             <Line
               width={15}
               height={5}
-              options={{ maintainAspectRatio: false }}
+              options={
+                ({
+                  maintainAspectRatio: false,
+                },
+                {
+                  title: {
+                    display: true,
+                    text: "Patients per month",
+                    fontSize: 20,
+                  },
+                  legend: {
+                    display: true,
+                    position: "right",
+                  },
+                })
+              }
               data={Weekstate}
-              options={{
-                title: {
-                  display: true,
-                  text: "Average Rainfall per month",
-                  fontSize: 20,
-                },
-                legend: {
-                  display: true,
-                  position: "right",
-                },
-              }}
             />
           </S.Graphpc>
 

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Row, Col, Input, Button } from "antd";
 
 export const Container = styled.div`
   margin: 50px;
@@ -20,38 +19,10 @@ export const Heading = styled.h1`
     marin-top: 50px;
   }
 `;
-export const ModalDiv = styled.div`
+export const ModalDiv = styled.h1`
+  display: inline;
   @media only screen and (max-width: 768px) {
     display: none;
-  }
-`;
-
-export const InputCols = styled(Col)`
-  margin-top: 10px;
-  @media only screen and (max-width: 768px) {
-    margin-top: 5px;
-  }
-`;
-
-export const InputBox = styled(Input)`
-  border-bottom: 2px solid gray;
-  &:focus {
-    border-bottom: 2px solid black;
-  }
-
-  &:hover {
-    border-bottom: 2px solid black;
-  }
-`;
-
-export const FormRows = styled(Row)``;
-
-export const CustomButton = styled(Button)`
-  color: black;
-  border-color: black;
-  &:hover {
-    color: black;
-    border-color: black;
   }
 `;
 

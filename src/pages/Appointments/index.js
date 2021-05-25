@@ -3,7 +3,11 @@ import * as S from "./styles";
 import axios from "axios";
 import moment from "moment";
 import { LoadingOutlined } from "@ant-design/icons";
+import { useHistory } from "react-router-dom";
+// import { Link } from "react-router-dom";
+
 import { makeStyles } from "@material-ui/core/styles";
+
 import { Card, Button, Grid, Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
@@ -29,6 +33,9 @@ const Appointments = () => {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const classes = useStyles();
+  const [success, setSuccess] = useState(false);
+  const [error] = useState(false);
+  const history = useHistory();
 
   const [authError, setAuthError] = useState(false);
   const [completedSuccess, setCompletedSuccess] = useState(false);
@@ -45,6 +52,11 @@ const Appointments = () => {
         setIsLoading(false);
       })
       .catch((err) => {
+        // if (!!err.response && err.response.status === 401) {
+        //   message
+        //     .error("You are unauthorized user, please login first !")
+        //     .then(() => (window.location.pathname = "/login"));
+        // }
         if (!!err.response && err.response.status === 401) {
           setAuthError(true);
           setTimeout(() => {
@@ -61,6 +73,10 @@ const Appointments = () => {
       .put(`/patients/${id}`, { next_appointment_date: today })
       .then((response) => {
         console.log(response);
+        setSuccess(true);
+        setTimeout(() => {
+          history.push("/records");
+        }, 2000);
         var users = records.filter(function (record) {
           return record._id !== id;
         });
@@ -117,6 +133,18 @@ const Appointments = () => {
         </Alert>
       </Snackbar>
       <S.Container>
+        <Snackbar
+          open={success || error}
+          autoHideDuration={2000}
+          onClose={() => setSuccess(false)}
+        >
+          <Alert
+            onClose={() => setSuccess(false)}
+            severity={error ? "error" : "success"}
+          >
+            {error ? "Some error occured !" : "Appointment added Successfully"}
+          </Alert>
+        </Snackbar>
         <S.Heading>
           {isLoading ? (
             <LoadingOutlined style={{ fontSize: "50px" }} />
