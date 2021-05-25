@@ -74,7 +74,7 @@ const Home = () => {
   };
 
   const onGoogleFailure = (err) => {
-    alert("Some error occured, please try again later !");
+    console.log(err);
   };
 
   const onSubmitForRegister = () => {
@@ -507,13 +507,22 @@ const Home = () => {
                           </Button>
                         </form>
                       ) : (
-                        <GoogleLogin
-                          clientId="824922868367-uf280onns6u425nfh4d6krq7bu4suu1g.apps.googleusercontent.com"
-                          buttonText="Get started with google"
-                          onSuccess={onGoogleSuccess}
-                          onFailure={onGoogleFailure}
-                          cookiePolicy={"single_host_origin"}
-                        />
+                        <>
+                          <br />
+                          <br />
+                          <GoogleLogin
+                            clientId="824922868367-uf280onns6u425nfh4d6krq7bu4suu1g.apps.googleusercontent.com"
+                            buttonText="Get started with google"
+                            onSuccess={onGoogleSuccess}
+                            onFailure={onGoogleFailure}
+                            cookiePolicy={"single_host_origin"}
+                          />
+                          <br />
+                          <br />
+                          <Button onClick={() => toggleRegisterForm(false)}>
+                            Already registered ? Login
+                          </Button>
+                        </>
                       )}
                     </div>
                   ) : (
@@ -550,6 +559,10 @@ const Home = () => {
                           disabled={isLoading}
                         >
                           {isLoading ? <CircularProgress /> : "Login"}
+                        </Button>
+
+                        <Button onClick={() => toggleRegisterForm(true)}>
+                          or Register
                         </Button>
                       </form>
                     </div>
