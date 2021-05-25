@@ -115,32 +115,19 @@ const UpdatePatient = (props) => {
     let data = {};
     data["doctor"] = doctor;
 
-    if (name !== "") {
-      data.name = name;
-    }
+    data.name = name;
 
-    if (age !== "") {
-      data.age = age;
-    }
+    data.age = age;
 
-    if (gender !== "") {
-      data.gender = gender;
-    }
+    data.gender = gender;
 
-    if (phone !== "") {
-      data.phone_number = phone;
-    }
+    data.phone_number = phone;
 
-    if (email !== "") {
-      data.email = email;
-    }
+    data.email = email;
 
-    if (address !== "") {
-      data.address = address;
-    }
-    if (paymentMethod !== "") {
-      data.payment_method = paymentMethod;
-    }
+    data.address = address;
+
+    data.payment_method = paymentMethod;
 
     data.treatments = t;
 
