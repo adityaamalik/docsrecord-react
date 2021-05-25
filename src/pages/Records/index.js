@@ -86,6 +86,8 @@ const Records = () => {
   const [imageSuccess, setImageSuccess] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  const [authError, setAuthError] = useState(false);
+
   useEffect(() => {
     toggleIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
@@ -99,8 +101,10 @@ const Records = () => {
       .catch((err) => {
         toggleIsLoading(false);
         if (!!err.response && err.response.status === 401) {
-          alert("You are unauthorized user, please login first !");
-          window.location.pathname = "/";
+          setAuthError(true);
+          setTimeout(() => {
+            window.location.pathname = "/";
+          }, 1000);
         }
       });
   }, []);
@@ -124,8 +128,10 @@ const Records = () => {
       .catch((err) => {
         setModalContentLoading(false);
         if (!!err.response && err.response.status === 401) {
-          alert("You are unauthorized user, please login first !");
-          window.location.pathname = "/";
+          setAuthError(true);
+          setTimeout(() => {
+            window.location.pathname = "/";
+          }, 1000);
         }
       });
   };
@@ -217,7 +223,8 @@ const Records = () => {
           appointmentSuccess ||
           appointmentError ||
           imageSuccess ||
-          imageError
+          imageError ||
+          authError
         }
         autoHideDuration={2000}
         onClose={() => {
@@ -227,6 +234,7 @@ const Records = () => {
           setImageError(false);
           setAppointmentError(false);
           setAppointmentSuccess(false);
+          setAuthError(false);
         }}
       >
         <Alert
@@ -237,9 +245,12 @@ const Records = () => {
             setImageError(false);
             setAppointmentError(false);
             setAppointmentSuccess(false);
+            setAuthError(false);
           }}
           severity={
-            deleteError || appointmentError || imageError ? "error" : "success"
+            deleteError || appointmentError || imageError || authError
+              ? "error"
+              : "success"
           }
         >
           {deleteError && "Cannot delete the record !"}
@@ -248,6 +259,7 @@ const Records = () => {
           {appointmentSuccess && "Appointment updated successfully !"}
           {imageError && "Cannot upload images"}
           {imageSuccess && "Successfully uploaded the images !"}
+          {authError && "You are unauthorized user, please login first !"}
         </Alert>
       </Snackbar>
       <Modal

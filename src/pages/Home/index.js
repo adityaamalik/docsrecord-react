@@ -5,6 +5,7 @@ import GoogleLogin from "react-google-login";
 import axios from "axios";
 import * as S from "./styles";
 import moment from "moment";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -502,7 +503,7 @@ const Home = () => {
                             onClick={onSubmitForRegister}
                             disabled={isLoading}
                           >
-                            Register
+                            {isLoading ? <CircularProgress /> : "Register"}
                           </Button>
                         </form>
                       ) : (
@@ -548,7 +549,7 @@ const Home = () => {
                           onClick={onSubmit}
                           disabled={isLoading}
                         >
-                          Login
+                          {isLoading ? <CircularProgress /> : "Login"}
                         </Button>
                       </form>
                     </div>
@@ -1178,22 +1179,22 @@ const Home = () => {
 
                     <ul className="social mt-40">
                       <li>
-                        <a href="/#">
+                        <a href="https://www.instagram.com/docsrecord/">
                           <i className="lni-facebook"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="/#">
+                        <a href="https://www.instagram.com/docsrecord/">
                           <i className="lni-twitter"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="/#">
+                        <a href="https://www.instagram.com/docsrecord/">
                           <i className="lni-instagram"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="/#">
+                        <a href="https://www.instagram.com/docsrecord/">
                           <i className="lni-linkedin"></i>
                         </a>
                       </li>

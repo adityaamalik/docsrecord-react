@@ -49,6 +49,30 @@ const AboutUs = () => {
           and shapes to get where it is right now.
         </p>
         <br />
+
+        <div style={{ textAlign: "center" }}>
+          <img
+            src="/assets/images/aditya.jpeg"
+            alt="aditya malik"
+            style={{
+              height: "100px",
+              width: "auto",
+              borderRadius: "50%",
+              marginRight: "50px",
+            }}
+          />
+          <img
+            src="/assets/images/altamash.jpeg"
+            alt="altamash khan"
+            style={{ height: "100px", width: "auto", borderRadius: "50%" }}
+          />
+        </div>
+        <div style={{ textAlign: "center", marginTop: "5px" }}>
+          <span style={{ marginRight: "70px" }}>Aditya Malik</span>
+          <span>Altamash Khan</span>
+        </div>
+
+        <br />
         <p>Want to join our team ? </p>
         <p>Contact us : docsrecordmail@gmail.com</p>
       </div>
