@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import * as S from "./styles";
 import axios from "axios";
 import moment from "moment";
-import { LoadingOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
-// import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 
-import { Card, Button, Grid, Snackbar } from "@material-ui/core";
+import {
+  Card,
+  Button,
+  Grid,
+  Snackbar,
+  CircularProgress,
+} from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles({
@@ -52,11 +56,6 @@ const Appointments = () => {
         setIsLoading(false);
       })
       .catch((err) => {
-        // if (!!err.response && err.response.status === 401) {
-        //   message
-        //     .error("You are unauthorized user, please login first !")
-        //     .then(() => (window.location.pathname = "/login"));
-        // }
         if (!!err.response && err.response.status === 401) {
           setAuthError(true);
           setTimeout(() => {
@@ -147,7 +146,7 @@ const Appointments = () => {
         </Snackbar>
         <S.Heading>
           {isLoading ? (
-            <LoadingOutlined style={{ fontSize: "50px" }} />
+            <CircularProgress />
           ) : (
             <>
               {records.length === 0

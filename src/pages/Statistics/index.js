@@ -101,7 +101,13 @@ const Statistics = () => {
         </div>
       ) : (
         <>
-          <Grid container direction="row" justify="center" alignItems="center">
+          <Grid
+            container
+            style={{ marginTop: "100px" }}
+            direction="row"
+            justify="center"
+            alignItems="center"
+          >
             <Grid
               item
               xs={6}
@@ -125,14 +131,6 @@ const Statistics = () => {
               <S.CounterHeading>THIS WEEK</S.CounterHeading>
             </Grid>
           </Grid>
-          {/* <S.CounterRow align="middle">
-            <Col span={12}>
-              <S.CounterHeading>THIS MONTH</S.CounterHeading>
-            </Col>
-            <Col span={12}>
-              <S.CounterHeading>THIS WEEK</S.CounterHeading>
-            </Col>
-          </S.CounterRow> */}
 
           <Grid container direction="row" justify="center" alignItems="center">
             <Grid
@@ -194,29 +192,6 @@ const Statistics = () => {
               <span>PATIENTS</span>
             </Grid>
           </Grid>
-
-          {/* <S.CounterContainer>
-            <S.CounterRow align="middle">
-              <S.CounterCol span={12}>
-                {stats.currentmonth !== undefined && (
-                  <CountUp end={stats.currentmonth} duration={4} />
-                )}
-              </S.CounterCol>
-              <S.CounterCol span={12}>
-                {stats.currentweek !== undefined && (
-                  <CountUp end={stats.currentweek} duration={4} />
-                )}
-              </S.CounterCol>
-            </S.CounterRow>
-            <S.CounterRow align="middle">
-              <Col span={12}>
-                <span>PATIENTS</span>
-              </Col>
-              <Col span={12}>
-                <span>PATIENTS</span>
-              </Col>
-            </S.CounterRow>
-          </S.CounterContainer> */}
 
           <Grid container direction="row" justify="center" alignItems="center">
             <Grid

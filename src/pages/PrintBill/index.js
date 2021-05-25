@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Row, Col, Button } from "antd";
+import { Button, Grid } from "@material-ui/core";
 import * as S from "./styles";
 import Logo from "../../img/doc.png";
 
@@ -31,12 +31,12 @@ const PrintBill = (props) => {
 
   return (
     <S.Container>
-      <Row align="middle">
-        <Col span={10}>
+      <Grid container>
+        <Grid item xs={5}>
           <S.Logo src={Logo} alt="Logo" />
-        </Col>
+        </Grid>
 
-        <Col span={14}>
+        <Grid item xs={7}>
           <h2>MEDICAL INVOICE</h2>
           <br />
           <h4>
@@ -45,75 +45,75 @@ const PrintBill = (props) => {
           <h4>{doc.clinic_name}</h4>
           <h4>{doc.clinic_address}</h4>
           <h4>{doc.phone_number}</h4>
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
 
       <S.PatientInfo>
-        <Row>
-          <Col span={12}>
+        <Grid container>
+          <Grid item xs={6}>
             <h4>Patient Name : </h4>
-          </Col>
-          <Col span={12}>
+          </Grid>
+          <Grid item xs={6}>
             <h4>{patient.name}</h4>
-          </Col>
-        </Row>
+          </Grid>
+        </Grid>
 
-        <Row>
-          <Col span={12}>
+        <Grid container>
+          <Grid item xs={6}>
             <h4>Address : </h4>
-          </Col>
-          <Col span={12}>
+          </Grid>
+          <Grid item xs={6}>
             <h4>{patient.address}</h4>
-          </Col>
-        </Row>
+          </Grid>
+        </Grid>
 
-        <Row>
-          <Col span={12}>
+        <Grid container>
+          <Grid item xs={6}>
             <h4>Phone Number : </h4>
-          </Col>
-          <Col span={12}>
+          </Grid>
+          <Grid item xs={6}>
             <h4>{patient.phone_number}</h4>
-          </Col>
-        </Row>
+          </Grid>
+        </Grid>
 
-        <Row>
-          <Col span={12}>
+        <Grid container>
+          <Grid item xs={6}>
             <h4>Age : </h4>
-          </Col>
-          <Col span={12}>
+          </Grid>
+          <Grid item xs={6}>
             <h4>{patient.age}</h4>
-          </Col>
-        </Row>
+          </Grid>
+        </Grid>
 
-        <Row>
-          <Col span={12}>
+        <Grid container>
+          <Grid item xs={6}>
             <h4>Gender : </h4>
-          </Col>
-          <Col span={12}>
+          </Grid>
+          <Grid item xs={6}>
             <h4>{patient.gender}</h4>
-          </Col>
-        </Row>
+          </Grid>
+        </Grid>
       </S.PatientInfo>
 
       <S.TreatmentContainer>
         {patient.treatments && (
-          <Row>
-            <Col span={8}>
+          <Grid container>
+            <Grid item xs={4}>
               <h3>
                 <strong>S. No.</strong>
               </h3>
-            </Col>
-            <Col span={8}>
+            </Grid>
+            <Grid item xs={4}>
               <h3>
                 <strong>Treatment</strong>
               </h3>
-            </Col>
-            <Col span={8}>
+            </Grid>
+            <Grid item xs={4}>
               <h3>
                 <strong>Charges</strong>
               </h3>
-            </Col>
-          </Row>
+            </Grid>
+          </Grid>
         )}
 
         {patient.treatments && <hr />}
@@ -121,17 +121,17 @@ const PrintBill = (props) => {
           patient.treatments.map((treatment, index) => {
             return (
               <>
-                <Row>
-                  <Col span={8}>
+                <Grid container>
+                  <Grid item xs={4}>
                     <h3>{index + 1}</h3>
-                  </Col>
-                  <Col span={8}>
+                  </Grid>
+                  <Grid item xs={4}>
                     <h3>{treatment.treatment}</h3>
-                  </Col>
-                  <Col span={8}>
+                  </Grid>
+                  <Grid item xs={4}>
                     <h3>₹ {treatment.charges}</h3>
-                  </Col>
-                </Row>
+                  </Grid>
+                </Grid>
                 <hr />
               </>
             );
@@ -140,39 +140,45 @@ const PrintBill = (props) => {
         <br />
         <br />
 
-        <Row>
-          <Col span={8}></Col>
-          <Col span={8}>
+        <Grid container>
+          <Grid item xs={4}></Grid>
+          <Grid item xs={4}>
             <h3>
               <strong>Consultation fee :</strong>
             </h3>
-          </Col>
-          <Col span={8}>₹ {doc.visit_charges}</Col>
-        </Row>
+          </Grid>
+          <Grid item xs={4}>
+            ₹ {doc.visit_charges}
+          </Grid>
+        </Grid>
 
         <br />
 
-        <Row>
-          <Col span={8}></Col>
-          <Col span={8}>
+        <Grid container>
+          <Grid item xs={4}></Grid>
+          <Grid item xs={4}>
             <h3>
               <strong>Total bill :</strong>
             </h3>
-          </Col>
-          <Col span={8}>₹ {doc.visit_charges + patient.total_cost}</Col>
-        </Row>
+          </Grid>
+          <Grid item xs={4}>
+            ₹ {doc.visit_charges + patient.total_cost}
+          </Grid>
+        </Grid>
 
         <br />
 
-        <Row>
-          <Col span={8}></Col>
-          <Col span={8}>
+        <Grid container>
+          <Grid item xs={4}></Grid>
+          <Grid item xs={4}>
             <h3>
               <strong>Payment Method :</strong>
             </h3>
-          </Col>
-          <Col span={8}>{patient.payment_method}</Col>
-        </Row>
+          </Grid>
+          <Grid item xs={4}>
+            {patient.payment_method}
+          </Grid>
+        </Grid>
       </S.TreatmentContainer>
 
       <div id="printBtn" style={{ textAlign: "center" }}>

@@ -29,6 +29,7 @@ import { Alert } from "@material-ui/lab";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
+    marginTop: "100px",
   },
   container: {
     maxHeight: "80vh",

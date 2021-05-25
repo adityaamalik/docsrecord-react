@@ -1,13 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Row, Col, Button } from "antd";
+import { Grid, Button } from "@material-ui/core";
 import * as S from "./styles";
 
 const PrintPrescription = (props) => {
   const { patient } = props.location.state;
 
-  console.log("patient");
-  console.log(patient);
   const [doc, setDoc] = useState({});
 
   useEffect(() => {
@@ -43,30 +41,30 @@ const PrintPrescription = (props) => {
 
       <hr />
 
-      <Row style={{ marginTop: "20px" }}>
-        <Col span={12}>
+      <Grid container style={{ marginTop: "20px" }}>
+        <Grid item xs={6}>
           <strong>Patient Name</strong> :{" "}
           <S.UnderlinedSpan>{patient.name}</S.UnderlinedSpan>
-        </Col>
-        <Col span={6}>
+        </Grid>
+        <Grid item xs={3}>
           <strong>Age</strong> :{" "}
           <S.UnderlinedSpan>{patient.age}</S.UnderlinedSpan>
-        </Col>
-        <Col span={6}>
+        </Grid>
+        <Grid item xs={3}>
           <strong>Gender</strong>:{" "}
           <S.UnderlinedSpan>{patient.gender}</S.UnderlinedSpan>
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
 
-      <Row style={{ marginTop: "30px" }}>
-        <Col span={18}>
+      <Grid container style={{ marginTop: "30px" }}>
+        <Grid item xs={9}>
           <strong>Address</strong> :{" "}
           <S.UnderlinedSpan>{patient.address}</S.UnderlinedSpan>
-        </Col>
-        <Col span={6}>
+        </Grid>
+        <Grid item xs={3}>
           <strong>Date</strong> :
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
 
       <S.EmptyDiv></S.EmptyDiv>
       <br />

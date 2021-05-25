@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Row, Card } from "antd";
 
 export const Container = styled.div`
   margin: 50px;
@@ -29,21 +28,14 @@ export const Date = styled.span`
   font-size: 20px;
 `;
 
-export const CustomRow = styled(Row)`
-  margin-top: 30px;
-`;
-
-export const AppointmentCard = styled(Card)`
-  margin: 10px;
-`;
-
 export const AppointmentCardContainer = styled.div`
   margin-top: 10px;
 `;
 
 export const Heading = styled.h1`
   text-align: center;
-  margin-top: 50px;
+  margin-top: 100px;
+  margin-bottom: 50px;
   @media only screen and (max-width: 768px) {
     font-size: 15px;
     marin-top: 50px;
