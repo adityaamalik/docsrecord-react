@@ -70,7 +70,7 @@ const Header = () => {
               className="ant-dropdown-link"
               onClick={(e) => e.preventDefault()}
             >
-              <S.DropdownIcon fontSize="large" />
+              <S.DropdownIcon className="lni-menu" />
             </a>
           </Dropdown>
         </Col>

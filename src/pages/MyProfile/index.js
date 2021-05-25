@@ -4,16 +4,10 @@ import axios from "axios";
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
 import Grid from "@material-ui/core/Grid";
-import CancelIcon from "@material-ui/icons/Cancel";
-import { message, Avatar, Badge, Row, Col } from "antd";
+import { message, Avatar, Badge } from "antd";
 
 import moment from "moment";
-import {
-  UserOutlined,
-  EditOutlined,
-  LoadingOutlined,
-  CloseCircleOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, EditOutlined, LoadingOutlined } from "@ant-design/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 
@@ -222,7 +216,8 @@ const MyProfile = () => {
     <div style={modalStyle} className={classes.paper}>
       <div>
         <div style={{ textAlign: "right" }}>
-          <CancelIcon
+          <i
+            className="lni-cross-circle"
             style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
             onClick={() => setIsModalVisible(false)}
           />
@@ -275,7 +270,8 @@ const MyProfile = () => {
   const monthlybody = (
     <div style={modalStyle} className={classes.paper}>
       <div style={{ textAlign: "right" }}>
-        <CancelIcon
+        <i
+          className="lni-cross-circle"
           style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
           onClick={() => setIsMonthlyModalVisible(false)}
         />
@@ -313,7 +309,8 @@ const MyProfile = () => {
   const yearlybody = (
     <div style={modalStyle} className={classes.paper}>
       <div style={{ textAlign: "right" }}>
-        <CancelIcon
+        <i
+          className="lni-cross-circle"
           style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
           onClick={() => setIsYearlyModalVisible(false)}
         />

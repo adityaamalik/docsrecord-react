@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import MenuIcon from "@material-ui/icons/Menu";
 import { Link } from "react-router-dom";
 
 export const Header = styled.header`
@@ -27,8 +26,9 @@ export const Heading = styled(Link)`
   }
 `;
 
-export const DropdownIcon = styled(MenuIcon)`
+export const DropdownIcon = styled.i`
   color: #004aad;
+  font-size: 30px;
 `;
 
 export const Span = styled(Link)`

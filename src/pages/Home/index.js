@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Button, TextField, Modal, Grid } from "@material-ui/core";
 import GoogleLogin from "react-google-login";
 import axios from "axios";
-import CancelIcon from "@material-ui/icons/Cancel";
 import * as S from "./styles";
 import moment from "moment";
 
@@ -234,7 +233,8 @@ const Home = () => {
     <div style={modalStyle} className={classes.paper}>
       <div>
         <div style={{ textAlign: "right" }}>
-          <CancelIcon
+          <i
+            className="lni-cross-circle"
             style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
             onClick={() => setIsModalVisible(false)}
           />
@@ -289,7 +289,8 @@ const Home = () => {
   const monthlybody = (
     <div style={modalStyle} className={classes.paper}>
       <div style={{ textAlign: "right" }}>
-        <CancelIcon
+        <i
+          className="lni-cross-circle"
           style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
           onClick={() => setIsMonthlyModalVisible(false)}
         />
@@ -327,7 +328,8 @@ const Home = () => {
   const yearlybody = (
     <div style={modalStyle} className={classes.paper}>
       <div style={{ textAlign: "right" }}>
-        <CancelIcon
+        <i
+          className="lni-cross-circle"
           style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
           onClick={() => setIsYearlyModalVisible(false)}
         />
@@ -456,21 +458,11 @@ const Home = () => {
             <div className="row">
               <div className="col-lg-7">
                 <div className="header-hero-content">
-                  <h1
-                    className="hero-title wow fadeInUp"
-                    data-wow-duration="1s"
-                    data-wow-delay="0.2s"
-                  >
+                  <h1 className="hero-title">
                     <b>DOCS</b>
                     <span>RECORD</span>
                   </h1>
-                  <p
-                    className="text wow fadeInUp"
-                    data-wow-duration="1s"
-                    data-wow-delay="0.5s"
-                  >
-                    MANAGE RECORDS. THE COOL WAY ! 😉
-                  </p>
+                  <p className="text">MANAGE RECORDS. THE COOL WAY ! 😉</p>
 
                   {/* login form */}
                   {registerForm ? (
@@ -565,7 +557,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="header-hero-image d-flex align-items-center wow fadeInRightBig">
+          <div className="header-hero-image d-flex align-items-center">
             <div className="image">
               <img src="assets/images/hero-image.png" alt="Hero" />
             </div>
@@ -577,7 +569,7 @@ const Home = () => {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-9">
-              <div className="about-title text-center wow fadeInUp">
+              <div className="about-title text-center">
                 <h6 className="welcome">WELCOME</h6>
                 <h3 className="title">
                   <span>DOCSRECORD</span> is an easier, affordable, convenient
@@ -604,11 +596,7 @@ const Home = () => {
                 <div className="about-counter pt-60">
                   <div className="row">
                     <div className="col-sm-4">
-                      <div
-                        className="single-counter counter-color-1 mt-30 d-flex wow fadeInUp"
-                        data-wow-duration="1s"
-                        data-wow-delay="0.3s"
-                      >
+                      <div className="single-counter counter-color-1 mt-30 d-flex">
                         <div className="counter-shape">
                           <span className="shape-1"></span>
                           <span className="shape-2"></span>
@@ -622,11 +610,7 @@ const Home = () => {
                       </div>
                     </div>
                     <div className="col-sm-4">
-                      <div
-                        className="single-counter counter-color-2 mt-30 d-flex wow fadeInUp"
-                        data-wow-duration="1s"
-                        data-wow-delay="0.6s"
-                      >
+                      <div className="single-counter counter-color-2 mt-30 d-flex">
                         <div className="counter-shape">
                           <span className="shape-1"></span>
                           <span className="shape-2"></span>
@@ -640,11 +624,7 @@ const Home = () => {
                       </div>
                     </div>
                     <div className="col-sm-4">
-                      <div
-                        className="single-counter counter-color-3 mt-30 d-flex wow fadeInUp"
-                        data-wow-duration="1s"
-                        data-wow-delay="0.9s"
-                      >
+                      <div className="single-counter counter-color-3 mt-30 d-flex ">
                         <div className="counter-shape">
                           <span className="shape-1"></span>
                           <span className="shape-2"></span>
@@ -669,11 +649,7 @@ const Home = () => {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-xl-5 col-lg-6 col-md-8 col-sm-9">
-              <div
-                className="section-title text-center wow fadeInUp"
-                data-wow-duration="1s"
-                data-wow-delay="0.2s"
-              >
+              <div className="section-title text-center ">
                 <h6 className="sub-title">FEATURES</h6>
                 <h4 className="title">
                   Lots of features <span>to fulfill your needs.</span>
@@ -685,9 +661,7 @@ const Home = () => {
             <div className="col-lg-12">
               <div className="our-services-tab pt-30">
                 <ul
-                  className="nav justify-content-center wow fadeIn"
-                  data-wow-duration="1s"
-                  data-wow-delay="0.5s"
+                  className="nav justify-content-center "
                   id="myTab"
                   role="tablist"
                 >
@@ -915,21 +889,13 @@ const Home = () => {
         <div className="container">
           <div className="row">
             <div className="col-lg-6 col-md-8">
-              <div
-                className="section-title wow fadeInUp"
-                data-wow-duration="1s"
-                data-wow-delay="0.2s"
-              >
+              <div className="section-title">
                 <h6 className="sub-title">Why Us</h6>
                 <h4 className="title">The reasons to choose us.</h4>
               </div>
             </div>
           </div>
-          <div
-            className="service-wrapper mt-60 wow fadeInUp"
-            data-wow-duration="1s"
-            data-wow-delay="0.6s"
-          >
+          <div className="service-wrapper mt-60">
             <div className="row no-gutters justify-content-center">
               <div className="col-lg-4 col-md-7">
                 <div className="single-service d-flex">
@@ -1001,11 +967,7 @@ const Home = () => {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-5 col-md-8 col-sm-9">
-              <div
-                className="section-title text-center pb-20 wow fadeInUpBig"
-                data-wow-duration="1s"
-                data-wow-delay="0.2s"
-              >
+              <div className="section-title text-center pb-20 ">
                 <h6 className="sub-title">Pricing Plans</h6>
                 <h4 className="title">
                   PROVIDING BEST PRICING <span>FOR YOUR CLINIC.</span>
@@ -1015,11 +977,7 @@ const Home = () => {
           </div>
           <div className="row no-gutters justify-content-center">
             <div className="col-lg-4 col-md-7 col-sm-9">
-              <div
-                className="single-pricing text-center pricing-color-1 mt-30 wow fadeIn"
-                data-wow-duration="1s"
-                data-wow-delay="0.3s"
-              >
+              <div className="single-pricing text-center pricing-color-1 mt-30">
                 <div className="pricing-price">
                   <span className="price">
                     <span className="symbol">₹</span> <b>500</b>
@@ -1044,11 +1002,7 @@ const Home = () => {
               </div>
             </div>
             <div className="col-lg-4 col-md-7 col-sm-9">
-              <div
-                className="single-pricing text-center pricing-active pricing-color-2 mt-30 wow fadeIn"
-                data-wow-duration="1s"
-                data-wow-delay="0.6s"
-              >
+              <div className="single-pricing text-center pricing-active pricing-color-2 mt-30">
                 <div className="pricing-price">
                   <span className="price">
                     <b>FREE</b>
@@ -1072,11 +1026,7 @@ const Home = () => {
               </div>
             </div>
             <div className="col-lg-4 col-md-7 col-sm-9">
-              <div
-                className="single-pricing text-center pricing-color-3 mt-30 wow fadeIn"
-                data-wow-duration="1s"
-                data-wow-delay="0.9s"
-              >
+              <div className="single-pricing text-center pricing-color-3 mt-30">
                 <div className="pricing-price">
                   <span className="price">
                     <span className="symbol">₹</span> <b>5000</b>
@@ -1108,11 +1058,7 @@ const Home = () => {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-4">
-              <div
-                className="section-title text-center pb-20 wow fadeInUp"
-                data-wow-duration="1s"
-                data-wow-delay="0.3s"
-              >
+              <div className="section-title text-center pb-20">
                 <h6 className="sub-title">Our Contact</h6>
                 <h4 className="title">
                   Get In <span>Touch.</span>
@@ -1123,11 +1069,7 @@ const Home = () => {
           <div className="contact-info pt-30">
             <div className="row">
               <div className="col-lg-4 col-md-6">
-                <div
-                  className="single-contact-info contact-color-1 mt-30 d-flex  wow fadeInUp"
-                  data-wow-duration="1s"
-                  data-wow-delay="0.3s"
-                >
+                <div className="single-contact-info contact-color-1 mt-30 d-flex ">
                   <div className="contact-info-icon">
                     <i className="lni-map-marker"></i>
                   </div>
@@ -1140,11 +1082,7 @@ const Home = () => {
                 </div>
               </div>
               <div className="col-lg-4 col-md-6">
-                <div
-                  className="single-contact-info contact-color-2 mt-30 d-flex  wow fadeInUp"
-                  data-wow-duration="1s"
-                  data-wow-delay="0.6s"
-                >
+                <div className="single-contact-info contact-color-2 mt-30 d-flex">
                   <div className="contact-info-icon">
                     <i className="lni-envelope"></i>
                   </div>
@@ -1155,11 +1093,7 @@ const Home = () => {
                 </div>
               </div>
               <div className="col-lg-4 col-md-6">
-                <div
-                  className="single-contact-info contact-color-3 mt-30 d-flex  wow fadeInUp"
-                  data-wow-duration="1s"
-                  data-wow-delay="0.9s"
-                >
+                <div className="single-contact-info contact-color-3 mt-30 d-flex">
                   <div className="contact-info-icon">
                     <i className="lni-phone"></i>
                   </div>

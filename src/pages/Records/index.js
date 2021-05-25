@@ -15,8 +15,8 @@ import {
   CircularProgress,
   Grid,
   Button,
+  Snackbar,
 } from "@material-ui/core";
-import BackupIcon from "@material-ui/icons/Backup";
 import { Link } from "react-router-dom";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -24,6 +24,7 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,6 +77,15 @@ const Records = () => {
 
   const [selectedTimeString, setSelectedTimeString] = useState("");
 
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [deleteError, setDeleteError] = useState(false);
+
+  const [appointmentSuccess, setAppointmentSuccess] = useState(false);
+  const [appointmentError, setAppointmentError] = useState(false);
+
+  const [imageSuccess, setImageSuccess] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   useEffect(() => {
     toggleIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
@@ -125,7 +135,7 @@ const Records = () => {
       .delete(`/patients/${id}`)
       .then((response) => {
         setModalOpen(false);
-        alert("Record deleted successfully !");
+        setDeleteSuccess(true);
         const newData = records.filter((item) => {
           return item._id !== id;
         });
@@ -134,7 +144,7 @@ const Records = () => {
       })
       .catch((err) => {
         console.log(err.response);
-        alert("Cannot delete the record. Try again !");
+        setDeleteError(true);
       });
   };
 
@@ -145,10 +155,11 @@ const Records = () => {
         next_appointment_time: selectedTimeString,
       })
       .then((response) => {
-        alert("Next appointment added successfully");
+        setAppointmentSuccess(true);
       })
       .catch((err) => {
         console.log(err.response);
+        setAppointmentError(true);
       });
   };
 
@@ -172,11 +183,11 @@ const Records = () => {
         setImages(response.data.images);
         document.getElementById("images").value = null;
         setModalContentLoading(false);
-        alert("Successfully uploaded the photos");
+        setImageSuccess(true);
       })
       .catch((err) => {
         setModalContentLoading(false);
-        alert("Some error occured");
+        setImageError(true);
       });
     setModalContentLoading(false);
   };
@@ -199,6 +210,46 @@ const Records = () => {
 
   return (
     <>
+      <Snackbar
+        open={
+          deleteSuccess ||
+          deleteError ||
+          appointmentSuccess ||
+          appointmentError ||
+          imageSuccess ||
+          imageError
+        }
+        autoHideDuration={2000}
+        onClose={() => {
+          setDeleteSuccess(false);
+          setDeleteError(false);
+          setImageSuccess(false);
+          setImageError(false);
+          setAppointmentError(false);
+          setAppointmentSuccess(false);
+        }}
+      >
+        <Alert
+          onClose={() => {
+            setDeleteSuccess(false);
+            setDeleteError(false);
+            setImageSuccess(false);
+            setImageError(false);
+            setAppointmentError(false);
+            setAppointmentSuccess(false);
+          }}
+          severity={
+            deleteError || appointmentError || imageError ? "error" : "success"
+          }
+        >
+          {deleteError && "Cannot delete the record !"}
+          {deleteSuccess && "Successfully deleted the record !"}
+          {appointmentError && "Cannot set the new appointment !"}
+          {appointmentSuccess && "Appointment updated successfully !"}
+          {imageError && "Cannot upload images"}
+          {imageSuccess && "Successfully uploaded the images !"}
+        </Alert>
+      </Snackbar>
       <Modal
         open={modalOpen}
         onClose={() => {
@@ -413,8 +464,15 @@ const Records = () => {
                     borderRadius: "5px",
                   }}
                 >
-                  Select images
-                  <BackupIcon style={{ marginLeft: "5px" }} />
+                  <i
+                    className="lni-cloud-upload"
+                    style={{
+                      marginRight: "5px",
+                      fontSize: "25px",
+                      fontWeight: "bolder",
+                    }}
+                  />
+                  <span>Select images</span>
                 </label>
                 <input
                   id="images"
