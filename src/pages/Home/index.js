@@ -1179,22 +1179,22 @@ const Home = () => {
 
                     <ul className="social mt-40">
                       <li>
-                        <a href="/#">
+                        <a href="https://www.instagram.com/docsrecord/">
                           <i className="lni-facebook"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="/#">
+                        <a href="https://www.instagram.com/docsrecord/">
                           <i className="lni-twitter"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="/#">
+                        <a href="https://www.instagram.com/docsrecord/">
                           <i className="lni-instagram"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="/#">
+                        <a href="https://www.instagram.com/docsrecord/">
                           <i className="lni-linkedin"></i>
                         </a>
                       </li>
