@@ -5,6 +5,7 @@ import GoogleLogin from "react-google-login";
 import axios from "axios";
 import * as S from "./styles";
 import moment from "moment";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -502,7 +503,7 @@ const Home = () => {
                             onClick={onSubmitForRegister}
                             disabled={isLoading}
                           >
-                            Register
+                            {isLoading ? <CircularProgress /> : "Register"}
                           </Button>
                         </form>
                       ) : (
@@ -548,7 +549,7 @@ const Home = () => {
                           onClick={onSubmit}
                           disabled={isLoading}
                         >
-                          Login
+                          {isLoading ? <CircularProgress /> : "Login"}
                         </Button>
                       </form>
                     </div>
