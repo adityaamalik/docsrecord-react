@@ -50,7 +50,7 @@ const UpdatePatient = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const classes = useStyles();
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [error] = useState(false);
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
@@ -146,9 +146,7 @@ const UpdatePatient = (props) => {
       data.payment_method = paymentMethod;
     }
 
-    if (t.length !== 0) {
-      data.treatments = t;
-    }
+    data.treatments = t;
 
     axios
       .put(`/patients/${id}`, data)

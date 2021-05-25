@@ -1,13 +1,13 @@
-import { Row, Col, message } from "antd";
 import { useEffect, useState } from "react";
 import * as S from "./styles";
 import axios from "axios";
 import moment from "moment";
 import { LoadingOutlined } from "@ant-design/icons";
-import CardHeader from "@material-ui/core/CardHeader";
+import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
-import Grid from "@material-ui/core/Grid";
+import { Grid, Snackbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Alert } from "@material-ui/lab";
 import Card from "@material-ui/core/Card";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -32,7 +32,9 @@ const Appointments = () => {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const classes = useStyles();
-
+  const [success, setSuccess] = useState(false);
+  const [error] = useState(false);
+  const history = useHistory();
   useEffect(() => {
     setIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
@@ -44,11 +46,11 @@ const Appointments = () => {
         setIsLoading(false);
       })
       .catch((err) => {
-        if (!!err.response && err.response.status === 401) {
-          message
-            .error("You are unauthorized user, please login first !")
-            .then(() => (window.location.pathname = "/login"));
-        }
+        // if (!!err.response && err.response.status === 401) {
+        //   message
+        //     .error("You are unauthorized user, please login first !")
+        //     .then(() => (window.location.pathname = "/login"));
+        // }
       });
   }, []);
 
@@ -67,8 +69,10 @@ const Appointments = () => {
       .put(`/patients/${id}`, { next_appointment_date: today })
       .then((response) => {
         console.log(response);
-
-        message.success("Patient updated successfully !");
+        setSuccess(true);
+        setTimeout(() => {
+          history.push("/records");
+        }, 2000);
       })
       .catch((err) => {
         console.log(err);
@@ -148,6 +152,18 @@ const Appointments = () => {
     <>
       {" "}
       <S.Container>
+        <Snackbar
+          open={success || error}
+          autoHideDuration={2000}
+          onClose={() => setSuccess(false)}
+        >
+          <Alert
+            onClose={() => setSuccess(false)}
+            severity={error ? "error" : "success"}
+          >
+            {error ? "Some error occured !" : "Appointment added Successfully"}
+          </Alert>
+        </Snackbar>
         <S.Heading>
           {isLoading ? (
             <LoadingOutlined style={{ fontSize: "50px" }} />

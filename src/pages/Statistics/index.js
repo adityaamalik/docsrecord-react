@@ -3,12 +3,8 @@ import * as S from "./styles";
 import { Line } from "react-chartjs-2";
 import Grid from "@material-ui/core/Grid";
 import CountUp from "react-countup";
-import { Col, message } from "antd";
-import {
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-  LoadingOutlined,
-} from "@ant-design/icons";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -57,9 +53,9 @@ const Statistics = () => {
       })
       .catch((err) => {
         if (!!err.response && err.response.status === 401) {
-          message
-            .error("You are unauthorized user, please login first !")
-            .then(() => (window.location.pathname = "/login"));
+          // message
+          //   .error("You are unauthorized user, please login first !")
+          //   .then(() => (window.location.pathname = "/login"));
         }
         setIsLoading(false);
       });
@@ -125,7 +121,7 @@ const Statistics = () => {
     <>
       {isLoading ? (
         <div style={{ textAlign: "center", marginTop: "100px" }}>
-          <LoadingOutlined style={{ fontSize: "50px" }} />
+          <CircularProgress />
         </div>
       ) : (
         <>
@@ -260,9 +256,11 @@ const Statistics = () => {
                     <CountUp end={stats.monthpercentage} duration={4} />
                     <span>%</span>
                     {stats.monthpercentage > 0 ? (
-                      <ArrowUpOutlined />
+                      // <ArrowUpOutlined />
+                      <p></p>
                     ) : (
-                      <ArrowDownOutlined />
+                      // <ArrowDownOutlined />
+                      <p></p>
                     )}
                   </Grid>
                 )}
@@ -284,9 +282,11 @@ const Statistics = () => {
                     <CountUp end={stats.weekpercentage} duration={4} />
                     <span>%</span>
                     {stats.weekpercentage > 0 ? (
-                      <ArrowUpOutlined />
+                      // <ArrowUpOutlined />
+                      <p></p>
                     ) : (
-                      <ArrowDownOutlined />
+                      // <ArrowDownOutlined />
+                      <p></p>
                     )}
                   </Grid>
                 )}

@@ -3,17 +3,16 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
-import Grid from "@material-ui/core/Grid";
+// import { useHistory } from "react-router-dom";
+import { Grid, Snackbar } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { message, Avatar, Badge, Row, Col } from "antd";
 
+import Avatar from "@material-ui/core/Avatar";
+import { Alert } from "@material-ui/lab";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
-import {
-  UserOutlined,
-  EditOutlined,
-  LoadingOutlined,
-  CloseCircleOutlined,
-} from "@ant-design/icons";
+import EditIcon from "@material-ui/icons/Edit";
+
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 
@@ -37,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
       height: "75%",
     },
   },
+  large: {
+    width: theme.spacing(10),
+    height: theme.spacing(10),
+  },
 }));
 
 // function rand() {
@@ -57,11 +60,12 @@ function getModalStyle() {
 const MyProfile = () => {
   const classes = useStyles();
   const [docData, setDocData] = useState({});
-
+  // const history = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isMonthlyModalVisible, setIsMonthlyModalVisible] = useState(false);
   const [isYearlyModalVisible, setIsYearlyModalVisible] = useState(false);
-
+  const [success, setSuccess] = useState(false);
+  const [error] = useState(false);
   const [name, setName] = useState("");
   const [clinicName, setClinicName] = useState("");
   const [clinicAddress, setClinicAddress] = useState("");
@@ -71,7 +75,6 @@ const MyProfile = () => {
   const [image, setImage] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const [showEdit, toggleEdit] = useState(false);
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = useState(getModalStyle);
 
@@ -87,6 +90,7 @@ const MyProfile = () => {
       })
       .catch((err) => {
         console.log(err);
+
         setIsLoading(false);
       });
   }, []);
@@ -131,12 +135,12 @@ const MyProfile = () => {
     axios
       .put(`/doctors/${doctor}`, data)
       .then((response) => {
+        setSuccess(true);
         window.location.pathname = "/myprofile";
       })
       .catch((err) => {
         setIsLoading(false);
         console.log(err);
-        message.error("Some error occured");
       });
   };
 
@@ -197,9 +201,10 @@ const MyProfile = () => {
         const result = await axios.post("/payments/success", data);
 
         if (result) {
-          message
-            .success("Payment successful !")
-            .then(() => (window.location.pathname = "/myprofile"));
+          // message
+          //   .success("Payment successful !")
+          //   .then(() => (window.location.pathname = "/myprofile"));
+          window.location.pathname = "/myprofile";
         }
       },
       prefill: {
@@ -350,6 +355,19 @@ const MyProfile = () => {
   );
   return (
     <>
+      {" "}
+      <Snackbar
+        open={success || error}
+        autoHideDuration={2000}
+        onClose={() => setSuccess(false)}
+      >
+        <Alert
+          onClose={() => setSuccess(false)}
+          severity={error ? "error" : "success"}
+        >
+          {error ? "Some error occured !" : "Patient Updated Successfully"}
+        </Alert>
+      </Snackbar>
       {/* main modal */}
       <Modal open={isModalVisible} onClose={() => setIsModalVisible(false)}>
         {body}
@@ -366,40 +384,28 @@ const MyProfile = () => {
       >
         {yearlybody}
       </Modal>
-
       <S.Container>
         <S.Heading>MY PROFILE</S.Heading>
 
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           {" "}
           {isLoading ? (
-            <LoadingOutlined style={{ fontSize: "50px" }} />
+            <CircularProgress />
           ) : (
             <>
               <div style={{ textAlign: "center", marginTop: "20px" }}>
                 {!!docData.image ? (
-                  <span
-                    onMouseEnter={() => toggleEdit(true)}
-                    onMouseLeave={() => toggleEdit(false)}
-                  >
+                  <span>
                     <S.FileUploadLabel htmlFor="userImage">
-                      <Badge count={showEdit ? <EditOutlined /> : <></>}>
-                        <Avatar
-                          src={`data:image/${
-                            docData.image.contentType
-                          };base64,${new Buffer.from(
-                            docData.image.data
-                          ).toString("base64")}`}
-                          size={{
-                            xs: 40,
-                            sm: 40,
-                            md: 64,
-                            lg: 64,
-                            xl: 80,
-                            xxl: 100,
-                          }}
-                        />
-                      </Badge>
+                      <Avatar
+                        src={`data:image/${
+                          docData.image.contentType
+                        };base64,${new Buffer.from(docData.image.data).toString(
+                          "base64"
+                        )}`}
+                        className={classes.large}
+                      />
+                      <EditIcon />
                     </S.FileUploadLabel>
                     <S.FileUpload
                       type="file"
@@ -411,34 +417,7 @@ const MyProfile = () => {
                     <span>{image.name}</span>
                   </span>
                 ) : (
-                  <span
-                    onMouseEnter={() => toggleEdit(true)}
-                    onMouseLeave={() => toggleEdit(false)}
-                  >
-                    <S.FileUploadLabel htmlFor="userImage">
-                      <Badge count={showEdit ? <EditOutlined /> : <></>}>
-                        <Avatar
-                          icon={<UserOutlined />}
-                          size={{
-                            xs: 40,
-                            sm: 40,
-                            md: 64,
-                            lg: 64,
-                            xl: 80,
-                            xxl: 100,
-                          }}
-                        />
-                      </Badge>
-                    </S.FileUploadLabel>
-                    <S.FileUpload
-                      type="file"
-                      id="userImage"
-                      onChange={(e) => setImage(e.target.files[0])}
-                    />
-                    <br />
-                    <br />
-                    <span>{image.name}</span>
-                  </span>
+                  <span></span>
                 )}
               </div>
               <div style={{ textAlign: "center" }}>
