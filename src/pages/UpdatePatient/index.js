@@ -247,9 +247,9 @@ const UpdatePatient = (props) => {
                     onChange={(e) => setGender(e.target.value)}
                     label="Age"
                   >
-                    <MenuItem value="male">Male</MenuItem>
-                    <MenuItem value="female">Female</MenuItem>
-                    <MenuItem value="others">Others</MenuItem>
+                    <MenuItem value="Male">Male</MenuItem>
+                    <MenuItem value="Female">Female</MenuItem>
+                    <MenuItem value="Others">Others</MenuItem>
                   </Select>
                 </FormControl>
               )}

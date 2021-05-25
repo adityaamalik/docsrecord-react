@@ -289,8 +289,10 @@ const Records = () => {
                 </Grid>
                 <Grid item xs={6}>
                   <p>
-                    {!!patient.visit_date && (
+                    {!!patient.visit_date ? (
                       <>{moment(patient.visit_date).format("DD-MM-YYYY")}</>
+                    ) : (
+                      "---"
                     )}
                   </p>
                 </Grid>
@@ -300,7 +302,7 @@ const Records = () => {
                   Name
                 </Grid>
                 <Grid item xs={6}>
-                  <p>{!!patient.name && <>{patient.name}</>}</p>
+                  <p>{!!patient.name ? <>{patient.name}</> : "---"}</p>
                 </Grid>
               </Grid>
               <Grid container>
@@ -308,7 +310,7 @@ const Records = () => {
                   Age
                 </Grid>
                 <Grid item xs={6}>
-                  <p>{!!patient.age && <>{patient.age}</>}</p>
+                  <p>{!!patient.age ? <>{patient.age}</> : "---"}</p>
                 </Grid>
               </Grid>
               <Grid container>
@@ -316,7 +318,7 @@ const Records = () => {
                   Gender
                 </Grid>
                 <Grid item xs={6}>
-                  <p>{!!patient.gender && <>{patient.gender}</>}</p>
+                  <p>{!!patient.gender ? <>{patient.gender}</> : "---"}</p>
                 </Grid>
               </Grid>
               <Grid container>
@@ -324,7 +326,7 @@ const Records = () => {
                   E-Mail
                 </Grid>
                 <Grid item xs={6}>
-                  <p>{!!patient.email && <>{patient.email}</>}</p>
+                  <p>{!!patient.email ? <>{patient.email}</> : "---"}</p>
                 </Grid>
               </Grid>
               <Grid container>
@@ -332,7 +334,13 @@ const Records = () => {
                   Phone Number
                 </Grid>
                 <Grid item xs={6}>
-                  <p>{!!patient.phone_number && <>{patient.phone_number}</>}</p>
+                  <p>
+                    {!!patient.phone_number ? (
+                      <>{patient.phone_number}</>
+                    ) : (
+                      "---"
+                    )}
+                  </p>
                 </Grid>
               </Grid>
               <Grid container>
@@ -340,7 +348,7 @@ const Records = () => {
                   Address
                 </Grid>
                 <Grid item xs={6}>
-                  <p>{!!patient.address && <>{patient.address}</>}</p>
+                  <p>{!!patient.address ? <>{patient.address}</> : "---"}</p>
                 </Grid>
               </Grid>
               <Grid container>
@@ -349,7 +357,11 @@ const Records = () => {
                 </Grid>
                 <Grid item xs={6}>
                   <p>
-                    {!!patient.payment_method && <>{patient.payment_method}</>}
+                    {!!patient.payment_method ? (
+                      <>{patient.payment_method}</>
+                    ) : (
+                      "---"
+                    )}
                   </p>
                 </Grid>
               </Grid>
@@ -359,8 +371,10 @@ const Records = () => {
                 </Grid>
                 <Grid item xs={6}>
                   <p>
-                    {!!patient.total_treatments && (
+                    {!!patient.total_treatments ? (
                       <>{patient.total_treatments}</>
+                    ) : (
+                      "---"
                     )}
                   </p>
                 </Grid>
@@ -372,7 +386,11 @@ const Records = () => {
                 </Grid>
                 <Grid item xs={6}>
                   <p>
-                    {!!patient.total_cost && <>₹ {patient.total_cost} /-</>}
+                    {!!patient.total_cost ? (
+                      <>₹ {patient.total_cost} /-</>
+                    ) : (
+                      "---"
+                    )}
                   </p>
                 </Grid>
               </Grid>
@@ -433,7 +451,7 @@ const Records = () => {
                 </Grid>
               </Grid>
 
-              {!!patient.treatments && (
+              {!!patient.treatments && patient.treatments.length !== 0 && (
                 <>
                   <Grid container style={{ marginTop: "30px" }}>
                     <Grid item xs={6}>
