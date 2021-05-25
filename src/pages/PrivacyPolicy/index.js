@@ -1,4 +1,9 @@
+import { useEffect } from "react";
+
 const PrivacyPolicy = () => {
+  useEffect(() => {
+    document.getElementsByClassName("navbar-area")[0].style.display = "none";
+  }, []);
   return (
     <>
       <h1 style={{ textAlign: "center", marginTop: "50px" }}>
