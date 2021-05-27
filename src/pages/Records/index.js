@@ -16,6 +16,7 @@ import {
   Grid,
   Button,
   Snackbar,
+  TextField,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import DateFnsUtils from "@date-io/date-fns";
@@ -43,6 +44,13 @@ const useStyles = makeStyles((theme) => ({
     overflow: "scroll",
     height: "90%",
   },
+  searchBar: {
+    width: "100%",
+    paddingTop: "10px",
+    paddingBottom: "10px",
+    paddingLeft: "30px",
+    paddingRight: "30px",
+  },
 }));
 
 const getModalStyle = () => {
@@ -63,6 +71,7 @@ const Records = () => {
 
   const [modalStyle] = useState(getModalStyle);
   const [records, setRecords] = useState([]);
+  const [originalRecords, setOriginalRecords] = useState([]);
   const [isLoading, toggleIsLoading] = useState(false);
 
   const [modalContentLoading, setModalContentLoading] = useState(false);
@@ -89,6 +98,8 @@ const Records = () => {
 
   const [authError, setAuthError] = useState(false);
 
+  const [searchVal, setSearchVal] = useState("");
+
   useEffect(() => {
     toggleIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
@@ -97,6 +108,7 @@ const Records = () => {
       .get(`/patients?doctor=${doctor}`)
       .then((response) => {
         setRecords(response.data);
+        setOriginalRecords(response.data);
         toggleIsLoading(false);
       })
       .catch((err) => {
@@ -199,6 +211,18 @@ const Records = () => {
     setModalContentLoading(false);
   };
 
+  const handleSearch = () => {
+    const filteredRecords = originalRecords.filter((val) => {
+      return (
+        val.name.includes(searchVal) ||
+        val.phone_number.includes(searchVal) ||
+        val.address.includes(searchVal)
+      );
+    });
+
+    setRecords(filteredRecords);
+  };
+
   const columns = [
     { id: "name", label: "Name", minWidth: 100, align: "center" },
     {
@@ -284,6 +308,7 @@ const Records = () => {
               <div style={{ textAlign: "center" }}>
                 <h3>PATIENT INFO</h3>
               </div>
+              <br />
               <Grid container>
                 <Grid item xs={6}>
                   Date of visit
@@ -291,13 +316,14 @@ const Records = () => {
                 <Grid item xs={6}>
                   <p>
                     {!!patient.visit_date ? (
-                      <>{moment(patient.visit_date).format("DD-MM-YYYY")}</>
+                      <>{moment(patient.visit_date).format("Do MMM YYYY")}</>
                     ) : (
                       "---"
                     )}
                   </p>
                 </Grid>
               </Grid>
+              <br />
               <Grid container>
                 <Grid item xs={6}>
                   Name
@@ -306,6 +332,7 @@ const Records = () => {
                   <p>{!!patient.name ? <>{patient.name}</> : "---"}</p>
                 </Grid>
               </Grid>
+              <br />
               <Grid container>
                 <Grid item xs={6}>
                   Age
@@ -314,6 +341,7 @@ const Records = () => {
                   <p>{!!patient.age ? <>{patient.age}</> : "---"}</p>
                 </Grid>
               </Grid>
+              <br />
               <Grid container>
                 <Grid item xs={6}>
                   Gender
@@ -322,6 +350,7 @@ const Records = () => {
                   <p>{!!patient.gender ? <>{patient.gender}</> : "---"}</p>
                 </Grid>
               </Grid>
+              <br />
               <Grid container>
                 <Grid item xs={6}>
                   E-Mail
@@ -330,6 +359,7 @@ const Records = () => {
                   <p>{!!patient.email ? <>{patient.email}</> : "---"}</p>
                 </Grid>
               </Grid>
+              <br />
               <Grid container>
                 <Grid item xs={6}>
                   Phone Number
@@ -344,6 +374,7 @@ const Records = () => {
                   </p>
                 </Grid>
               </Grid>
+              <br />
               <Grid container>
                 <Grid item xs={6}>
                   Address
@@ -352,6 +383,7 @@ const Records = () => {
                   <p>{!!patient.address ? <>{patient.address}</> : "---"}</p>
                 </Grid>
               </Grid>
+              <br />
               <Grid container>
                 <Grid item xs={6}>
                   Payment Method
@@ -366,6 +398,7 @@ const Records = () => {
                   </p>
                 </Grid>
               </Grid>
+              <br />
               <Grid container>
                 <Grid item xs={6}>
                   Total Treatments
@@ -380,7 +413,7 @@ const Records = () => {
                   </p>
                 </Grid>
               </Grid>
-
+              <br />
               <Grid container>
                 <Grid item xs={6}>
                   Total Cost
@@ -395,14 +428,30 @@ const Records = () => {
                   </p>
                 </Grid>
               </Grid>
-
+              <br />
+              <Grid container>
+                <Grid item xs={6}>
+                  D.O.B
+                </Grid>
+                <Grid item xs={6}>
+                  <p>
+                    {!!patient.date_of_birth ? (
+                      <>{moment(patient.date_of_birth).format("Do MMM YYYY")}</>
+                    ) : (
+                      "---"
+                    )}
+                  </p>
+                </Grid>
+              </Grid>
+              <br />
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <Grid container>
-                  <Grid item xs={6}>
+                <Grid container justify="center" alignItems="center">
+                  <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
                     Next Appointment Date
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
                     <KeyboardDatePicker
+                      margin="normal"
                       clearable
                       value={selectedDate}
                       label="Appointment Date"
@@ -413,13 +462,13 @@ const Records = () => {
                   </Grid>
                 </Grid>
               </MuiPickersUtilsProvider>
-
+              <br />
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <Grid container>
-                  <Grid item xs={6}>
+                <Grid container justify="center" alignItems="center">
+                  <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
                     Next Appointment Time
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
                     <KeyboardTimePicker
                       margin="normal"
                       id="time-picker"
@@ -438,7 +487,7 @@ const Records = () => {
                   </Grid>
                 </Grid>
               </MuiPickersUtilsProvider>
-
+              <br />
               <Grid container>
                 <Grid item xs={6}></Grid>
                 <Grid item xs={6}>
@@ -451,7 +500,7 @@ const Records = () => {
                   </Button>
                 </Grid>
               </Grid>
-
+              <br />
               {!!patient.treatments && patient.treatments.length !== 0 && (
                 <>
                   <Grid container style={{ marginTop: "30px" }}>
@@ -515,6 +564,7 @@ const Records = () => {
                     setSelectedImages(arr);
                   }}
                   type="file"
+                  accept="image/png, image/jpg, image/jpeg"
                   multiple
                   style={{
                     position: "absolute",
@@ -631,6 +681,39 @@ const Records = () => {
         </div>
       </Modal>
       <Paper className={classes.root}>
+        <form className={classes.searchBar} noValidate autoComplete="off">
+          <Grid container justify="center" alignItems="center">
+            <Grid item lg={10} md={10} sm={9} xs={7}>
+              <TextField
+                type="text"
+                variant="standard"
+                label="Search Records"
+                style={{
+                  width: "100%",
+                }}
+                value={searchVal}
+                onChange={(e) => setSearchVal(e.target.value)}
+              />
+            </Grid>
+            <Grid item lg={1} md={1} sm={2} xs={3}>
+              <Button size="small" onClick={handleSearch}>
+                Search
+              </Button>
+            </Grid>
+            <Grid item lg={1} md={1} sm={2} xs={2}>
+              <Button
+                size="small"
+                onClick={() => {
+                  setRecords(originalRecords);
+                  setSearchVal("");
+                }}
+              >
+                Clear
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>

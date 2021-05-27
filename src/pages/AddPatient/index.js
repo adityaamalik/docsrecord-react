@@ -5,6 +5,11 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 import {
   Paper,
   TextField,
@@ -57,6 +62,7 @@ const AddPatient = () => {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState(new Date());
 
   const [treatments, setTreatments] = useState([]);
 
@@ -108,11 +114,12 @@ const AddPatient = () => {
       data.payment_method = paymentMethod;
     }
 
+    data.date_of_birth = dateOfBirth;
+
     if (t.length !== 0) {
       data.treatments = t;
     }
 
-    console.log(data);
     axios
       .post("/patients", data)
       .then((response) => {
@@ -227,7 +234,7 @@ const AddPatient = () => {
             alignItems="center"
             spacing={3}
           >
-            <Grid item lg={6} md={6} sm={12} xs={12}>
+            <Grid item lg={4} md={4} sm={12} xs={12}>
               <form
                 className={classes.root}
                 noValidate
@@ -244,7 +251,7 @@ const AddPatient = () => {
               </form>
             </Grid>
 
-            <Grid item lg={6} md={6} sm={12} xs={12}>
+            <Grid item lg={4} md={4} sm={12} xs={12}>
               <form
                 className={classes.root}
                 noValidate
@@ -260,6 +267,19 @@ const AddPatient = () => {
                 />
               </form>
             </Grid>
+
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <Grid item lg={4} md={4} sm={12} xs={12}>
+                <KeyboardDatePicker
+                  style={{ width: "100%" }}
+                  clearable
+                  value={dateOfBirth}
+                  label="Date Of Birth"
+                  onChange={(date) => setDateOfBirth(date)}
+                  format="MM/dd/yyyy"
+                />
+              </Grid>
+            </MuiPickersUtilsProvider>
           </Grid>
 
           <Grid

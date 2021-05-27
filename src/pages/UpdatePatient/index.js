@@ -4,6 +4,11 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 import {
   Paper,
   TextField,
@@ -53,6 +58,7 @@ const UpdatePatient = (props) => {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState(new Date());
 
   const [treatments, setTreatments] = useState([]);
 
@@ -68,7 +74,6 @@ const UpdatePatient = (props) => {
         .get(`/patients/${id}`)
         .then((response) => {
           setPatient(response.data);
-          console.log(response.data);
           let t = [];
           if (response.data.treatments) {
             response.data.treatments.forEach(function (obj) {
@@ -80,8 +85,12 @@ const UpdatePatient = (props) => {
               t.push(temp);
             });
             setTreatments(t);
-
-            console.log(response.data.treatments);
+          }
+          if (
+            response.data.date_of_birth !== undefined ||
+            response.data.date_of_birth !== null
+          ) {
+            setDateOfBirth(response.data.date_of_birth);
           }
 
           setIsLoading(false);
@@ -146,6 +155,8 @@ const UpdatePatient = (props) => {
     if (t.length !== 0) {
       data.treatments = t;
     }
+
+    data.date_of_birth = dateOfBirth;
 
     axios
       .put(`/patients/${id}`, data)
@@ -266,7 +277,7 @@ const UpdatePatient = (props) => {
             alignItems="center"
             spacing={3}
           >
-            <Grid item lg={6} md={6} sm={12} xs={12}>
+            <Grid item lg={4} md={4} sm={12} xs={12}>
               {patient.phone_number !== undefined &&
                 patient.phone_number !== null && (
                   <form
@@ -286,7 +297,7 @@ const UpdatePatient = (props) => {
                 )}
             </Grid>
 
-            <Grid item lg={6} md={6} sm={12} xs={12}>
+            <Grid item lg={4} md={4} sm={12} xs={12}>
               {patient.email !== undefined && patient.email !== null && (
                 <form
                   className={classes.root}
@@ -304,6 +315,19 @@ const UpdatePatient = (props) => {
                 </form>
               )}
             </Grid>
+
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <Grid item lg={4} md={4} sm={12} xs={12}>
+                <KeyboardDatePicker
+                  style={{ width: "100%" }}
+                  clearable
+                  value={dateOfBirth}
+                  label="Date Of Birth"
+                  onChange={(date) => setDateOfBirth(date)}
+                  format="MM/dd/yyyy"
+                />
+              </Grid>
+            </MuiPickersUtilsProvider>
           </Grid>
 
           <Grid

@@ -7,7 +7,7 @@ const Header = () => {
         <div className="row">
           <div className="col-lg-12">
             <nav className="navbar navbar-expand-lg">
-              <Link className="navbar-brand" href="/records">
+              <Link className="navbar-brand" to="/records">
                 <img src="assets/images/logo.png" alt="Logo" width="200px" />
               </Link>
               <button
