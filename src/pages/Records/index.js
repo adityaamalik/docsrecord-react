@@ -96,6 +96,8 @@ const Records = () => {
   const [imageSuccess, setImageSuccess] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  const [imageDeleteSuccess, setImageDeleteSuccess] = useState(false);
+
   const [authError, setAuthError] = useState(false);
 
   const [searchVal, setSearchVal] = useState("");
@@ -147,6 +149,17 @@ const Records = () => {
           }, 1000);
         }
       });
+  };
+
+  const deleteImages = (id, imgs) => {
+    axios
+      .put(`/patients/deleteImages/${id}`, {
+        images: imgs,
+      })
+      .then((res) => {
+        setImageDeleteSuccess(true);
+      })
+      .catch((err) => console.log(err));
   };
 
   const deleteRecord = (id) => {
@@ -249,7 +262,8 @@ const Records = () => {
           appointmentError ||
           imageSuccess ||
           imageError ||
-          authError
+          authError ||
+          imageDeleteSuccess
         }
         autoHideDuration={2000}
         onClose={() => {
@@ -260,6 +274,7 @@ const Records = () => {
           setAppointmentError(false);
           setAppointmentSuccess(false);
           setAuthError(false);
+          setImageDeleteSuccess(false);
         }}
       >
         <Alert
@@ -271,6 +286,7 @@ const Records = () => {
             setAppointmentError(false);
             setAppointmentSuccess(false);
             setAuthError(false);
+            setImageDeleteSuccess(false);
           }}
           severity={
             deleteError || appointmentError || imageError || authError
@@ -285,6 +301,7 @@ const Records = () => {
           {imageError && "Cannot upload images"}
           {imageSuccess && "Successfully uploaded the images !"}
           {authError && "You are unauthorized user, please login first !"}
+          {imageDeleteSuccess && "Image deleted successfully !"}
         </Alert>
       </Snackbar>
       <Modal
@@ -599,7 +616,13 @@ const Records = () => {
                 {!!images &&
                   images.map((image, index) => {
                     return (
-                      <Grid item md={4} xs={6} key={index}>
+                      <Grid
+                        item
+                        md={4}
+                        xs={6}
+                        key={index}
+                        style={{ textAlign: "center" }}
+                      >
                         <img
                           src={`data:image/${
                             image.contentType
@@ -608,8 +631,23 @@ const Records = () => {
                           style={{
                             width: "auto",
                             height: "100px",
+                            marginBottom: "20px",
                           }}
                         />
+                        <br />
+                        <Button
+                          size="small"
+                          onClick={() => {
+                            const temp = images.filter((img) => {
+                              return img.customId !== image.customId;
+                            });
+
+                            setImages(temp);
+                            deleteImages(patient._id, temp);
+                          }}
+                        >
+                          Delete
+                        </Button>
                       </Grid>
                     );
                   })}
@@ -683,7 +721,7 @@ const Records = () => {
       <Paper className={classes.root}>
         <form className={classes.searchBar} noValidate autoComplete="off">
           <Grid container justify="center" alignItems="center">
-            <Grid item lg={10} md={10} sm={9} xs={7}>
+            <Grid item lg={10} md={10} sm={8} xs={7}>
               <TextField
                 type="text"
                 variant="standard"
