@@ -87,6 +87,8 @@ const Records = () => {
 
   const [selectedTimeString, setSelectedTimeString] = useState("12:00 PM");
 
+  const [showExtraDetails, toggleExtraDetails] = useState(false);
+
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [deleteError, setDeleteError] = useState(false);
 
@@ -96,9 +98,18 @@ const Records = () => {
   const [imageSuccess, setImageSuccess] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  const [commentSuccess, setCommentSucces] = useState(false);
+  const [commentError, setCommentError] = useState(false);
+
+  const [commentDeleteSuccess, setCommentDeleteSuccess] = useState(false);
+  const [commentDeleteError, setCommentDeleteError] = useState(false);
+
   const [imageDeleteSuccess, setImageDeleteSuccess] = useState(false);
 
   const [authError, setAuthError] = useState(false);
+
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState([]);
 
   const [searchVal, setSearchVal] = useState("");
 
@@ -135,9 +146,9 @@ const Records = () => {
     axios
       .get(`/patients/${id}`)
       .then((response) => {
-        console.log(response.data);
         setPatient(response.data);
         setImages(response.data.images);
+        setComments(response.data.comments);
         setModalContentLoading(false);
       })
       .catch((err) => {
@@ -151,15 +162,77 @@ const Records = () => {
       });
   };
 
-  const deleteImages = (id, imgs) => {
+  const deleteImages = (imgs) => {
     axios
-      .put(`/patients/deleteImages/${id}`, {
+      .put(`/patients/deleteImages/${patient._id}`, {
         images: imgs,
       })
       .then((res) => {
         setImageDeleteSuccess(true);
       })
       .catch((err) => console.log(err));
+  };
+
+  const handleNewComment = () => {
+    const temp = {
+      comment: newComment,
+      date: new Date(),
+      id: comments.length,
+    };
+
+    const newComments = comments;
+
+    newComments.unshift(temp);
+
+    setComments(newComments);
+    setNewComment("");
+
+    const data = {};
+
+    data.comments = comments;
+
+    axios
+      .put(`/patients/${patient._id}`, data)
+      .then(() => {
+        setCommentSucces(true);
+      })
+      .catch((err) => {
+        setCommentError(true);
+      });
+  };
+
+  const handleCommentDelete = (deleteIndex) => {
+    let temp = comments;
+
+    let counter = 0;
+    temp.forEach((c) => {
+      c.id = counter;
+      counter++;
+    });
+
+    temp = comments.filter((c) => {
+      return c.id !== deleteIndex;
+    });
+
+    counter = 0;
+    temp.forEach((c) => {
+      c.id = counter;
+      counter++;
+    });
+
+    const data = {};
+
+    data.comments = temp;
+    axios
+      .put(`/patients/${patient._id}`, data)
+      .then((res) => {
+        console.log(res.data.comments);
+        setComments(res.data.comments);
+        setCommentDeleteSuccess(true);
+      })
+      .catch(() => {
+        setCommentDeleteError(true);
+      });
   };
 
   const deleteRecord = (id) => {
@@ -263,7 +336,11 @@ const Records = () => {
           imageSuccess ||
           imageError ||
           authError ||
-          imageDeleteSuccess
+          imageDeleteSuccess ||
+          commentSuccess ||
+          commentError ||
+          commentDeleteSuccess ||
+          commentDeleteError
         }
         autoHideDuration={2000}
         onClose={() => {
@@ -275,6 +352,10 @@ const Records = () => {
           setAppointmentSuccess(false);
           setAuthError(false);
           setImageDeleteSuccess(false);
+          setCommentError(false);
+          setCommentSucces(false);
+          setCommentDeleteSuccess(false);
+          setCommentDeleteError(false);
         }}
       >
         <Alert
@@ -287,9 +368,18 @@ const Records = () => {
             setAppointmentSuccess(false);
             setAuthError(false);
             setImageDeleteSuccess(false);
+            setCommentError(false);
+            setCommentSucces(false);
+            setCommentDeleteSuccess(false);
+            setCommentDeleteError(false);
           }}
           severity={
-            deleteError || appointmentError || imageError || authError
+            deleteError ||
+            appointmentError ||
+            imageError ||
+            authError ||
+            commentError ||
+            commentDeleteError
               ? "error"
               : "success"
           }
@@ -302,6 +392,10 @@ const Records = () => {
           {imageSuccess && "Successfully uploaded the images !"}
           {authError && "You are unauthorized user, please login first !"}
           {imageDeleteSuccess && "Image deleted successfully !"}
+          {commentError && "Cannot post comment !"}
+          {commentSuccess && "Comment posted successfully !"}
+          {commentDeleteError && "Cannot delete comment !"}
+          {commentDeleteSuccess && "Comment deleted successfully !"}
         </Alert>
       </Snackbar>
       <Modal
@@ -309,6 +403,7 @@ const Records = () => {
         onClose={() => {
           setModalOpen(false);
           setSelectedImages([]);
+          toggleExtraDetails(false);
         }}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
@@ -325,6 +420,80 @@ const Records = () => {
               <div style={{ textAlign: "center" }}>
                 <h3>PATIENT INFO</h3>
               </div>
+              <br />
+              <div style={{ textAlign: "center" }}>
+                <Link
+                  to={{
+                    pathname: "/printbill",
+                    state: { patient: patient },
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    style={{
+                      marginRight: "5px",
+                      marginTop: "5px",
+                    }}
+                    size="small"
+                  >
+                    Print Bill
+                  </Button>
+                </Link>
+
+                <Link
+                  to={{
+                    pathname: "/printprescription",
+                    state: { patient: patient },
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    size="small"
+                    style={{
+                      marginRight: "5px",
+                      marginTop: "5px",
+                    }}
+                  >
+                    Print Prescription
+                  </Button>
+                </Link>
+              </div>
+              <br />
+              <div style={{ textAlign: "center" }}>
+                <Button
+                  onClick={() => toggleExtraDetails(!showExtraDetails)}
+                  variant="contained"
+                  size="small"
+                  style={{
+                    marginRight: "5px",
+                    marginTop: "5px",
+                    backgroundColor: "#004aad",
+                    color: "white",
+                  }}
+                >
+                  {showExtraDetails
+                    ? "Hide Extra Details"
+                    : "Show Extra Details"}
+                </Button>
+                <Link
+                  to={{
+                    pathname: "/updatepatient",
+                    state: { id: patient._id },
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    style={{
+                      marginRight: "5px",
+                      marginTop: "5px",
+                    }}
+                    size="small"
+                  >
+                    Update Record
+                  </Button>
+                </Link>
+              </div>
+              <br />
               <br />
               <Grid container>
                 <Grid item xs={6}>
@@ -350,116 +519,126 @@ const Records = () => {
                 </Grid>
               </Grid>
               <br />
-              <Grid container>
-                <Grid item xs={6}>
-                  Age
-                </Grid>
-                <Grid item xs={6}>
-                  <p>{!!patient.age ? <>{patient.age}</> : "---"}</p>
-                </Grid>
-              </Grid>
-              <br />
-              <Grid container>
-                <Grid item xs={6}>
-                  Gender
-                </Grid>
-                <Grid item xs={6}>
-                  <p>{!!patient.gender ? <>{patient.gender}</> : "---"}</p>
-                </Grid>
-              </Grid>
-              <br />
-              <Grid container>
-                <Grid item xs={6}>
-                  E-Mail
-                </Grid>
-                <Grid item xs={6}>
-                  <p>{!!patient.email ? <>{patient.email}</> : "---"}</p>
-                </Grid>
-              </Grid>
-              <br />
-              <Grid container>
-                <Grid item xs={6}>
-                  Phone Number
-                </Grid>
-                <Grid item xs={6}>
-                  <p>
-                    {!!patient.phone_number ? (
-                      <>{patient.phone_number}</>
-                    ) : (
-                      "---"
-                    )}
-                  </p>
-                </Grid>
-              </Grid>
-              <br />
-              <Grid container>
-                <Grid item xs={6}>
-                  Address
-                </Grid>
-                <Grid item xs={6}>
-                  <p>{!!patient.address ? <>{patient.address}</> : "---"}</p>
-                </Grid>
-              </Grid>
-              <br />
-              <Grid container>
-                <Grid item xs={6}>
-                  Payment Method
-                </Grid>
-                <Grid item xs={6}>
-                  <p>
-                    {!!patient.payment_method ? (
-                      <>{patient.payment_method}</>
-                    ) : (
-                      "---"
-                    )}
-                  </p>
-                </Grid>
-              </Grid>
-              <br />
-              <Grid container>
-                <Grid item xs={6}>
-                  Total Treatments
-                </Grid>
-                <Grid item xs={6}>
-                  <p>
-                    {!!patient.total_treatments ? (
-                      <>{patient.total_treatments}</>
-                    ) : (
-                      "---"
-                    )}
-                  </p>
-                </Grid>
-              </Grid>
-              <br />
-              <Grid container>
-                <Grid item xs={6}>
-                  Total Cost
-                </Grid>
-                <Grid item xs={6}>
-                  <p>
-                    {!!patient.total_cost ? (
-                      <>₹ {patient.total_cost} /-</>
-                    ) : (
-                      "---"
-                    )}
-                  </p>
-                </Grid>
-              </Grid>
-              <br />
-              <Grid container>
-                <Grid item xs={6}>
-                  D.O.B
-                </Grid>
-                <Grid item xs={6}>
-                  <p>
-                    {!!patient.date_of_birth ? (
-                      <>{moment(patient.date_of_birth).format("Do MMM YYYY")}</>
-                    ) : (
-                      "---"
-                    )}
-                  </p>
-                </Grid>
-              </Grid>
+              {showExtraDetails && (
+                <>
+                  <Grid container>
+                    <Grid item xs={6}>
+                      Age
+                    </Grid>
+                    <Grid item xs={6}>
+                      <p>{!!patient.age ? <>{patient.age}</> : "---"}</p>
+                    </Grid>
+                  </Grid>
+                  <br />
+                  <Grid container>
+                    <Grid item xs={6}>
+                      Gender
+                    </Grid>
+                    <Grid item xs={6}>
+                      <p>{!!patient.gender ? <>{patient.gender}</> : "---"}</p>
+                    </Grid>
+                  </Grid>
+                  <br />
+                  <Grid container>
+                    <Grid item xs={6}>
+                      E-Mail
+                    </Grid>
+                    <Grid item xs={6}>
+                      <p>{!!patient.email ? <>{patient.email}</> : "---"}</p>
+                    </Grid>
+                  </Grid>
+                  <br />
+                  <Grid container>
+                    <Grid item xs={6}>
+                      Phone Number
+                    </Grid>
+                    <Grid item xs={6}>
+                      <p>
+                        {!!patient.phone_number ? (
+                          <>{patient.phone_number}</>
+                        ) : (
+                          "---"
+                        )}
+                      </p>
+                    </Grid>
+                  </Grid>
+                  <br />
+                  <Grid container>
+                    <Grid item xs={6}>
+                      Address
+                    </Grid>
+                    <Grid item xs={6}>
+                      <p>
+                        {!!patient.address ? <>{patient.address}</> : "---"}
+                      </p>
+                    </Grid>
+                  </Grid>
+                  <br />
+                  <Grid container>
+                    <Grid item xs={6}>
+                      Payment Method
+                    </Grid>
+                    <Grid item xs={6}>
+                      <p>
+                        {!!patient.payment_method ? (
+                          <>{patient.payment_method}</>
+                        ) : (
+                          "---"
+                        )}
+                      </p>
+                    </Grid>
+                  </Grid>
+                  <br />
+                  <Grid container>
+                    <Grid item xs={6}>
+                      Total Treatments
+                    </Grid>
+                    <Grid item xs={6}>
+                      <p>
+                        {!!patient.total_treatments ? (
+                          <>{patient.total_treatments}</>
+                        ) : (
+                          "---"
+                        )}
+                      </p>
+                    </Grid>
+                  </Grid>
+                  <br />
+                  <Grid container>
+                    <Grid item xs={6}>
+                      Total Cost
+                    </Grid>
+                    <Grid item xs={6}>
+                      <p>
+                        {!!patient.total_cost ? (
+                          <>₹ {patient.total_cost} /-</>
+                        ) : (
+                          "---"
+                        )}
+                      </p>
+                    </Grid>
+                  </Grid>
+                  <br />
+                  <Grid container>
+                    <Grid item xs={6}>
+                      D.O.B
+                    </Grid>
+                    <Grid item xs={6}>
+                      <p>
+                        {!!patient.date_of_birth ? (
+                          <>
+                            {moment(patient.date_of_birth).format(
+                              "Do MMM YYYY"
+                            )}
+                          </>
+                        ) : (
+                          "---"
+                        )}
+                      </p>
+                    </Grid>
+                  </Grid>
+                </>
+              )}
               <br />
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <Grid container justify="center" alignItems="center">
@@ -511,7 +690,7 @@ const Records = () => {
                   <Button
                     variant="outlined"
                     size="small"
-                    onClick={() => setNextAppointment(patient._id)}
+                    onClick={() => setNextAppointment()}
                   >
                     Update
                   </Button>
@@ -542,9 +721,65 @@ const Records = () => {
                   })}
                 </>
               )}
-
               <hr />
 
+              <div style={{ textAlign: "center" }}>
+                <strong>Comments</strong>
+              </div>
+
+              <Grid container>
+                <Grid item xs={10} md={11}>
+                  <TextField
+                    variant="outlined"
+                    label="New Comment"
+                    size="small"
+                    style={{ width: "100%", marginTop: "10px" }}
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={2} md={1}>
+                  <Button
+                    size="small"
+                    style={{
+                      marginTop: "15px",
+                    }}
+                    onClick={() => handleNewComment()}
+                  >
+                    +
+                  </Button>
+                </Grid>
+              </Grid>
+
+              {comments.map((comment, index) => {
+                return (
+                  <div
+                    key={index}
+                    style={{
+                      border: "1px solid #eee",
+                      marginTop: "10px",
+                      marginBottom: "10px",
+                      padding: "5px",
+                    }}
+                  >
+                    <div>{comment.comment}</div>
+                    <div>
+                      <span style={{ fontSize: "10px" }}>
+                        {moment(comment.date).format("Do MMM YYYY")}
+                      </span>
+                      <Button
+                        size="small"
+                        style={{ fontSize: "10px", color: "red" }}
+                        onClick={() => handleCommentDelete(index)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <hr />
               <div
                 style={{
                   textAlign: "center",
@@ -591,7 +826,6 @@ const Records = () => {
                   }}
                 />
               </div>
-
               <div
                 style={{
                   textAlign: "center",
@@ -602,7 +836,7 @@ const Records = () => {
                   disabled={selectedImages.length === 0 ? true : false}
                   variant="outlined"
                   size="small"
-                  onClick={() => onUploadPhotos(patient._id)}
+                  onClick={() => onUploadPhotos()}
                 >
                   {selectedImages.length === 0 ? (
                     "Upload Patient Photos"
@@ -611,7 +845,6 @@ const Records = () => {
                   )}
                 </Button>
               </div>
-
               <Grid container>
                 {!!images &&
                   images.map((image, index) => {
@@ -643,7 +876,7 @@ const Records = () => {
                             });
 
                             setImages(temp);
-                            deleteImages(patient._id, temp);
+                            deleteImages(temp);
                           }}
                         >
                           Delete
@@ -652,60 +885,10 @@ const Records = () => {
                     );
                   })}
               </Grid>
-
-              <div style={{ textAlign: "center", marginTop: "30px" }}>
-                <Link
-                  to={{
-                    pathname: "/printbill",
-                    state: { patient: patient },
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ marginRight: "5px", marginTop: "5px" }}
-                    size="small"
-                  >
-                    Print Bill
-                  </Button>
-                </Link>
-
-                <Link
-                  to={{
-                    pathname: "/printprescription",
-                    state: { patient: patient },
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    style={{ marginRight: "5px", marginTop: "5px" }}
-                  >
-                    Print Prescription
-                  </Button>
-                </Link>
-              </div>
               <br />
               <div style={{ textAlign: "center" }}>
-                <Link
-                  to={{
-                    pathname: "/updatepatient",
-                    state: { id: patient._id },
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ marginRight: "5px", marginTop: "5px" }}
-                    size="small"
-                  >
-                    Update Record
-                  </Button>
-                </Link>
-
                 <Button
-                  onClick={() => deleteRecord(patient._id)}
+                  onClick={() => deleteRecord()}
                   variant="contained"
                   color="secondary"
                   size="small"

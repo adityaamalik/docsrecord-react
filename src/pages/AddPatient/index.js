@@ -297,10 +297,7 @@ const AddPatient = () => {
                 onSubmit={(event) => event.preventDefault()}
               >
                 <TextField
-                  id="outlined-multiline-static"
                   label="Address"
-                  multiline
-                  rows={4}
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   variant="outlined"
