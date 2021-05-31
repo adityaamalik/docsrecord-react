@@ -27,16 +27,31 @@ const Statistics = () => {
       .then((response) => {
         setStats(response.data);
 
-        setMonthData(response.data.monthstats);
+        const MonthData = [
+          response.data.monthstats[0] || 0,
+          response.data.monthstats[1] || 0,
+          response.data.monthstats[2] || 0,
+          response.data.monthstats[3] || 0,
+          response.data.monthstats[4] || 0,
+          response.data.monthstats[5] || 0,
+          response.data.monthstats[6] || 0,
+          response.data.monthstats[7] || 0,
+          response.data.monthstats[8] || 0,
+          response.data.monthstats[9] || 0,
+          response.data.monthstats[10] || 0,
+          response.data.monthstats[11] || 0,
+        ];
+
+        setMonthData(MonthData);
 
         const WeekData = [
-          response.data.weekstats[1],
-          response.data.weekstats[2],
-          response.data.weekstats[3],
-          response.data.weekstats[4],
-          response.data.weekstats[5],
-          response.data.weekstats[6],
-          response.data.weekstats[0],
+          response.data.weekstats[1] || 0,
+          response.data.weekstats[2] || 0,
+          response.data.weekstats[3] || 0,
+          response.data.weekstats[4] || 0,
+          response.data.weekstats[5] || 0,
+          response.data.weekstats[6] || 0,
+          response.data.weekstats[0] || 0,
         ];
 
         setWeekData(WeekData);
