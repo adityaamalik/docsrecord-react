@@ -229,7 +229,7 @@ const Statistics = () => {
                     <CountUp end={stats.monthpercentage} duration={4} />
                     <span>%</span>
                     {stats.monthpercentage > 0 ? (
-                      <i className="ni-arrow-up"></i>
+                      <i className="lni-arrow-up"></i>
                     ) : (
                       <i className="lni-arrow-down"></i>
                     )}

@@ -116,9 +116,7 @@ const AddPatient = () => {
 
     data.date_of_birth = dateOfBirth;
 
-    if (t.length !== 0) {
-      data.treatments = t;
-    }
+    data.treatments = t;
 
     axios
       .post("/patients", data)
