@@ -62,10 +62,11 @@ const Appointments = () => {
   }, []);
 
   const complete = (id) => {
+    const doctor = localStorage.getItem("docsrecordDoctor");
     let today = new Date();
     today.setDate(today.getDate() - 2);
     axios
-      .put(`/patients/${id}`, { next_appointment_date: today })
+      .put(`/patients/${id}`, { next_appointment_date: today, doctor: doctor })
       .then((response) => {
         var users = records.filter(function (record) {
           return record._id !== id;
