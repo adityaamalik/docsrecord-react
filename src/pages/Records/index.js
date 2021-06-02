@@ -235,14 +235,14 @@ const Records = () => {
       });
   };
 
-  const deleteRecord = (id) => {
+  const deleteRecord = () => {
     axios
-      .delete(`/patients/${id}`)
+      .delete(`/patients/${patient._id}`)
       .then((response) => {
         setModalOpen(false);
         setDeleteSuccess(true);
         const newData = records.filter((item) => {
-          return item._id !== id;
+          return item._id !== patient._id;
         });
 
         setRecords(newData);
@@ -253,11 +253,13 @@ const Records = () => {
       });
   };
 
-  const setNextAppointment = (id) => {
+  const setNextAppointment = () => {
+    const doctor = localStorage.getItem("docsrecordDoctor");
     axios
-      .put(`/patients/${id}`, {
+      .put(`/patients/${patient._id}`, {
         next_appointment_date: selectedDate,
         next_appointment_time: selectedTimeString,
+        doctor: doctor,
       })
       .then((response) => {
         setAppointmentSuccess(true);
@@ -268,7 +270,7 @@ const Records = () => {
       });
   };
 
-  const onUploadPhotos = (id) => {
+  const onUploadPhotos = () => {
     setModalContentLoading(true);
     const formData = new FormData();
 
@@ -277,7 +279,7 @@ const Records = () => {
     }
 
     axios
-      .put(`/patients/${id}`, formData)
+      .put(`/patients/${patient._id}`, formData)
       .then((response) => {
         const temp = records.filter((d) => {
           return d._id !== response.data._id;
