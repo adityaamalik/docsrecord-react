@@ -185,8 +185,9 @@ const Records = () => {
 
     setComments(newComments);
     setNewComment("");
-
+    const doctor = localStorage.getItem("docsrecordDoctor");
     const data = {};
+    data.doctor = doctor;
 
     data.comments = comments;
 
@@ -219,7 +220,9 @@ const Records = () => {
       counter++;
     });
 
+    const doctor = localStorage.getItem("docsrecordDoctor");
     const data = {};
+    data.doctor = doctor;
 
     data.comments = temp;
     axios
@@ -805,7 +808,7 @@ const Records = () => {
                       fontWeight: "bolder",
                     }}
                   />
-                  <span>Select images</span>
+                  <span>Select Documents</span>
                 </label>
                 <input
                   id="images"
@@ -817,7 +820,7 @@ const Records = () => {
                     setSelectedImages(arr);
                   }}
                   type="file"
-                  accept="image/png, image/jpg, image/jpeg"
+                  accept="image/png, image/jpg, image/jpeg, application/pdf"
                   multiple
                   style={{
                     position: "absolute",
@@ -840,7 +843,7 @@ const Records = () => {
                   onClick={() => onUploadPhotos()}
                 >
                   {selectedImages.length === 0 ? (
-                    "Upload Patient Photos"
+                    "Upload Patient Documents"
                   ) : (
                     <>Upload {selectedImages.length} Photos</>
                   )}
@@ -857,21 +860,41 @@ const Records = () => {
                         key={index}
                         style={{ textAlign: "center" }}
                       >
-                        <img
-                          src={image.location}
-                          alt="patient gallery"
-                          style={{
-                            width: "auto",
-                            height: "100px",
-                            marginBottom: "20px",
-                          }}
-                        />
+                        {image.mimetype === "application/pdf" ? (
+                          <a href={image.location}>
+                            <embed
+                              src={image.location}
+                              style={{
+                                width: "auto",
+                                height: "100px",
+                                marginBottom: "20px",
+                              }}
+                            />
+                          </a>
+                        ) : (
+                          <img
+                            src={image.location}
+                            alt="patient gallery"
+                            style={{
+                              width: "auto",
+                              height: "100px",
+                              marginBottom: "20px",
+                            }}
+                          />
+                        )}
                         <br />
                         <Button
                           size="small"
                           onClick={() => deleteImages(patient._id, image.key)}
                         >
                           Delete
+                        </Button>
+                        <Button
+                          size="small"
+                          href={image.location}
+                          target="_blank"
+                        >
+                          Open
                         </Button>
                       </Grid>
                     );
