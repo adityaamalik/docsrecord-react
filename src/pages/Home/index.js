@@ -338,7 +338,7 @@ const Home = () => {
 
       <h1>Yearly Plan</h1>
       <h3>Your subscription will be extended for 1 Year.</h3>
-      <h3>Amount : ₹ 5000</h3>
+      <h3>Amount : ₹ 4999</h3>
 
       <Grid
         container
@@ -800,9 +800,8 @@ const Home = () => {
                             upcoming appointments at a glance.
                             <br />
                             <br />
-                            Patients will also be notified by E-Mail and
-                            Whatsapp when the doctor sets the next appointment
-                            for the patient.
+                            Patients will also be notified by E-Mail when the
+                            doctor sets the next appointment for the patient.
                             <br />
                             <br />
                             We make the appointment management easy for doctors.
@@ -870,8 +869,7 @@ const Home = () => {
                             Patients often tend to forget about their
                             appointments with the doctor or they are late for
                             them. Docsrecord sends an automatic notification to
-                            the patient via E-Mail and Whatsapp for their next
-                            appointment.
+                            the patient via E-Mail for their next appointment.
                             <br />
                             <br />
                             <ol>
@@ -882,9 +880,7 @@ const Home = () => {
                                 appointments page
                               </li>
                               <li>
-                                <strong>
-                                  4. Patient notified via E-mail and Whatsapp
-                                </strong>
+                                <strong>4. Patient notified via E-mail</strong>
                               </li>
                             </ol>
                           </p>
@@ -994,7 +990,7 @@ const Home = () => {
               <div className="single-pricing text-center pricing-color-1 mt-30">
                 <div className="pricing-price">
                   <span className="price">
-                    <span className="symbol">₹</span> <b>500</b>
+                    <span className="symbol">₹</span> <b>499</b>
                   </span>
                 </div>
                 <div className="pricing-title mt-20">
@@ -1043,7 +1039,7 @@ const Home = () => {
               <div className="single-pricing text-center pricing-color-3 mt-30">
                 <div className="pricing-price">
                   <span className="price">
-                    <span className="symbol">₹</span> <b>5000</b>
+                    <span className="symbol">₹</span> <b>4999</b>
                   </span>
                 </div>
                 <div className="pricing-title mt-20">

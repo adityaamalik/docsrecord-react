@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import * as S from "./styles";
 import axios from "axios";
 import moment from "moment";
-import { useHistory } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -37,9 +36,6 @@ const Appointments = () => {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const classes = useStyles();
-  const [success, setSuccess] = useState(false);
-  const [error] = useState(false);
-  const history = useHistory();
 
   const [authError, setAuthError] = useState(false);
   const [completedSuccess, setCompletedSuccess] = useState(false);
@@ -66,16 +62,12 @@ const Appointments = () => {
   }, []);
 
   const complete = (id) => {
+    const doctor = localStorage.getItem("docsrecordDoctor");
     let today = new Date();
     today.setDate(today.getDate() - 2);
     axios
-      .put(`/patients/${id}`, { next_appointment_date: today })
+      .put(`/patients/${id}`, { next_appointment_date: today, doctor: doctor })
       .then((response) => {
-        console.log(response);
-        setSuccess(true);
-        setTimeout(() => {
-          history.push("/records");
-        }, 2000);
         var users = records.filter(function (record) {
           return record._id !== id;
         });
@@ -132,18 +124,6 @@ const Appointments = () => {
         </Alert>
       </Snackbar>
       <S.Container>
-        <Snackbar
-          open={success || error}
-          autoHideDuration={2000}
-          onClose={() => setSuccess(false)}
-        >
-          <Alert
-            onClose={() => setSuccess(false)}
-            severity={error ? "error" : "success"}
-          >
-            {error ? "Some error occured !" : "Appointment added Successfully"}
-          </Alert>
-        </Snackbar>
         <S.Heading>
           {isLoading ? (
             <CircularProgress />
@@ -160,7 +140,14 @@ const Appointments = () => {
             records.length !== 0 &&
             records.map((record, index) => {
               return (
-                <Grid item md={4} sm={6} xs={12} alignItems="center">
+                <Grid
+                  item
+                  md={4}
+                  sm={6}
+                  xs={12}
+                  alignItems="center"
+                  key={index}
+                >
                   <Card className={classes.root} variant="outlined">
                     <S.CardDiv>
                       {title(
@@ -201,7 +188,7 @@ const Appointments = () => {
                       {!!record.treatments &&
                         record.treatments.map((treatment, i) => {
                           return (
-                            <Grid container>
+                            <Grid container key={i}>
                               <Grid item xs={6}>
                                 <S.CardDiv>{treatment.treatment}</S.CardDiv>
                               </Grid>
@@ -228,7 +215,6 @@ const Appointments = () => {
                           color: "#004aad",
                         }}
                         onClick={() => complete(record._id)}
-                        col
                       >
                         <i
                           className="lni-check-mark-circle"

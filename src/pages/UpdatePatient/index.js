@@ -152,9 +152,7 @@ const UpdatePatient = (props) => {
       data.payment_method = paymentMethod;
     }
 
-    if (t.length !== 0) {
-      data.treatments = t;
-    }
+    data.treatments = t;
 
     data.date_of_birth = dateOfBirth;
 

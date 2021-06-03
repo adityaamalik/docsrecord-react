@@ -116,9 +116,7 @@ const AddPatient = () => {
 
     data.date_of_birth = dateOfBirth;
 
-    if (t.length !== 0) {
-      data.treatments = t;
-    }
+    data.treatments = t;
 
     axios
       .post("/patients", data)
@@ -297,10 +295,7 @@ const AddPatient = () => {
                 onSubmit={(event) => event.preventDefault()}
               >
                 <TextField
-                  id="outlined-multiline-static"
                   label="Address"
-                  multiline
-                  rows={4}
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   variant="outlined"

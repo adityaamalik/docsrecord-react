@@ -311,7 +311,7 @@ const MyProfile = () => {
 
       <h1>Monthly Plan</h1>
       <h3>Your subscription will be extended for 1 Month.</h3>
-      <h3>Amount : ₹ 500</h3>
+      <h3>Amount : ₹ 499</h3>
 
       <Grid
         container
@@ -350,7 +350,7 @@ const MyProfile = () => {
 
       <h1>Yearly Plan</h1>
       <h3>Your subscription will be extended for 1 Year.</h3>
-      <h3>Amount : ₹ 5000</h3>
+      <h3>Amount : ₹ 4999</h3>
 
       <Grid
         container
