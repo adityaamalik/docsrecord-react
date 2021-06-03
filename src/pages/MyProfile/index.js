@@ -91,43 +91,65 @@ const MyProfile = () => {
         }, 1000);
       });
   }, []);
-
-  const onSubmit = () => {
-    setIsLoading(true);
+  const onSubmitImage = () => {
     const doctor = localStorage.getItem("docsrecordDoctor");
     const data = new FormData();
-
-    if (name !== "") {
-      data.append("name", name);
-    }
-
-    if (clinicName !== "") {
-      data.append("clinic_name", clinicName);
-    }
-
-    if (clinicAddress !== "") {
-      data.append("clinic_address", clinicAddress);
-      // data.clinic_address = clinicAddress;
-    }
-
-    if (phone !== "") {
-      data.append("phone_number", phone);
-      // data.phone_number = phone;
-    }
-
-    if (qualifications !== "") {
-      data.append("qualifications", qualifications);
-    }
-
-    if (visitCharges !== "") {
-      data.append("visit_charges", visitCharges);
-      // data.visit_charges = visitCharges;
-    }
-
+    console.log(image);
     if (!!image) {
       data.append("image", image);
       console.log(image);
     }
+
+    axios
+      .put(`/doctors/image-upload/${doctor}`, data)
+      .then((response) => {
+        setSuccess(true);
+        setTimeout(() => {
+          window.location.pathname = "/myprofile";
+        }, 1000);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        setError(true);
+        console.log(err);
+      });
+  };
+
+  const onSubmit = () => {
+    setIsLoading(true);
+    const doctor = localStorage.getItem("docsrecordDoctor");
+    let data = {};
+    data["doctor"] = doctor;
+
+    if (name !== "") {
+      data.name = name;
+    }
+
+    if (clinicName !== "") {
+      data.clinic_name = clinicName;
+    }
+
+    if (clinicAddress !== "") {
+      // data.append("clinic_address", clinicAddress);
+      data.clinic_address = clinicAddress;
+    }
+
+    if (phone !== "") {
+      // data.append("phone_number", phone);
+      data.phone_number = phone;
+    }
+
+    if (qualifications !== "") {
+      // data.append("qualifications", qualifications);
+      data.qualifications = qualifications;
+    }
+
+    if (visitCharges !== "") {
+      // data.append("visit_charges", visitCharges);
+      data.visit_charges = visitCharges;
+    }
+    console.log(name);
+
     axios
       .put(`/doctors/${doctor}`, data)
       .then((response) => {
@@ -411,11 +433,7 @@ const MyProfile = () => {
                         }
                       >
                         <Avatar
-                          src={`data:image/${
-                            docData.image.contentType
-                          };base64,${new Buffer.from(
-                            docData.image.data
-                          ).toString("base64")}`}
+                          src={docData.image.location}
                           className={classes.large}
                         />
                       </Badge>
@@ -429,7 +447,7 @@ const MyProfile = () => {
                     <br />
                     <span>{image.name}</span>
                     {!!document?.getElementById("userImage")?.value && (
-                      <Button onClick={onSubmit}>Upload image</Button>
+                      <Button onClick={onSubmitImage}>Upload image</Button>
                     )}
                   </span>
                 ) : (
@@ -455,7 +473,7 @@ const MyProfile = () => {
                     <br />
                     <span>{image.name}</span>
                     {!!document?.getElementById("userImage")?.value && (
-                      <Button onClick={onSubmit}>Upload image</Button>
+                      <Button onClick={onSubmitImage}>Upload image</Button>
                     )}
                   </span>
                 )}
