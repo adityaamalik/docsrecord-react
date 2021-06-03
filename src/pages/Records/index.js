@@ -162,12 +162,11 @@ const Records = () => {
       });
   };
 
-  const deleteImages = (imgs) => {
+  const deleteImages = (patientId, imageKey) => {
     axios
-      .put(`/patients/deleteImages/${patient._id}`, {
-        images: imgs,
-      })
+      .put(`/patients/${patientId}/deleteImage/${imageKey}`)
       .then((res) => {
+        setImages(res.data.images);
         setImageDeleteSuccess(true);
       })
       .catch((err) => console.log(err));
@@ -279,7 +278,7 @@ const Records = () => {
     }
 
     axios
-      .put(`/patients/${patient._id}`, formData)
+      .put(`/patients/image-upload/${patient._id}`, formData)
       .then((response) => {
         const temp = records.filter((d) => {
           return d._id !== response.data._id;
@@ -859,9 +858,7 @@ const Records = () => {
                         style={{ textAlign: "center" }}
                       >
                         <img
-                          src={`data:image/${
-                            image.contentType
-                          };base64,${image.data.toString("base64")}`}
+                          src={image.location}
                           alt="patient gallery"
                           style={{
                             width: "auto",
@@ -872,14 +869,7 @@ const Records = () => {
                         <br />
                         <Button
                           size="small"
-                          onClick={() => {
-                            const temp = images.filter((img) => {
-                              return img.customId !== image.customId;
-                            });
-
-                            setImages(temp);
-                            deleteImages(temp);
-                          }}
+                          onClick={() => deleteImages(patient._id, image.key)}
                         >
                           Delete
                         </Button>

@@ -94,10 +94,9 @@ const MyProfile = () => {
   const onSubmitImage = () => {
     const doctor = localStorage.getItem("docsrecordDoctor");
     const data = new FormData();
-    console.log(image);
+
     if (!!image) {
       data.append("image", image);
-      console.log(image);
     }
 
     axios
@@ -447,7 +446,14 @@ const MyProfile = () => {
                     <br />
                     <span>{image.name}</span>
                     {!!document?.getElementById("userImage")?.value && (
-                      <Button onClick={onSubmitImage}>Upload image</Button>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        style={{ marginLeft: "5px" }}
+                        onClick={onSubmitImage}
+                      >
+                        Upload image
+                      </Button>
                     )}
                   </span>
                 ) : (
@@ -473,7 +479,14 @@ const MyProfile = () => {
                     <br />
                     <span>{image.name}</span>
                     {!!document?.getElementById("userImage")?.value && (
-                      <Button onClick={onSubmitImage}>Upload image</Button>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        style={{ marginLeft: "5px" }}
+                        onClick={onSubmitImage}
+                      >
+                        Upload image
+                      </Button>
                     )}
                   </span>
                 )}
