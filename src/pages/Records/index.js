@@ -845,7 +845,7 @@ const Records = () => {
                   {selectedImages.length === 0 ? (
                     "Upload Patient Documents"
                   ) : (
-                    <>Upload {selectedImages.length} Photos</>
+                    <>Upload {selectedImages.length} Documents</>
                   )}
                 </Button>
               </div>
@@ -856,7 +856,7 @@ const Records = () => {
                       <Grid
                         item
                         md={4}
-                        xs={6}
+                        xs={12}
                         key={index}
                         style={{ textAlign: "center" }}
                       >
@@ -865,8 +865,6 @@ const Records = () => {
                             <embed
                               src={image.location}
                               style={{
-                                width: "auto",
-                                height: "100px",
                                 marginBottom: "20px",
                               }}
                             />
