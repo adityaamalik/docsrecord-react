@@ -113,6 +113,8 @@ const Records = () => {
 
   const [searchVal, setSearchVal] = useState("");
 
+  const [imageUploadLoader, toggleImageUploadLoader] = useState(false);
+
   useEffect(() => {
     toggleIsLoading(true);
     const doctor = localStorage.getItem("docsrecordDoctor");
@@ -273,7 +275,7 @@ const Records = () => {
   };
 
   const onUploadPhotos = () => {
-    setModalContentLoading(true);
+    toggleImageUploadLoader(true);
     const formData = new FormData();
 
     for (let image of selectedImages) {
@@ -291,14 +293,13 @@ const Records = () => {
         setSelectedImages([]);
         setImages(response.data.images);
         document.getElementById("images").value = null;
-        setModalContentLoading(false);
         setImageSuccess(true);
+        toggleImageUploadLoader(false);
       })
       .catch((err) => {
-        setModalContentLoading(false);
         setImageError(true);
+        toggleImageUploadLoader(false);
       });
-    setModalContentLoading(false);
   };
 
   const handleSearch = () => {
@@ -392,10 +393,10 @@ const Records = () => {
           {deleteSuccess && "Successfully deleted the record !"}
           {appointmentError && "Cannot set the new appointment !"}
           {appointmentSuccess && "Appointment updated successfully !"}
-          {imageError && "Cannot upload images"}
-          {imageSuccess && "Successfully uploaded the images !"}
+          {imageError && "Cannot upload documents"}
+          {imageSuccess && "Successfully uploaded the documents !"}
           {authError && "You are unauthorized user, please login first !"}
-          {imageDeleteSuccess && "Image deleted successfully !"}
+          {imageDeleteSuccess && "Document deleted successfully !"}
           {commentError && "Cannot post comment !"}
           {commentSuccess && "Comment posted successfully !"}
           {commentDeleteError && "Cannot delete comment !"}
@@ -789,6 +790,7 @@ const Records = () => {
                   textAlign: "center",
                   marginTop: "30px",
                   marginBottom: "30px",
+                  display: imageUploadLoader ? "none" : "block",
                 }}
               >
                 <label
@@ -837,18 +839,33 @@ const Records = () => {
                 }}
               >
                 <Button
-                  disabled={selectedImages.length === 0 ? true : false}
+                  disabled={
+                    selectedImages.length === 0 || imageUploadLoader
+                      ? true
+                      : false
+                  }
                   variant="outlined"
                   size="small"
                   onClick={() => onUploadPhotos()}
                 >
-                  {selectedImages.length === 0 ? (
-                    "Upload Patient Documents"
+                  {imageUploadLoader ? (
+                    "Uploading ..."
                   ) : (
-                    <>Upload {selectedImages.length} Documents</>
+                    <>
+                      {selectedImages.length === 0 ? (
+                        "Upload Patient Documents"
+                      ) : (
+                        <>Upload {selectedImages.length} Documents</>
+                      )}
+                    </>
                   )}
                 </Button>
               </div>
+              {imageUploadLoader && (
+                <div style={{ textAlign: "center" }}>
+                  <CircularProgress />
+                </div>
+              )}
               <Grid container>
                 {!!images &&
                   images.map((image, index) => {
