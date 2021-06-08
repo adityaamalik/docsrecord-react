@@ -104,7 +104,8 @@ const AddPatient = () => {
     }
 
     if (email !== "") {
-      data.email = email;
+      const lowerCaseEmail = email.toLowerCase();
+      data.email = lowerCaseEmail;
     }
 
     if (address !== "") {
