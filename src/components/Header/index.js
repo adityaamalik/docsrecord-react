@@ -29,70 +29,22 @@ const Header = () => {
                 id="navbarSupportedContent"
               >
                 <ul id="nav" className="navbar-nav m-auto">
-                  <li
-                    className="nav-item navbar-toggler"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                  >
+                  <li className="nav-item">
                     <Link to="/records">RECORDS</Link>
                   </li>
-                  <li
-                    className="nav-item navbar-toggler"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                  >
+                  <li className="nav-item">
                     <Link to="/addpatient">ADD PATIENT</Link>
                   </li>
-                  <li
-                    className="nav-item navbar-toggler"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                  >
+                  <li className="nav-item">
                     <Link to="/appointments">APPOINTMENTS</Link>
                   </li>
-                  <li
-                    className="nav-item navbar-toggler"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                  >
+                  <li className="nav-item">
                     <Link to="/myprofile">MY PROFILE</Link>
                   </li>
-                  <li
-                    className="nav-item navbar-toggler"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                  >
+                  <li className="nav-item">
                     <Link to="/statistics">STATISTICS</Link>
                   </li>
-                  <li
-                    className="nav-item navbar-toggler"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                  >
+                  <li className="nav-item">
                     <a
                       onClick={() => {
                         localStorage.clear();
