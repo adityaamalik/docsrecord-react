@@ -41,8 +41,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
-    overflow: "scroll",
     height: "90%",
+    overflowY: "scroll",
+    overflowX: "hidden",
   },
   searchBar: {
     width: "100%",
