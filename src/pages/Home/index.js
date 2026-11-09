@@ -1,45 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Button, Modal, Grid } from "@material-ui/core";
 import axios from "axios";
 import * as S from "./styles";
 import moment from "moment";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { Grid, Button, CircularProgress, Modal } from "../../components/glass";
 
 const GOOGLE_CLIENT_ID =
   process.env.REACT_APP_GOOGLE_CLIENT_ID ||
   "824922868367-uf280onns6u425nfh4d6krq7bu4suu1g.apps.googleusercontent.com";
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    position: "absolute",
-    width: "auto",
-    height: "auto",
-    backgroundColor: theme.palette.background.paper,
-
-    padding: theme.spacing(2, 4, 3),
-    "@media (max-width: 767px)": {
-      width: "75%",
-      height: "75%",
-    },
-  },
-}));
-
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
-
 const Home = () => {
-  const classes = useStyles();
-  const [modalStyle] = useState(getModalStyle);
-
   const googleButtonRef = useRef(null);
 
   //state for disabling button while loading
@@ -106,6 +75,7 @@ const Home = () => {
         theme: "outline",
         size: "large",
         text: "continue_with",
+        shape: "rectangular",
       });
     };
 
@@ -185,16 +155,8 @@ const Home = () => {
     paymentObject.open();
   };
   const body = (
-    <div style={modalStyle} className={classes.paper}>
+    <div className="g-modal-body">
       <div>
-        <div style={{ textAlign: "right" }}>
-          <i
-            className="lni-cross-circle"
-            style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
-            onClick={() => setIsModalVisible(false)}
-          />
-        </div>
-
         <h1>Complete your payment</h1>
         <S.ModalDiv>
           <h3>
@@ -215,7 +177,6 @@ const Home = () => {
           <Grid item xs={10} sm={6}>
             <Button
               variant="outlined"
-              width="30"
               onClick={() => setIsMonthlyModalVisible(true)}
             >
               Monthly subscription
@@ -225,7 +186,6 @@ const Home = () => {
           <Grid item xs={10} sm={6} alignItems="center">
             <Button
               variant="outlined"
-              width="30"
               onClick={() => setIsYearlyModalVisible(true)}
             >
               Yearly subscription
@@ -242,15 +202,7 @@ const Home = () => {
   );
 
   const monthlybody = (
-    <div style={modalStyle} className={classes.paper}>
-      <div style={{ textAlign: "right" }}>
-        <i
-          className="lni-cross-circle"
-          style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
-          onClick={() => setIsMonthlyModalVisible(false)}
-        />
-      </div>
-
+    <div className="g-modal-body">
       <h1>Monthly Plan</h1>
       <h3>Your subscription will be extended for 1 Month.</h3>
       <h3>Amount : ₹ 500</h3>
@@ -263,11 +215,7 @@ const Home = () => {
         alignItems="center"
       >
         <Grid item xs={10} sm={6}>
-          <Button
-            variant="outlined"
-            width="30"
-            onClick={() => displayRazorpay("monthly")}
-          >
+          <Button variant="outlined" onClick={() => displayRazorpay("monthly")}>
             Continue to payment
           </Button>
         </Grid>
@@ -281,15 +229,7 @@ const Home = () => {
     </div>
   );
   const yearlybody = (
-    <div style={modalStyle} className={classes.paper}>
-      <div style={{ textAlign: "right" }}>
-        <i
-          className="lni-cross-circle"
-          style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
-          onClick={() => setIsYearlyModalVisible(false)}
-        />
-      </div>
-
+    <div className="g-modal-body">
       <h1>Yearly Plan</h1>
       <h3>Your subscription will be extended for 1 Year.</h3>
       <h3>Amount : ₹ 4999</h3>
@@ -302,11 +242,7 @@ const Home = () => {
         alignItems="center"
       >
         <Grid item xs={10} sm={6}>
-          <Button
-            variant="outlined"
-            width="30"
-            onClick={() => displayRazorpay("yearly")}
-          >
+          <Button variant="outlined" onClick={() => displayRazorpay("yearly")}>
             Continue to payment
           </Button>
         </Grid>
@@ -372,23 +308,22 @@ const Home = () => {
                   >
                     <ul id="nav" className="navbar-nav m-auto">
                       <li className="nav-item active">
-                        <a href="/#home">HOME</a>
+                        <a href="/#home">Home</a>
                       </li>
                       <li className="nav-item">
-                        <a href="/#about">ABOUT</a>
+                        <a href="/#about">About</a>
                       </li>
                       <li className="nav-item">
-                        <a href="/#services">FEATURES</a>
+                        <a href="/#services">Features</a>
                       </li>
                       <li className="nav-item">
-                        <a href="/#pricing">PRICING</a>
+                        <a href="/#pricing">Pricing</a>
                       </li>
                       <li className="nav-item">
-                        <a href="/#contact">CONTACT</a>
+                        <a href="/#contact">Contact</a>
                       </li>
                     </ul>
                   </div>
-
                 </nav>
               </div>
             </div>
@@ -411,7 +346,7 @@ const Home = () => {
                   <p className="text">MANAGE RECORDS. THE COOL WAY ! 😉</p>
 
                   <div>
-                    <h3 style={{ color: "#004aad" }}>Login or Sign Up</h3>
+                    <h3>Login or Sign Up</h3>
                     <br />
                     <div ref={googleButtonRef} />
                     {isLoading && <CircularProgress />}

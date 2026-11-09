@@ -2,53 +2,23 @@ import { useState, useEffect } from "react";
 import * as S from "./styles";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import DateFnsUtils from "@date-io/date-fns";
 import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import {
-  Paper,
-  TextField,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
-  Button,
   Grid,
+  Paper,
+  Button,
+  CircularProgress,
+  TextField,
+  DateField,
+  SelectField,
   Snackbar,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-      width: "100%",
-    },
-    "& .MuiTextField-root": {
-      margin: theme.spacing(1),
-      width: "100%",
-    },
-    flexGrow: 1,
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    width: "100%",
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
+  Alert,
+} from "../../components/glass";
 
 const UpdatePatient = (props) => {
   const history = useHistory();
 
   const [patient, setPatient] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const classes = useStyles();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [name, setName] = useState("");
@@ -173,7 +143,7 @@ const UpdatePatient = (props) => {
       });
   };
   let login = (
-    <Button color="primary" variant="outlined" onClick={onFinish}>
+    <Button color="primary" variant="contained" onClick={onFinish}>
       Update Patient Record
     </Button>
   );
@@ -196,9 +166,9 @@ const UpdatePatient = (props) => {
             {error ? "Some error occured !" : "Patient Updated Successfully"}
           </Alert>
         </Snackbar>
-        <S.Heading>UPDATE PATIENT</S.Heading>
+        <S.Heading>Update patient</S.Heading>
 
-        <div className="classes.root">
+        <div>
           <Grid
             container
             direction="row"
@@ -209,7 +179,7 @@ const UpdatePatient = (props) => {
             <Grid item lg={4} md={4} sm={12} xs={12}>
               {patient.name !== undefined && patient.name !== null && (
                 <form
-                  className={classes.root}
+                  className="g-form"
                   noValidate
                   autoComplete="off"
                   onSubmit={(event) => event.preventDefault()}
@@ -227,7 +197,7 @@ const UpdatePatient = (props) => {
             <Grid item lg={4} md={4} sm={12} xs={12}>
               {patient.age !== undefined && patient.age !== null && (
                 <form
-                  className={classes.root}
+                  className="g-form"
                   noValidate
                   autoComplete="off"
                   onSubmit={(event) => event.preventDefault()}
@@ -244,26 +214,12 @@ const UpdatePatient = (props) => {
             </Grid>
             <Grid item lg={4} md={4} sm={12} xs={12}>
               {patient.gender !== undefined && patient.gender !== null && (
-                <FormControl
-                  variant="outlined"
-                  className={classes.formControl}
-                  onSubmit={(event) => event.preventDefault()}
-                >
-                  <InputLabel id="demo-simple-select-outlined-label">
-                    Gender
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="demo-simple-select-outlined"
-                    defaultValue={patient.gender}
-                    onChange={(e) => setGender(e.target.value)}
-                    label="Age"
-                  >
-                    <MenuItem value="Male">Male</MenuItem>
-                    <MenuItem value="Female">Female</MenuItem>
-                    <MenuItem value="Others">Others</MenuItem>
-                  </Select>
-                </FormControl>
+                <SelectField
+                  label="Gender"
+                  defaultValue={patient.gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  options={["Male", "Female", "Others"]}
+                />
               )}
             </Grid>
           </Grid>
@@ -279,7 +235,7 @@ const UpdatePatient = (props) => {
               {patient.phone_number !== undefined &&
                 patient.phone_number !== null && (
                   <form
-                    className={classes.root}
+                    className="g-form"
                     noValidate
                     autoComplete="off"
                     onSubmit={(event) => event.preventDefault()}
@@ -298,7 +254,7 @@ const UpdatePatient = (props) => {
             <Grid item lg={4} md={4} sm={12} xs={12}>
               {patient.email !== undefined && patient.email !== null && (
                 <form
-                  className={classes.root}
+                  className="g-form"
                   noValidate
                   autoComplete="off"
                   onSubmit={(event) => event.preventDefault()}
@@ -314,18 +270,14 @@ const UpdatePatient = (props) => {
               )}
             </Grid>
 
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <Grid item lg={4} md={4} sm={12} xs={12}>
-                <KeyboardDatePicker
-                  style={{ width: "100%" }}
-                  clearable
-                  value={dateOfBirth}
-                  label="Date Of Birth"
-                  onChange={(date) => setDateOfBirth(date)}
-                  format="MM/dd/yyyy"
-                />
-              </Grid>
-            </MuiPickersUtilsProvider>
+            <Grid item lg={4} md={4} sm={12} xs={12}>
+              <DateField
+                style={{ width: "100%" }}
+                value={dateOfBirth}
+                label="Date Of Birth"
+                onChange={(date) => setDateOfBirth(date)}
+              />
+            </Grid>
           </Grid>
 
           <Grid
@@ -338,7 +290,7 @@ const UpdatePatient = (props) => {
             <Grid item xs={12}>
               {patient.address !== undefined && patient.address !== null && (
                 <form
-                  className={classes.root}
+                  className="g-form"
                   noValidate
                   autoComplete="off"
                   onSubmit={(event) => event.preventDefault()}
@@ -368,7 +320,7 @@ const UpdatePatient = (props) => {
               {patient.payment_method !== undefined &&
                 patient.payment_method !== null && (
                   <form
-                    className={classes.root}
+                    className="g-form"
                     noValidate
                     autoComplete="off"
                     onSubmit={(event) => event.preventDefault()}
@@ -393,7 +345,7 @@ const UpdatePatient = (props) => {
               >
                 <Grid item xs={5}>
                   <form
-                    className={classes.root}
+                    className="g-form"
                     noValidate
                     autoComplete="off"
                     onSubmit={(event) => event.preventDefault()}
@@ -409,7 +361,7 @@ const UpdatePatient = (props) => {
                 </Grid>
                 <Grid item xs={5}>
                   <form
-                    className={classes.root}
+                    className="g-form"
                     noValidate
                     autoComplete="off"
                     onSubmit={(event) => event.preventDefault()}
@@ -425,6 +377,7 @@ const UpdatePatient = (props) => {
                 </Grid>
                 <Grid item xs={2}>
                   <Button
+                    variant="outlined"
                     onClick={() => {
                       if (currTreatment !== "") {
                         const temp = {
@@ -442,10 +395,7 @@ const UpdatePatient = (props) => {
                       }
                     }}
                   >
-                    <i
-                      className="lni-plus"
-                      style={{ fontWeight: "bolder", color: "#004aad" }}
-                    ></i>
+                    <i className="lni-plus" />
                   </Button>
                 </Grid>
               </Grid>
@@ -473,8 +423,7 @@ const UpdatePatient = (props) => {
                   >
                     <Grid item xs={5}>
                       <Paper
-                        className={classes.paperClass}
-                        elevation={2}
+                        className="g-tile"
                         children={
                           <div style={{ padding: "5px", textAlign: "center" }}>
                             <strong>{treatment.treatment}</strong>
@@ -484,8 +433,7 @@ const UpdatePatient = (props) => {
                     </Grid>
                     <Grid item xs={5}>
                       <Paper
-                        className={classes.paperClass}
-                        elevation={2}
+                        className="g-tile"
                         children={
                           <div style={{ padding: "5px", textAlign: "center" }}>
                             <strong>{treatment.charges}</strong>
@@ -495,16 +443,15 @@ const UpdatePatient = (props) => {
                     </Grid>
                     <Grid item xs={2}>
                       <Button
+                        variant="outlined"
+                        color="danger"
                         onClick={() =>
                           setTreatments(
                             treatments.filter((t) => t.id !== treatment.id)
                           )
                         }
                       >
-                        <i
-                          className="lni-minus"
-                          style={{ fontWeight: "bolder", color: "red" }}
-                        ></i>
+                        <i className="lni-minus" />
                       </Button>
                     </Grid>
                   </Grid>

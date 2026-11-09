@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, Grid } from "@material-ui/core";
 import * as S from "./styles";
 import Logo from "../../img/doc.png";
+import { Grid, Button } from "../../components/glass";
 
 const PrintBill = (props) => {
   const { patient } = props.location.state;

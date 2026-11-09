@@ -1,16 +1,15 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  margin: 50px;
-
-  @media only screen and (max-width: 1400px) {
-    margin: 20px;
-  }
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 100px 24px 32px;
 
   @media only screen and (max-width: 768px) {
-    marin: 5px;
+    padding: 76px 12px 20px;
   }
 `;
+
 export const CardDiv = styled.div`
   margin: 8px;
 
@@ -34,10 +33,10 @@ export const AppointmentCardContainer = styled.div`
 
 export const Heading = styled.h1`
   text-align: center;
-  margin-top: 100px;
-  margin-bottom: 50px;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 8px 0 28px;
   @media only screen and (max-width: 768px) {
-    font-size: 15px;
-    marin-top: 50px;
+    font-size: 26px;
   }
 `;

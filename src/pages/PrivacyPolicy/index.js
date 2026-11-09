@@ -5,7 +5,7 @@ const PrivacyPolicy = () => {
     document.getElementsByClassName("navbar-area")[0].style.display = "none";
   }, []);
   return (
-    <>
+    <div className="glass-panel legal-page">
       <h1 style={{ textAlign: "center", marginTop: "50px" }}>
         Privacy Statement
       </h1>
@@ -253,7 +253,7 @@ const PrivacyPolicy = () => {
           Vasundhara, Ghaziabad, U.P., India
         </p>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,0 +1,534 @@
+/* Glass design system: tokens, backdrop, floating header, template overrides. */
+
+:root {
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --ink: #0e1a33;
+  --ink-2: rgba(14, 26, 51, 0.7);
+  --accent: #0a5cff;
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-strong: rgba(255, 255, 255, 0.84);
+  --glass-border: rgba(255, 255, 255, 0.7);
+  --glass-filter: blur(26px) saturate(175%);
+  --glass-shadow: 0 12px 36px rgba(31, 56, 120, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  --glass-shadow-soft: 0 4px 14px rgba(31, 56, 120, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --radius-panel: 28px;
+  --radius-button: 10px;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.96);
+    --glass-bg-strong: rgba(255, 255, 255, 0.98);
+    --glass-filter: none;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.92);
+    --glass-bg-strong: rgba(255, 255, 255, 0.97);
+  }
+}
+
+html {
+  background: #eef3fd;
+}
+
+body {
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  background: radial-gradient(60vmax 60vmax at 6% 10%, rgba(84, 146, 255, 0.58), transparent 62%),
+    radial-gradient(52vmax 52vmax at 94% 6%, rgba(186, 128, 255, 0.46), transparent 62%),
+    radial-gradient(56vmax 56vmax at 88% 90%, rgba(64, 212, 200, 0.46), transparent 62%),
+    radial-gradient(46vmax 46vmax at 10% 94%, rgba(255, 168, 146, 0.42), transparent 62%),
+    linear-gradient(160deg, #eef3fd, #f6f1fb 55%, #eef8f7);
+}
+
+h1, h2, h3, h4, h5, h6, p, a, span, li, label, input, button, td, th {
+  font-family: var(--font);
+}
+
+/* `.material-icons`, `.lni` and `.fa` set their own font and must keep it. */
+.material-icons {
+  font-family: "Material Icons";
+}
+[class^="lni-"], [class*=" lni-"] {
+  font-family: "LineIcons";
+}
+.fa {
+  font-family: FontAwesome;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+/* Shared surface */
+.glass-panel,
+.about-image,
+.single-counter,
+.our-services-tab .tab-content,
+.single-service,
+.single-pricing,
+.single-contact-info,
+.footer-area,
+.header-hero-content {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-filter);
+  backdrop-filter: var(--glass-filter);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius-panel);
+}
+
+.glass-capsule {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-filter);
+  backdrop-filter: var(--glass-filter);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 999px;
+}
+
+/* Floating app header. No filter on the wrapper: it would trap the fixed tab bar. */
+.navbar-area.glass-header {
+  position: fixed;
+  top: 14px;
+  left: 0;
+  right: 0;
+  width: auto;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.glass-header > * {
+  pointer-events: auto;
+}
+
+.glass-header__brand {
+  display: flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 12px;
+}
+
+.glass-header__brand img {
+  height: 40px;
+  width: auto;
+}
+
+.glass-header__links {
+  display: flex;
+  gap: 2px;
+  margin: 0;
+  padding: 5px;
+  list-style: none;
+}
+
+.glass-header__link,
+.glass-header__logout {
+  display: flex;
+  align-items: center;
+  color: var(--ink);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.glass-header__link {
+  gap: 7px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.glass-header__link .material-icons,
+.glass-header__logout .material-icons {
+  font-size: 20px;
+}
+
+.glass-header__link:hover,
+.glass-header__logout:hover {
+  color: var(--accent);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.glass-header__link.is-active {
+  color: var(--accent);
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.88);
+  box-shadow: var(--glass-shadow-soft);
+}
+
+.glass-header__logout {
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+}
+
+@media (max-width: 1040px) {
+  .glass-header__link .material-icons {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  #root {
+    padding-bottom: 92px;
+  }
+
+  .glass-header__brand,
+  .glass-header__logout {
+    height: 46px;
+  }
+
+  .glass-header__brand img {
+    height: 34px;
+  }
+
+  .glass-header__logout {
+    width: 46px;
+  }
+
+  .glass-header__links {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    justify-content: space-between;
+    border-radius: 30px;
+    padding: 6px;
+  }
+
+  .glass-header__links li {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .glass-header__link {
+    flex-direction: column;
+    justify-content: center;
+    gap: 1px;
+    height: 54px;
+    padding: 0 2px;
+    border-radius: 24px;
+    font-size: 10px;
+  }
+
+  .glass-header__link span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .glass-header__link .material-icons {
+    display: block;
+    font-size: 23px;
+  }
+}
+
+/* Landing page: navigation */
+.header-area .navbar-area,
+.header-area .headroom--not-top {
+  position: fixed;
+  top: 14px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.header-area .headroom--unpinned {
+  transform: translateY(-140%);
+}
+
+.header-area .navbar,
+.header-area .headroom--not-top .navbar {
+  padding: 5px 8px 5px 12px;
+  border-radius: 999px;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-filter);
+  backdrop-filter: var(--glass-filter);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.header-area .navbar-brand img {
+  width: auto;
+  height: 40px;
+}
+
+.header-area .navbar-nav .nav-item {
+  margin-left: 2px;
+}
+
+.header-area .navbar-nav .nav-item a {
+  display: block;
+  padding: 9px 16px;
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.header-area .navbar-nav .nav-item a::before {
+  display: none;
+}
+
+.header-area .navbar-nav .nav-item:hover a {
+  color: var(--accent);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.header-area .navbar-nav .nav-item.active a {
+  color: var(--accent);
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.88);
+  box-shadow: var(--glass-shadow-soft);
+}
+
+@media (max-width: 991px) {
+  .header-area .navbar {
+    border-radius: 28px;
+    padding-right: 18px;
+  }
+
+  /* Inside the filtered navbar a nested blur has nothing to sample. */
+  .header-area .navbar-collapse {
+    top: calc(100% + 8px);
+    padding: 8px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .header-area .navbar-nav .nav-item {
+    margin: 2px 0;
+  }
+}
+
+/* Landing page: sections */
+.header-hero,
+.footer-area {
+  background-image: none !important;
+}
+
+.header-hero {
+  background-color: transparent;
+}
+
+.header-hero-content {
+  max-width: 520px;
+  padding: 36px;
+}
+
+@media (max-width: 991px) {
+  .header-hero {
+    padding-top: 92px;
+  }
+
+  .header-hero-content {
+    margin: 0 auto;
+    padding: 28px 22px;
+  }
+}
+
+.header-hero-content .hero-title {
+  letter-spacing: -0.03em;
+}
+
+.header-hero-content .hero-title span,
+.about-title .title span,
+.section-title .sub-title,
+.about-title .welcome {
+  color: var(--accent);
+}
+
+.about-area,
+.our-services-area,
+.service-area,
+.pricing-area,
+.contact-area {
+  background: transparent !important;
+}
+
+.about-image {
+  overflow: hidden;
+  padding: 12px;
+}
+
+.about-image video,
+.about-image img {
+  border-radius: 18px;
+}
+
+.single-counter,
+.single-contact-info {
+  padding: 22px;
+}
+
+.single-service,
+.single-service.service-border {
+  height: 100%;
+  margin: 0 8px;
+  padding: 24px;
+  border: 1px solid var(--glass-border);
+}
+
+.single-service .shape {
+  display: none;
+}
+
+.single-pricing {
+  margin-left: 8px;
+  margin-right: 8px;
+  padding: 40px 28px;
+}
+
+@media (max-width: 991px) {
+  .single-service,
+  .single-service.service-border {
+    height: auto;
+    margin-bottom: 12px;
+  }
+}
+
+.single-pricing.pricing-active {
+  background: var(--glass-bg-strong);
+  box-shadow: 0 0 0 2px rgba(10, 92, 255, 0.55), var(--glass-shadow);
+}
+
+.single-pricing .pricing-title .btn {
+  border-radius: 999px;
+}
+
+.our-services-tab .nav {
+  gap: 6px;
+}
+
+.our-services-tab .nav .nav-item a {
+  border-radius: var(--radius-button);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+
+.our-services-tab .nav .nav-item a,
+.our-services-tab .nav .nav-item a i,
+.our-services-tab .nav .nav-item a span {
+  color: var(--ink);
+}
+
+.our-services-tab .nav .nav-item a::before,
+.our-services-tab .nav .nav-item a.active::before {
+  display: none;
+}
+
+.our-services-tab .nav .nav-item a.active,
+.our-services-tab .nav .nav-item a.active i,
+.our-services-tab .nav .nav-item a.active span {
+  color: #fff;
+}
+
+.our-services-tab .nav .nav-item a.active {
+  background: var(--accent);
+}
+
+.our-services-tab .tab-content {
+  margin-top: 24px;
+  padding: 24px;
+}
+
+.main-btn {
+  border-radius: var(--radius-button);
+  border-color: transparent;
+  background-color: var(--accent);
+  color: #fff;
+}
+
+.main-btn:hover {
+  border-color: transparent;
+  background-color: #0049cc;
+  color: #fff;
+}
+
+.main-btn.main-btn-2 {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(10, 92, 255, 0.35);
+  color: var(--accent);
+}
+
+.main-btn.main-btn-2:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: var(--accent);
+}
+
+.footer-area {
+  width: auto;
+  margin: 0 16px 16px;
+}
+
+/* The template sets these greys on long selectors; they are too faint on glass. */
+.footer-area .title,
+.footer-area a,
+.footer-area li,
+.footer-area span {
+  color: var(--ink) !important;
+}
+
+p,
+.text,
+.pricing-list li {
+  color: var(--ink-2) !important;
+}
+
+.legal-page {
+  max-width: 920px;
+  margin: 24px auto;
+  padding: 16px 28px 32px;
+}
+
+@media (max-width: 991px) {
+  .legal-page {
+    margin: 12px;
+    padding: 8px 8px 24px;
+  }
+}
+
+@media print {
+  body::before,
+  .glass-header {
+    display: none;
+  }
+
+  html {
+    background: #fff;
+  }
+
+  #root {
+    padding-bottom: 0;
+  }
+}

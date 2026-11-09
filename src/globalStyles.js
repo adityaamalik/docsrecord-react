@@ -4,7 +4,7 @@ const Styles = createGlobalStyle`
     body,
     html,
     a {
-        font-family: 'Roboto', sans-serif;
+        font-family: var(--font);
     }
 `;
 

@@ -1,55 +1,21 @@
 import * as S from "./styles";
 import { useState } from "react";
 
-import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import DateFnsUtils from "@date-io/date-fns";
 import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import {
-  Paper,
-  TextField,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
-  Button,
   Grid,
+  Paper,
+  Button,
+  CircularProgress,
+  TextField,
+  DateField,
+  SelectField,
   Snackbar,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-      width: "100%",
-    },
-    "& .MuiTextField-root": {
-      margin: theme.spacing(1),
-      width: "100%",
-    },
-    flexGrow: 1,
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    width: "100%",
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-  paperClass: {
-    margin: theme.spacing(1),
-    width: "100%",
-  },
-}));
+  Alert,
+} from "../../components/glass";
 
 const AddPatient = () => {
-  const classes = useStyles();
   const history = useHistory();
 
   const [success, setSuccess] = useState(false);
@@ -137,7 +103,7 @@ const AddPatient = () => {
   };
 
   let login = (
-    <Button color="primary" variant="outlined" onClick={onFinish}>
+    <Button color="primary" variant="contained" onClick={onFinish}>
       Add Patient Record
     </Button>
   );
@@ -160,9 +126,9 @@ const AddPatient = () => {
         </Alert>
       </Snackbar>
       <S.Container>
-        <S.Heading>ADD PATIENT</S.Heading>
+        <S.Heading>Add patient</S.Heading>
 
-        <div className="classes.root">
+        <div>
           <Grid
             container
             direction="row"
@@ -172,7 +138,7 @@ const AddPatient = () => {
           >
             <Grid item lg={4} md={4} sm={12} xs={12}>
               <form
-                className={classes.root}
+                className="g-form"
                 noValidate
                 autoComplete="off"
                 onSubmit={(event) => event.preventDefault()}
@@ -188,7 +154,7 @@ const AddPatient = () => {
             </Grid>
             <Grid item lg={4} md={4} sm={12} xs={12}>
               <form
-                className={classes.root}
+                className="g-form"
                 noValidate
                 autoComplete="off"
                 onSubmit={(event) => event.preventDefault()}
@@ -203,26 +169,12 @@ const AddPatient = () => {
               </form>
             </Grid>
             <Grid item lg={4} md={4} sm={12} xs={12}>
-              <FormControl
-                variant="outlined"
-                className={classes.formControl}
-                onSubmit={(event) => event.preventDefault()}
-              >
-                <InputLabel id="demo-simple-select-outlined-label">
-                  Gender
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
-                  label="Age"
-                >
-                  <MenuItem value="Male">Male</MenuItem>
-                  <MenuItem value="Female">Female</MenuItem>
-                  <MenuItem value="Others">Others</MenuItem>
-                </Select>
-              </FormControl>
+              <SelectField
+                label="Gender"
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                options={["Male", "Female", "Others"]}
+              />
             </Grid>
           </Grid>
 
@@ -235,7 +187,7 @@ const AddPatient = () => {
           >
             <Grid item lg={4} md={4} sm={12} xs={12}>
               <form
-                className={classes.root}
+                className="g-form"
                 noValidate
                 autoComplete="off"
                 onSubmit={(event) => event.preventDefault()}
@@ -252,7 +204,7 @@ const AddPatient = () => {
 
             <Grid item lg={4} md={4} sm={12} xs={12}>
               <form
-                className={classes.root}
+                className="g-form"
                 noValidate
                 autoComplete="off"
                 onSubmit={(event) => event.preventDefault()}
@@ -267,18 +219,14 @@ const AddPatient = () => {
               </form>
             </Grid>
 
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <Grid item lg={4} md={4} sm={12} xs={12}>
-                <KeyboardDatePicker
-                  style={{ width: "100%" }}
-                  clearable
-                  value={dateOfBirth}
-                  label="Date Of Birth"
-                  onChange={(date) => setDateOfBirth(date)}
-                  format="MM/dd/yyyy"
-                />
-              </Grid>
-            </MuiPickersUtilsProvider>
+            <Grid item lg={4} md={4} sm={12} xs={12}>
+              <DateField
+                style={{ width: "100%" }}
+                value={dateOfBirth}
+                label="Date Of Birth"
+                onChange={(date) => setDateOfBirth(date)}
+              />
+            </Grid>
           </Grid>
 
           <Grid
@@ -290,7 +238,7 @@ const AddPatient = () => {
           >
             <Grid item xs={12}>
               <form
-                className={classes.root}
+                className="g-form"
                 noValidate
                 autoComplete="off"
                 onSubmit={(event) => event.preventDefault()}
@@ -314,7 +262,7 @@ const AddPatient = () => {
           >
             <Grid item lg={6} md={6} sm={12} xs={12}>
               <form
-                className={classes.root}
+                className="g-form"
                 noValidate
                 autoComplete="off"
                 onSubmit={(event) => event.preventDefault()}
@@ -338,7 +286,7 @@ const AddPatient = () => {
               >
                 <Grid item xs={5}>
                   <form
-                    className={classes.root}
+                    className="g-form"
                     noValidate
                     autoComplete="off"
                     onSubmit={(event) => event.preventDefault()}
@@ -354,7 +302,7 @@ const AddPatient = () => {
                 </Grid>
                 <Grid item xs={5}>
                   <form
-                    className={classes.root}
+                    className="g-form"
                     noValidate
                     autoComplete="off"
                     onSubmit={(event) => event.preventDefault()}
@@ -388,10 +336,7 @@ const AddPatient = () => {
                       }
                     }}
                   >
-                    <i
-                      className="lni-plus"
-                      style={{ fontWeight: "bolder", color: "#004aad" }}
-                    ></i>
+                    <i className="lni-plus" />
                   </Button>
                 </Grid>
               </Grid>
@@ -419,8 +364,7 @@ const AddPatient = () => {
                   >
                     <Grid item xs={5}>
                       <Paper
-                        className={classes.paperClass}
-                        elevation={2}
+                        className="g-tile"
                         children={
                           <div style={{ padding: "5px", textAlign: "center" }}>
                             <strong>{treatment.treatment}</strong>
@@ -430,8 +374,7 @@ const AddPatient = () => {
                     </Grid>
                     <Grid item xs={5}>
                       <Paper
-                        className={classes.paperClass}
-                        elevation={2}
+                        className="g-tile"
                         children={
                           <div style={{ padding: "5px", textAlign: "center" }}>
                             <strong>{treatment.charges}</strong>
@@ -442,16 +385,14 @@ const AddPatient = () => {
                     <Grid item xs={2}>
                       <Button
                         variant="outlined"
+                        color="danger"
                         onClick={() =>
                           setTreatments(
                             treatments.filter((t) => t.id !== treatment.id)
                           )
                         }
                       >
-                        <i
-                          className="lni-minus"
-                          style={{ fontWeight: "bolder", color: "red" }}
-                        ></i>
+                        <i className="lni-minus" />
                       </Button>
                     </Grid>
                   </Grid>

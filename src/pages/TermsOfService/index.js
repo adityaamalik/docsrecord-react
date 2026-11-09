@@ -6,7 +6,7 @@ const TermsOfService = () => {
   }, []);
 
   return (
-    <>
+    <div className="glass-panel legal-page">
       <h1 style={{ textAlign: "center", marginTop: "50px" }}>
         Terms Of Service
       </h1>
@@ -626,7 +626,7 @@ const TermsOfService = () => {
           at docsrecordmail@gmail.com.
         </p>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,56 +1,21 @@
 import * as S from "./styles";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Grid, Snackbar, Modal, Button } from "@material-ui/core";
 
-import Avatar from "@material-ui/core/Avatar";
-import { Alert } from "@material-ui/lab";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
-
-import Badge from "@material-ui/core/Badge";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-      width: "95%",
-    },
-  },
-
-  paper: {
-    position: "absolute",
-    width: "auto",
-    height: "auto",
-    backgroundColor: theme.palette.background.paper,
-
-    padding: theme.spacing(2, 4, 3),
-    "@media (max-width: 767px)": {
-      width: "75%",
-      height: "75%",
-    },
-  },
-  large: {
-    width: theme.spacing(10),
-    height: theme.spacing(10),
-  },
-}));
-
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
+import {
+  Grid,
+  Button,
+  CircularProgress,
+  TextField,
+  Modal,
+  Snackbar,
+  Alert,
+  Avatar,
+  Badge,
+} from "../../components/glass";
 
 const MyProfile = () => {
-  const classes = useStyles();
   const [docData, setDocData] = useState({});
   // const history = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -67,7 +32,6 @@ const MyProfile = () => {
   const [image, setImage] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showEdit, toggleEdit] = useState(false);
-  const [modalStyle] = useState(getModalStyle);
 
   const [authError, setAuthError] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -244,16 +208,8 @@ const MyProfile = () => {
     paymentObject.open();
   };
   const body = (
-    <div style={modalStyle} className={classes.paper}>
+    <div className="g-modal-body">
       <div>
-        <div style={{ textAlign: "right" }}>
-          <i
-            className="lni-cross-circle"
-            style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
-            onClick={() => setIsModalVisible(false)}
-          />
-        </div>
-
         <h1>Complete your payment</h1>
         <S.ModalDiv>
           <h3>
@@ -272,7 +228,6 @@ const MyProfile = () => {
           <Grid item xs={10} sm={6}>
             <Button
               variant="outlined"
-              width="30"
               onClick={() => setIsMonthlyModalVisible(true)}
             >
               Monthly subscription
@@ -282,7 +237,6 @@ const MyProfile = () => {
           <Grid item xs={10} sm={6}>
             <Button
               variant="outlined"
-              width="30"
               onClick={() => setIsYearlyModalVisible(true)}
             >
               Yearly subscription
@@ -299,15 +253,7 @@ const MyProfile = () => {
   );
 
   const monthlybody = (
-    <div style={modalStyle} className={classes.paper}>
-      <div style={{ textAlign: "right" }}>
-        <i
-          className="lni-cross-circle"
-          style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
-          onClick={() => setIsMonthlyModalVisible(false)}
-        />
-      </div>
-
+    <div className="g-modal-body">
       <h1>Monthly Plan</h1>
       <h3>Your subscription will be extended for 1 Month.</h3>
       <h3>Amount : ₹ 499</h3>
@@ -320,11 +266,7 @@ const MyProfile = () => {
         alignItems="center"
       >
         <Grid item xs={10} sm={6}>
-          <Button
-            variant="outlined"
-            width="30"
-            onClick={() => displayRazorpay("monthly")}
-          >
+          <Button variant="outlined" onClick={() => displayRazorpay("monthly")}>
             Continue to payment
           </Button>
         </Grid>
@@ -338,15 +280,7 @@ const MyProfile = () => {
     </div>
   );
   const yearlybody = (
-    <div style={modalStyle} className={classes.paper}>
-      <div style={{ textAlign: "right" }}>
-        <i
-          className="lni-cross-circle"
-          style={{ color: "black", fontSize: "20px", cursor: "pointer" }}
-          onClick={() => setIsYearlyModalVisible(false)}
-        />
-      </div>
-
+    <div className="g-modal-body">
       <h1>Yearly Plan</h1>
       <h3>Your subscription will be extended for 1 Year.</h3>
       <h3>Amount : ₹ 4999</h3>
@@ -359,11 +293,7 @@ const MyProfile = () => {
         alignItems="center"
       >
         <Grid item xs={10} sm={6}>
-          <Button
-            variant="outlined"
-            width="30"
-            onClick={() => displayRazorpay("yearly")}
-          >
+          <Button variant="outlined" onClick={() => displayRazorpay("yearly")}>
             Continue to payment
           </Button>
         </Grid>
@@ -411,7 +341,7 @@ const MyProfile = () => {
         {yearlybody}
       </Modal>
       <S.Container>
-        <S.Heading>MY PROFILE</S.Heading>
+        <S.Heading>My profile</S.Heading>
 
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           {" "}
@@ -431,10 +361,7 @@ const MyProfile = () => {
                           showEdit ? <i className="lni-pencil" /> : <></>
                         }
                       >
-                        <Avatar
-                          src={docData.image.location}
-                          className={classes.large}
-                        />
+                        <Avatar src={docData.image.location} />
                       </Badge>
                     </S.FileUploadLabel>
                     <S.FileUpload
@@ -467,7 +394,7 @@ const MyProfile = () => {
                           showEdit ? <i className="lni-pencil" /> : <></>
                         }
                       >
-                        <Avatar className={classes.large} />
+                        <Avatar />
                       </Badge>
                     </S.FileUploadLabel>
                     <S.FileUpload
@@ -512,7 +439,7 @@ const MyProfile = () => {
             <Grid item xs={12} sm={6}>
               {!!docData.name && (
                 <form
-                  className={classes.root}
+                  className="g-form"
                   noValidate
                   autoComplete="off"
                   onSubmit={(event) => event.preventDefault()}
@@ -530,7 +457,7 @@ const MyProfile = () => {
               {docData.phone_number !== undefined &&
                 docData.phone_number !== null && (
                   <form
-                    className={classes.root}
+                    className="g-form"
                     noValidate
                     autoComplete="off"
                     onSubmit={(event) => event.preventDefault()}
@@ -549,7 +476,7 @@ const MyProfile = () => {
               {docData.clinic_name !== undefined &&
                 docData.clinic_name !== null && (
                   <form
-                    className={classes.root}
+                    className="g-form"
                     noValidate
                     autoComplete="off"
                     onSubmit={(event) => event.preventDefault()}
@@ -567,7 +494,7 @@ const MyProfile = () => {
               {docData.clinic_address !== undefined &&
                 docData.clinic_address !== null && (
                   <form
-                    className={classes.root}
+                    className="g-form"
                     noValidate
                     autoComplete="off"
                     onSubmit={(event) => event.preventDefault()}
@@ -585,7 +512,7 @@ const MyProfile = () => {
               {docData.qualifications !== undefined &&
                 docData.qualifications !== null && (
                   <form
-                    className={classes.root}
+                    className="g-form"
                     noValidate
                     autoComplete="off"
                     onSubmit={(event) => event.preventDefault()}
@@ -603,7 +530,7 @@ const MyProfile = () => {
               {docData.visit_charges !== undefined &&
                 docData.visit_charges !== null && (
                   <form
-                    className={classes.root}
+                    className="g-form"
                     noValidate
                     autoComplete="off"
                     onSubmit={(event) => event.preventDefault()}
@@ -620,7 +547,7 @@ const MyProfile = () => {
 
             <Grid item>
               <Button
-                variant="outlined"
+                variant="contained"
                 disabled={isLoading}
                 onClick={onSubmit}
                 color="primary"

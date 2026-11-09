@@ -1,76 +1,30 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
 import {
+  Grid,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
+  Button,
+  CircularProgress,
+  TextField,
+  DateField,
+  TimeField,
+  Modal,
+  Snackbar,
+  Alert,
   TableContainer,
   TableHead,
-  TablePagination,
+  TableBody,
   TableRow,
-  Modal,
-  CircularProgress,
-  Grid,
-  Button,
-  Snackbar,
-  TextField,
-} from "@material-ui/core";
-import { Link } from "react-router-dom";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import { Alert } from "@material-ui/lab";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    marginTop: "100px",
-  },
-  container: {
-    maxHeight: "80vh",
-  },
-  paper: {
-    position: "absolute",
-    width: "90%",
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-    height: "90%",
-    overflowY: "scroll",
-    overflowX: "hidden",
-  },
-  searchBar: {
-    width: "100%",
-    paddingTop: "10px",
-    paddingBottom: "10px",
-    paddingLeft: "30px",
-    paddingRight: "30px",
-  },
-}));
-
-const getModalStyle = () => {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-};
+  TableCell,
+  TablePagination,
+  Table,
+} from "../../components/glass";
 
 const Records = () => {
-  const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage] = useState(10);
 
-  const [modalStyle] = useState(getModalStyle);
   const [records, setRecords] = useState([]);
   const [originalRecords, setOriginalRecords] = useState([]);
   const [isLoading, toggleIsLoading] = useState(false);
@@ -414,7 +368,7 @@ const Records = () => {
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-        <div style={modalStyle} className={classes.paper}>
+        <div className="g-modal-body g-modal-body--large">
           {modalContentLoading ? (
             <>
               <div style={{ textAlign: "center" }}>
@@ -424,80 +378,54 @@ const Records = () => {
           ) : (
             <>
               <div style={{ textAlign: "center" }}>
-                <h3>PATIENT INFO</h3>
+                <h3>Patient info</h3>
               </div>
               <br />
-              <div style={{ textAlign: "center" }}>
-                <Link
+              <div className="g-actions">
+                <Button
+                  variant="contained"
+                  size="small"
                   to={{
                     pathname: "/printbill",
                     state: { patient: patient },
                   }}
                 >
-                  <Button
-                    variant="contained"
-                    style={{
-                      marginRight: "5px",
-                      marginTop: "5px",
-                    }}
-                    size="small"
-                  >
-                    Print Bill
-                  </Button>
-                </Link>
+                  Print Bill
+                </Button>
 
-                <Link
+                <Button
+                  variant="contained"
+                  size="small"
                   to={{
                     pathname: "/printprescription",
                     state: { patient: patient },
                   }}
                 >
-                  <Button
-                    variant="contained"
-                    size="small"
-                    style={{
-                      marginRight: "5px",
-                      marginTop: "5px",
-                    }}
-                  >
-                    Print Prescription
-                  </Button>
-                </Link>
+                  Print Prescription
+                </Button>
               </div>
               <br />
-              <div style={{ textAlign: "center" }}>
+              <div className="g-actions">
                 <Button
                   onClick={() => toggleExtraDetails(!showExtraDetails)}
                   variant="contained"
+                  color="primary"
                   size="small"
-                  style={{
-                    marginRight: "5px",
-                    marginTop: "5px",
-                    backgroundColor: "#004aad",
-                    color: "white",
-                  }}
                 >
                   {showExtraDetails
                     ? "Hide Extra Details"
                     : "Show Extra Details"}
                 </Button>
-                <Link
+                <Button
+                  variant="contained"
+                  size="small"
                   to={{
                     pathname: "/updatepatient",
                     state: { id: patient._id },
                   }}
                 >
-                  <Button
-                    variant="contained"
-                    style={{
-                      marginRight: "5px",
-                      marginTop: "5px",
-                    }}
-                    size="small"
-                  >
-                    Update Record
-                  </Button>
-                </Link>
+                  Update Record
+                </Button>
               </div>
               <br />
               <br />
@@ -646,49 +574,37 @@ const Records = () => {
                 </>
               )}
               <br />
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <Grid container justify="center" alignItems="center">
-                  <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-                    Next Appointment Date
-                  </Grid>
-                  <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-                    <KeyboardDatePicker
-                      margin="normal"
-                      clearable
-                      value={selectedDate}
-                      label="Appointment Date"
-                      onChange={(date) => setSelectedDate(date)}
-                      minDate={new Date()}
-                      format="MM/dd/yyyy"
-                    />
-                  </Grid>
+              <Grid container justify="center" alignItems="center">
+                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+                  Next Appointment Date
                 </Grid>
-              </MuiPickersUtilsProvider>
+                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+                  <DateField
+                    value={selectedDate}
+                    label="Appointment Date"
+                    onChange={(date) => setSelectedDate(date)}
+                    minDate={new Date()}
+                  />
+                </Grid>
+              </Grid>
               <br />
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <Grid container justify="center" alignItems="center">
-                  <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-                    Next Appointment Time
-                  </Grid>
-                  <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-                    <KeyboardTimePicker
-                      margin="normal"
-                      id="time-picker"
-                      label="Appointment Time"
-                      value={selectedTime}
-                      onChange={(date) => {
-                        setSelectedTime(date);
-                        setSelectedTimeString(
-                          moment(date.getTime(), "x").format("hh:mm A")
-                        );
-                      }}
-                      KeyboardButtonProps={{
-                        "aria-label": "change time",
-                      }}
-                    />
-                  </Grid>
+              <Grid container justify="center" alignItems="center">
+                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+                  Next Appointment Time
                 </Grid>
-              </MuiPickersUtilsProvider>
+                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+                  <TimeField
+                    label="Appointment Time"
+                    value={selectedTime}
+                    onChange={(date) => {
+                      setSelectedTime(date);
+                      setSelectedTimeString(
+                        moment(date.getTime(), "x").format("hh:mm A")
+                      );
+                    }}
+                  />
+                </Grid>
+              </Grid>
               <br />
               <Grid container>
                 <Grid item xs={6}></Grid>
@@ -733,49 +649,33 @@ const Records = () => {
                 <strong>Comments</strong>
               </div>
 
-              <Grid container>
-                <Grid item xs={10} md={11}>
-                  <TextField
-                    variant="outlined"
-                    label="New Comment"
-                    size="small"
-                    style={{ width: "100%", marginTop: "10px" }}
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                  />
-                </Grid>
-                <Grid item xs={2} md={1}>
-                  <Button
-                    size="small"
-                    style={{
-                      marginTop: "15px",
-                    }}
-                    onClick={() => handleNewComment()}
-                  >
-                    +
-                  </Button>
-                </Grid>
-              </Grid>
+              <div className="g-comment-form">
+                <TextField
+                  variant="outlined"
+                  label="New Comment"
+                  size="small"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                />
+                <Button
+                  variant="outlined"
+                  size="small"
+                  aria-label="Add comment"
+                  onClick={() => handleNewComment()}
+                >
+                  +
+                </Button>
+              </div>
 
               {comments.map((comment, index) => {
                 return (
-                  <div
-                    key={index}
-                    style={{
-                      border: "1px solid #eee",
-                      marginTop: "10px",
-                      marginBottom: "10px",
-                      padding: "5px",
-                    }}
-                  >
+                  <div key={index} className="g-comment">
                     <div>{comment.comment}</div>
-                    <div>
-                      <span style={{ fontSize: "10px" }}>
-                        {moment(comment.date).format("Do MMM YYYY")}
-                      </span>
+                    <div className="g-comment__meta">
+                      <span>{moment(comment.date).format("Do MMM YYYY")}</span>
                       <Button
                         size="small"
-                        style={{ fontSize: "10px", color: "red" }}
+                        color="danger"
                         onClick={() => handleCommentDelete(index)}
                       >
                         Delete
@@ -796,21 +696,9 @@ const Records = () => {
               >
                 <label
                   htmlFor="images"
-                  style={{
-                    cursor: "pointer",
-                    border: "1px solid gray",
-                    padding: "5px",
-                    borderRadius: "5px",
-                  }}
+                  className="g-btn g-btn--outlined g-btn--small"
                 >
-                  <i
-                    className="lni-cloud-upload"
-                    style={{
-                      marginRight: "5px",
-                      fontSize: "25px",
-                      fontWeight: "bolder",
-                    }}
-                  />
+                  <i className="lni-cloud-upload" />
                   <span>Select Documents</span>
                 </label>
                 <input
@@ -901,6 +789,7 @@ const Records = () => {
                         <br />
                         <Button
                           size="small"
+                          color="danger"
                           onClick={() => deleteImages(patient._id, image.key)}
                         >
                           Delete
@@ -917,13 +806,12 @@ const Records = () => {
                   })}
               </Grid>
               <br />
-              <div style={{ textAlign: "center" }}>
+              <div className="g-actions">
                 <Button
                   onClick={() => deleteRecord()}
                   variant="contained"
-                  color="secondary"
+                  color="danger"
                   size="small"
-                  style={{ marginRight: "5px", marginTop: "5px" }}
                 >
                   Delete Patient
                 </Button>
@@ -932,14 +820,15 @@ const Records = () => {
           )}
         </div>
       </Modal>
-      <Paper className={classes.root}>
-        <form className={classes.searchBar} noValidate autoComplete="off">
+      <Paper className="g-records">
+        <form className="g-records__search" noValidate autoComplete="off">
           <Grid container justify="center" alignItems="center">
             <Grid item lg={10} md={10} sm={8} xs={7}>
               <TextField
                 type="text"
-                variant="standard"
-                label="Search Records"
+                variant="outlined"
+                size="small"
+                label="Search records"
                 style={{
                   width: "100%",
                 }}
@@ -966,7 +855,7 @@ const Records = () => {
           </Grid>
         </form>
 
-        <TableContainer className={classes.container}>
+        <TableContainer className="g-records__scroll">
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>

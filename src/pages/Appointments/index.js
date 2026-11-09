@@ -2,40 +2,18 @@ import { useEffect, useState } from "react";
 import * as S from "./styles";
 import axios from "axios";
 import moment from "moment";
-
-import { makeStyles } from "@material-ui/core/styles";
-
 import {
+  Grid,
   Card,
   Button,
-  Grid,
-  Snackbar,
   CircularProgress,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-    padding: "15px",
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-});
+  Snackbar,
+  Alert,
+} from "../../components/glass";
 
 const Appointments = () => {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const classes = useStyles();
 
   const [authError, setAuthError] = useState(false);
   const [completedSuccess, setCompletedSuccess] = useState(false);
@@ -130,8 +108,8 @@ const Appointments = () => {
           ) : (
             <>
               {records.length === 0
-                ? "NO UPCOMING APPOINTMENTS"
-                : "UPCOMING APPOINTMENTS"}
+                ? "No upcoming appointments"
+                : "Upcoming appointments"}
             </>
           )}
         </S.Heading>
@@ -148,7 +126,7 @@ const Appointments = () => {
                   alignItems="center"
                   key={index}
                 >
-                  <Card className={classes.root} variant="outlined">
+                  <Card className="g-appointment-card">
                     <S.CardDiv>
                       {title(
                         record.name,
@@ -209,22 +187,9 @@ const Appointments = () => {
                     )}
 
                     <div style={{ textAlign: "right" }}>
-                      <Button
-                        style={{
-                          borderRadius: "50px",
-                          color: "#004aad",
-                        }}
-                        onClick={() => complete(record._id)}
-                      >
-                        <i
-                          className="lni-check-mark-circle"
-                          style={{
-                            fontWeight: "bolder",
-                            fontSize: "20px",
-                            marginRight: "5px",
-                          }}
-                        />
-                        MARK AS COMPLETED
+                      <Button onClick={() => complete(record._id)}>
+                        <i className="lni-check-mark-circle" />
+                        Mark as completed
                       </Button>
                     </div>
                   </Card>

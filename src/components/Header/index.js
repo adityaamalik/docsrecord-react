@@ -1,66 +1,56 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
+const LINKS = [
+  { to: "/records", label: "Records", icon: "folder_shared" },
+  { to: "/addpatient", label: "Add Patient", icon: "person_add" },
+  { to: "/appointments", label: "Appointments", icon: "event" },
+  { to: "/myprofile", label: "Profile", icon: "account_circle" },
+  { to: "/statistics", label: "Statistics", icon: "bar_chart" },
+];
+
+// The public policy pages hide this header by looking up `.navbar-area`.
 const Header = () => {
-  return (
-    <div className="navbar-area">
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-12">
-            <nav className="navbar navbar-expand-lg">
-              <Link className="navbar-brand" to="/records">
-                <img src="assets/images/logo.png" alt="Logo" width="200px" />
-              </Link>
-              <button
-                className="navbar-toggler"
-                type="button"
-                data-toggle="collapse"
-                data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <span className="toggler-icon"></span>
-                <span className="toggler-icon"></span>
-                <span className="toggler-icon"></span>
-              </button>
+  const { pathname } = useLocation();
 
-              <div
-                className="collapse navbar-collapse sub-menu-bar"
-                id="navbarSupportedContent"
-              >
-                <ul id="nav" className="navbar-nav m-auto">
-                  <li className="nav-item">
-                    <Link to="/records">RECORDS</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/addpatient">ADD PATIENT</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/appointments">APPOINTMENTS</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/myprofile">MY PROFILE</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/statistics">STATISTICS</Link>
-                  </li>
-                  <li className="nav-item">
-                    <a
-                      onClick={() => {
-                        localStorage.clear();
-                      }}
-                      href="/"
-                    >
-                      LOGOUT
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </nav>
-          </div>
-        </div>
-      </div>
-    </div>
+  return (
+    <nav className="navbar-area glass-header" aria-label="Main">
+      <Link className="glass-capsule glass-header__brand" to="/records">
+        <img src="assets/images/logo.png" alt="Docsrecord" />
+      </Link>
+
+      <ul className="glass-capsule glass-header__links">
+        {LINKS.map(({ to, label, icon }) => (
+          <li key={to}>
+            <Link
+              to={to}
+              className={`glass-header__link${
+                pathname === to ? " is-active" : ""
+              }`}
+              aria-current={pathname === to ? "page" : undefined}
+            >
+              <i className="material-icons" aria-hidden="true">
+                {icon}
+              </i>
+              <span>{label}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      <a
+        className="glass-capsule glass-header__logout"
+        href="/"
+        aria-label="Log out"
+        title="Log out"
+        onClick={() => {
+          localStorage.clear();
+        }}
+      >
+        <i className="material-icons" aria-hidden="true">
+          logout
+        </i>
+      </a>
+    </nav>
   );
 };
 

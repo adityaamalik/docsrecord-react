@@ -5,6 +5,8 @@ import Router from "./router";
 import reportWebVitals from "./reportWebVitals";
 import axios from "axios";
 
+import "./styles/glass.css";
+
 axios.defaults.headers.common[`Authorization`] = `Bearer ${localStorage.getItem(
   "token"
 )}`;

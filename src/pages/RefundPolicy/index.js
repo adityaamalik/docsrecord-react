@@ -6,7 +6,7 @@ const RefundPolicy = () => {
   }, []);
 
   return (
-    <>
+    <div className="glass-panel legal-page">
       <h1 style={{ textAlign: "center", marginTop: "50px" }}>Refund Policy</h1>
 
       <div style={{ padding: "20px" }}>
@@ -30,7 +30,7 @@ const RefundPolicy = () => {
           create an account on our website to start using our services.
         </p>
       </div>
-    </>
+    </div>
   );
 };
 

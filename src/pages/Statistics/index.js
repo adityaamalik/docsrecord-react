@@ -1,13 +1,16 @@
 import * as S from "./styles";
 
 import { Line } from "react-chartjs-2";
-import { Grid, Snackbar } from "@material-ui/core";
 import CountUp from "react-countup";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { Alert } from "@material-ui/lab";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {
+  Grid,
+  CircularProgress,
+  Snackbar,
+  Alert,
+} from "../../components/glass";
 
 const Statistics = () => {
   const [stats, setStats] = useState({});
@@ -74,10 +77,10 @@ const Statistics = () => {
     datasets: [
       {
         label: "Patient",
-        fill: false,
-        lineTension: 0,
-        backgroundColor: "rgba(75,192,192,1)",
-        borderColor: "rgba(0,0,0,1)",
+        fill: true,
+        lineTension: 0.35,
+        backgroundColor: "rgba(10,92,255,0.14)",
+        borderColor: "#0a5cff",
         borderWidth: 2,
         data: weekData,
       },
@@ -102,10 +105,10 @@ const Statistics = () => {
     datasets: [
       {
         label: "Patient",
-        fill: false,
-        lineTension: 0,
-        backgroundColor: "rgba(75,192,192,1)",
-        borderColor: "rgba(0,0,0,1)",
+        fill: true,
+        lineTension: 0.35,
+        backgroundColor: "rgba(10,92,255,0.14)",
+        borderColor: "#0a5cff",
         borderWidth: 2,
         data: monthData,
       },
@@ -136,185 +139,206 @@ const Statistics = () => {
               {authError && "You are unauthorized user, please login first !"}
             </Alert>
           </Snackbar>
-          <Grid
-            container
-            style={{ marginTop: "100px" }}
-            direction="row"
-            justify="center"
-            alignItems="center"
-          >
+          <S.StatsPanel>
             <Grid
-              item
-              xs={6}
-              sm={6}
               container
               direction="row"
               justify="center"
               alignItems="center"
             >
-              <S.CounterHeading>THIS MONTH</S.CounterHeading>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
+                <S.CounterHeading>This month</S.CounterHeading>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
+                <S.CounterHeading>This week</S.CounterHeading>
+              </Grid>
             </Grid>
-            <Grid
-              item
-              xs={6}
-              sm={6}
-              container
-              direction="row"
-              justify="center"
-              alignItems="center"
-            >
-              <S.CounterHeading>THIS WEEK</S.CounterHeading>
-            </Grid>
-          </Grid>
 
-          <Grid container direction="row" justify="center" alignItems="center">
             <Grid
-              item
-              xs={6}
-              sm={6}
               container
               direction="row"
               justify="center"
               alignItems="center"
             >
-              <S.CounterHeading2>
-                {stats.currentmonth !== undefined && (
-                  <CountUp end={stats.currentmonth} duration={4} />
-                )}
-              </S.CounterHeading2>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
+                <S.CounterHeading2>
+                  {stats.currentmonth !== undefined && (
+                    <CountUp end={stats.currentmonth} duration={4} />
+                  )}
+                </S.CounterHeading2>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
+                {" "}
+                <S.CounterHeading2>
+                  {stats.currentweek !== undefined && (
+                    <div>
+                      <CountUp end={stats.currentweek} duration={4} />
+                    </div>
+                  )}
+                </S.CounterHeading2>
+              </Grid>
             </Grid>
             <Grid
-              item
-              xs={6}
-              sm={6}
               container
               direction="row"
               justify="center"
               alignItems="center"
             >
-              {" "}
-              <S.CounterHeading2>
-                {stats.currentweek !== undefined && (
-                  <div>
-                    <CountUp end={stats.currentweek} duration={4} />
-                  </div>
-                )}
-              </S.CounterHeading2>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
+                <span>PATIENTS</span>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
+                {" "}
+                <span>PATIENTS</span>
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid container direction="row" justify="center" alignItems="center">
-            <Grid
-              item
-              xs={6}
-              sm={6}
-              container
-              direction="row"
-              justify="center"
-              alignItems="center"
-            >
-              <span>PATIENTS</span>
-            </Grid>
-            <Grid
-              item
-              xs={6}
-              sm={6}
-              container
-              direction="row"
-              justify="center"
-              alignItems="center"
-            >
-              {" "}
-              <span>PATIENTS</span>
-            </Grid>
-          </Grid>
 
-          <Grid container direction="row" justify="center" alignItems="center">
             <Grid
-              item
-              xs={6}
-              sm={6}
               container
               direction="row"
               justify="center"
               alignItems="center"
             >
-              <S.CounterHeading2>
-                {!!stats.monthpercentage && (
-                  <Grid>
-                    <CountUp end={stats.monthpercentage} duration={4} />
-                    <span>%</span>
-                    {stats.monthpercentage > 0 ? (
-                      <i className="lni-arrow-up"></i>
-                    ) : (
-                      <i className="lni-arrow-down"></i>
-                    )}
-                  </Grid>
-                )}
-              </S.CounterHeading2>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
+                <S.CounterHeading2>
+                  {!!stats.monthpercentage && (
+                    <Grid>
+                      <CountUp end={stats.monthpercentage} duration={4} />
+                      <span>%</span>
+                      {stats.monthpercentage > 0 ? (
+                        <i className="lni-arrow-up"></i>
+                      ) : (
+                        <i className="lni-arrow-down"></i>
+                      )}
+                    </Grid>
+                  )}
+                </S.CounterHeading2>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
+                {" "}
+                <S.CounterHeading2>
+                  {!!stats.weekpercentage && (
+                    <Grid>
+                      <CountUp end={stats.weekpercentage} duration={4} />
+                      <span>%</span>
+                      {stats.weekpercentage > 0 ? (
+                        <i className="lni-arrow-up"></i>
+                      ) : (
+                        <i className="lni-arrow-down"></i>
+                      )}
+                    </Grid>
+                  )}
+                </S.CounterHeading2>
+              </Grid>
             </Grid>
-            <Grid
-              item
-              xs={6}
-              sm={6}
-              container
-              direction="row"
-              justify="center"
-              alignItems="center"
-            >
-              {" "}
-              <S.CounterHeading2>
-                {!!stats.weekpercentage && (
-                  <Grid>
-                    <CountUp end={stats.weekpercentage} duration={4} />
-                    <span>%</span>
-                    {stats.weekpercentage > 0 ? (
-                      <i className="lni-arrow-up"></i>
-                    ) : (
-                      <i className="lni-arrow-down"></i>
-                    )}
-                  </Grid>
-                )}
-              </S.CounterHeading2>
-            </Grid>
-          </Grid>
 
-          <Grid container direction="row" justify="center" alignItems="center">
             <Grid
-              item
-              xs={6}
-              sm={6}
               container
               direction="row"
               justify="center"
               alignItems="center"
             >
-              <span>
-                {!!stats.monthpercentage && (
-                  <Grid>
-                    <span>SINCE LAST MONTH</span>
-                  </Grid>
-                )}
-              </span>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
+                <span>
+                  {!!stats.monthpercentage && (
+                    <Grid>
+                      <span>SINCE LAST MONTH</span>
+                    </Grid>
+                  )}
+                </span>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
+                {" "}
+                <span>
+                  {!!stats.weekpercentage && (
+                    <Grid>
+                      <span>SINCE LAST WEEK</span>
+                    </Grid>
+                  )}
+                </span>
+              </Grid>
             </Grid>
-            <Grid
-              item
-              xs={6}
-              sm={6}
-              container
-              direction="row"
-              justify="center"
-              alignItems="center"
-            >
-              {" "}
-              <span>
-                {!!stats.weekpercentage && (
-                  <Grid>
-                    <span>SINCE LAST WEEK</span>
-                  </Grid>
-                )}
-              </span>
-            </Grid>
-          </Grid>
+          </S.StatsPanel>
 
           <S.Graphmobile>
             <S.CounterHeading3>Monthly Graph</S.CounterHeading3>

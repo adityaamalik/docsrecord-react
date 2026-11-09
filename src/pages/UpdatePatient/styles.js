@@ -1,22 +1,28 @@
 import styled from "styled-components";
 
-export const Container = styled.div`
-  margin: 150px;
+export const Container = styled.div.attrs({ className: "glass-panel" })`
+  max-width: 1120px;
+  margin: 104px auto 32px;
+  padding: 32px 40px 40px;
 
-  @media only screen and (max-width: 1400px) {
-    margin: 60px;
+  @media only screen and (max-width: 1200px) {
+    margin: 96px 20px 28px;
+    padding: 28px;
   }
 
   @media only screen and (max-width: 768px) {
-    margin: 20px;
+    margin: 76px 12px 20px;
+    padding: 20px 14px;
   }
 `;
 
 export const Heading = styled.h1`
   text-align: center;
-  margin-top: 100px;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 24px;
   @media only screen and (max-width: 768px) {
-    marin-top: 50px;
+    font-size: 26px;
   }
 `;
 

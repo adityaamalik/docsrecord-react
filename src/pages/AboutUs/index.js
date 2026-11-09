@@ -6,7 +6,7 @@ const AboutUs = () => {
   }, []);
 
   return (
-    <>
+    <div className="glass-panel legal-page">
       <h1 style={{ textAlign: "center", marginTop: "50px" }}>About Us</h1>
 
       <div style={{ padding: "20px" }}>
@@ -82,7 +82,7 @@ const AboutUs = () => {
         <p>Want to join our team ? </p>
         <p>Contact us : docsrecordmail@gmail.com</p>
       </div>
-    </>
+    </div>
   );
 };
 

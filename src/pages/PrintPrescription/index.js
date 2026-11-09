@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Grid, Button } from "@material-ui/core";
 import * as S from "./styles";
+import { Grid, Button } from "../../components/glass";
 
 const PrintPrescription = (props) => {
   const { patient } = props.location.state;
