@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, TextField, Modal, Grid } from "@material-ui/core";
-import GoogleLogin from "react-google-login";
+import { Button, Modal, Grid } from "@material-ui/core";
 import axios from "axios";
 import * as S from "./styles";
 import moment from "moment";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
+const GOOGLE_CLIENT_ID =
+  process.env.REACT_APP_GOOGLE_CLIENT_ID ||
+  "824922868367-uf280onns6u425nfh4d6krq7bu4suu1g.apps.googleusercontent.com";
+
 const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      marginBottom: theme.spacing(2),
-      width: "90%",
-    },
-  },
   paper: {
     position: "absolute",
     width: "auto",
@@ -43,18 +40,7 @@ const Home = () => {
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
 
-  // to toggle login and register form
-  const [registerForm, toggleRegisterForm] = useState(false);
-
-  //states for register
-  const [name, setName] = useState("");
-  const [emailForRegister, setEmailForRegister] = useState("");
-  const [passwordForRegister, setPasswordForRegister] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  //states for login
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const googleButtonRef = useRef(null);
 
   //state for disabling button while loading
   const [isLoading, setIsLoading] = useState(false);
@@ -68,61 +54,11 @@ const Home = () => {
   const [doctor, setDoctor] = useState({});
   const [token, setToken] = useState("");
 
-  const onGoogleSuccess = (response) => {
-    setName(response.profileObj.name);
-    setEmailForRegister(response.profileObj.email);
-  };
-
-  const onGoogleFailure = (err) => {
-    console.log(err);
-  };
-
-  const onSubmitForRegister = () => {
-    if (!name) {
-      alert("Name is required");
-      setIsLoading(false);
-    } else if (!emailForRegister) {
-      alert("Email is required");
-      setIsLoading(false);
-    } else if (!passwordForRegister) {
-      alert("Password is required");
-      setIsLoading(false);
-    } else if (passwordForRegister !== confirmPassword) {
-      alert("Password does not match");
-      setIsLoading(false);
-    } else {
-      setIsLoading(true);
-      axios
-        .post("/doctors/register", {
-          name: name,
-          email: emailForRegister,
-          password: passwordForRegister,
-        })
-        .then((response) => {
-          setIsLoading(false);
-
-          localStorage.setItem("docsrecordDoctor", response.data.doctor._id);
-          localStorage.setItem("token", response.data.token);
-
-          window.location.pathname = "/records";
-        })
-        .catch((err) => {
-          setIsLoading(false);
-          if (err.response.data === "Email Already registered") {
-            alert("This email is already registered !");
-          }
-        });
-    }
-  };
-
-  const onSubmit = () => {
+  const onGoogleCredential = ({ credential }) => {
     setIsLoading(true);
 
     axios
-      .post("/doctors/login", {
-        email: email,
-        password: password,
-      })
+      .post("/doctors/google", { credential })
       .then((response) => {
         setIsLoading(false);
         var today = new Date();
@@ -141,13 +77,7 @@ const Home = () => {
       .catch((err) => {
         setIsLoading(false);
         console.log(err);
-        if (err.response.data === "email incorrect") {
-          alert("This email is not registered !");
-        } else if (err.response.data === "password incorrect") {
-          alert("Password is wrong. Please try again !");
-        } else {
-          alert("Some error occured !");
-        }
+        alert("Could not sign in with Google. Please try again !");
       });
   };
 
@@ -164,6 +94,30 @@ const Home = () => {
       document.body.appendChild(script);
     });
   };
+
+  useEffect(() => {
+    const renderGoogleButton = () => {
+      if (!googleButtonRef.current) return;
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: onGoogleCredential,
+      });
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        theme: "outline",
+        size: "large",
+        text: "continue_with",
+      });
+    };
+
+    if (window.google?.accounts?.id) {
+      renderGoogleButton();
+    } else {
+      loadScript("https://accounts.google.com/gsi/client").then((loaded) => {
+        if (loaded) renderGoogleButton();
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const displayRazorpay = async (subscription) => {
     const res = await loadScript(
@@ -435,15 +389,6 @@ const Home = () => {
                     </ul>
                   </div>
 
-                  <div className="navbar-btn d-none d-sm-inline-block">
-                    <button
-                      className="main-btn"
-                      data-scroll-nav="0"
-                      onClick={() => toggleRegisterForm(!registerForm)}
-                    >
-                      {registerForm ? "LOGIN" : "REGISTER"}
-                    </button>
-                  </div>
                 </nav>
               </div>
             </div>
@@ -465,108 +410,12 @@ const Home = () => {
                   </h1>
                   <p className="text">MANAGE RECORDS. THE COOL WAY ! 😉</p>
 
-                  {/* login form */}
-                  {registerForm ? (
-                    <div>
-                      <h3 style={{ color: "#004aad" }}>
-                        {name !== "" ? <>Hi, {name}</> : "REGISTER"}
-                      </h3>
-                      {emailForRegister !== "" ? (
-                        <form
-                          className={classes.root}
-                          noValidate
-                          autoComplete="off"
-                        >
-                          <p>E-Mail : {emailForRegister}</p>
-                          <TextField
-                            type="password"
-                            id="outlined-basic"
-                            label="Set New Password"
-                            variant="outlined"
-                            value={passwordForRegister}
-                            onChange={(e) =>
-                              setPasswordForRegister(e.target.value)
-                            }
-                          />
-
-                          <TextField
-                            type="password"
-                            id="outlined-basic"
-                            label="Confirm New Password"
-                            variant="outlined"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                          />
-                          <Button
-                            variant="outlined"
-                            color="primary"
-                            onClick={onSubmitForRegister}
-                            disabled={isLoading}
-                          >
-                            {isLoading ? <CircularProgress /> : "Register"}
-                          </Button>
-                        </form>
-                      ) : (
-                        <>
-                          <br />
-                          <br />
-                          <GoogleLogin
-                            clientId="824922868367-uf280onns6u425nfh4d6krq7bu4suu1g.apps.googleusercontent.com"
-                            buttonText="Get started with google"
-                            onSuccess={onGoogleSuccess}
-                            onFailure={onGoogleFailure}
-                            cookiePolicy={"single_host_origin"}
-                          />
-                          <br />
-                          <br />
-                          <Button onClick={() => toggleRegisterForm(false)}>
-                            Already registered ? Login
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  ) : (
-                    <div>
-                      <form
-                        className={classes.root}
-                        noValidate
-                        autoComplete="off"
-                      >
-                        <h3 style={{ color: "#004aad" }}>Login</h3>
-
-                        <TextField
-                          type="email"
-                          id="outlined-basic"
-                          label="E-mail"
-                          variant="outlined"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-
-                        <TextField
-                          type="password"
-                          id="outlined-basic"
-                          label="Password"
-                          variant="outlined"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          onClick={onSubmit}
-                          disabled={isLoading}
-                        >
-                          {isLoading ? <CircularProgress /> : "Login"}
-                        </Button>
-
-                        <Button onClick={() => toggleRegisterForm(true)}>
-                          or Register
-                        </Button>
-                      </form>
-                    </div>
-                  )}
+                  <div>
+                    <h3 style={{ color: "#004aad" }}>Login or Sign Up</h3>
+                    <br />
+                    <div ref={googleButtonRef} />
+                    {isLoading && <CircularProgress />}
+                  </div>
                 </div>
               </div>
             </div>
