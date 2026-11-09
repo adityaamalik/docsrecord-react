@@ -1,0 +1,192 @@
+.visit-history {
+  margin: 24px 0;
+}
+
+.visit-history h4,
+.visit-form__section h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.visit-history__heading,
+.visit-card__header,
+.visit-form__heading,
+.next-appointment {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.visit-history__heading {
+  margin: 20px 0 12px;
+}
+
+.visit-history__center {
+  padding: 16px;
+  text-align: center;
+}
+
+.next-appointment {
+  padding: 14px 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.next-appointment__label {
+  display: block;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+
+.visit-card {
+  margin-bottom: 12px;
+  padding: 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: var(--glass-shadow-soft);
+}
+
+.visit-card p {
+  margin: 6px 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.visit-card b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.visit-card__header {
+  margin-bottom: 8px;
+}
+
+.visit-card__list {
+  margin: 10px 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.visit-card__list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid rgba(14, 26, 51, 0.07);
+}
+
+.visit-card__list--rx li span:last-child {
+  color: var(--ink-2);
+  text-align: right;
+}
+
+.visit-card__actions {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.visit-form__title {
+  padding-right: 40px;
+}
+
+.visit-form__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.visit-form__section {
+  margin-top: 24px;
+}
+
+.visit-form__heading {
+  margin-bottom: 12px;
+}
+
+.visit-form__template {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 340px;
+  max-width: 60%;
+}
+
+.visit-form__template .g-btn {
+  flex: none;
+  white-space: nowrap;
+}
+
+.visit-form__section > h4 {
+  margin-bottom: 12px;
+}
+
+.visit-form__row {
+  display: grid;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.visit-form__row--treatment {
+  grid-template-columns: 2fr 1fr auto;
+}
+
+.visit-form__row--medicine {
+  grid-template-columns: 2fr 1fr 1.2fr 1fr 2fr auto;
+}
+
+.visit-form__advice {
+  margin-top: 14px;
+}
+
+.visit-form__save-template {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.visit-form__save-template .g-btn {
+  flex: none;
+}
+
+.visit-form__error {
+  margin: 14px 0 0;
+  color: var(--danger) !important;
+  font-size: 14px;
+  text-align: center;
+}
+
+.visit-form__actions {
+  margin-top: 24px;
+}
+
+@media (max-width: 767px) {
+  .visit-form__fields,
+  .visit-form__row--medicine {
+    grid-template-columns: 1fr;
+  }
+
+  .visit-form__row--medicine {
+    padding: 12px;
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+  }
+
+  .visit-form__heading,
+  .next-appointment {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .visit-form__template {
+    width: 100%;
+    max-width: 100%;
+  }
+}

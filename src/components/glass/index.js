@@ -115,6 +115,20 @@ export const Button = ({
   );
 };
 
+export const Checkbox = ({ label, checked, onChange }) => (
+  <label className="g-check">
+    <input
+      type="checkbox"
+      checked={checked}
+      onChange={(e) => onChange(e.target.checked)}
+    />
+    <span className="g-check__box" aria-hidden="true">
+      <i className="material-icons">check</i>
+    </span>
+    <span>{label}</span>
+  </label>
+);
+
 export const CircularProgress = () => (
   <span className="g-spinner" role="progressbar" aria-label="Loading" />
 );

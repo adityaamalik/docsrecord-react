@@ -30,3 +30,31 @@ export const UnderlinedSpan = styled.span`
 export const EmptyDiv = styled.div`
   height: 500px;
 `;
+
+export const Prescription = styled.div`
+  min-height: 420px;
+  margin-top: 30px;
+
+  p {
+    color: #000 !important;
+  }
+`;
+
+export const Rx = styled.div`
+  margin: 16px 0 8px;
+  font-size: 34px;
+  font-weight: 700;
+`;
+
+export const MedicineTable = styled.table`
+  width: 100%;
+  margin-bottom: 24px;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 8px;
+    border: 1px solid #999;
+    text-align: left;
+  }
+`;

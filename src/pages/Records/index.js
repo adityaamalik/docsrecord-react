@@ -7,8 +7,6 @@ import {
   Button,
   CircularProgress,
   TextField,
-  DateField,
-  TimeField,
   Modal,
   Snackbar,
   Alert,
@@ -20,6 +18,7 @@ import {
   TablePagination,
   Table,
 } from "../../components/glass";
+import VisitHistory from "./VisitHistory";
 
 const Records = () => {
   const [page, setPage] = useState(0);
@@ -37,18 +36,10 @@ const Records = () => {
   const [images, setImages] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState(new Date());
-
-  const [selectedTimeString, setSelectedTimeString] = useState("12:00 PM");
-
   const [showExtraDetails, toggleExtraDetails] = useState(false);
 
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [deleteError, setDeleteError] = useState(false);
-
-  const [appointmentSuccess, setAppointmentSuccess] = useState(false);
-  const [appointmentError, setAppointmentError] = useState(false);
 
   const [imageSuccess, setImageSuccess] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -91,6 +82,13 @@ const Records = () => {
         }
       });
   }, []);
+
+  const reloadPatient = () => {
+    axios
+      .get(`/patients/${patient._id}`)
+      .then((response) => setPatient(response.data))
+      .catch((err) => console.log(err));
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -212,23 +210,6 @@ const Records = () => {
       });
   };
 
-  const setNextAppointment = () => {
-    const doctor = localStorage.getItem("docsrecordDoctor");
-    axios
-      .put(`/patients/${patient._id}`, {
-        next_appointment_date: selectedDate,
-        next_appointment_time: selectedTimeString,
-        doctor: doctor,
-      })
-      .then((response) => {
-        setAppointmentSuccess(true);
-      })
-      .catch((err) => {
-        console.log(err.response);
-        setAppointmentError(true);
-      });
-  };
-
   const onUploadPhotos = () => {
     toggleImageUploadLoader(true);
     const formData = new FormData();
@@ -291,8 +272,6 @@ const Records = () => {
         open={
           deleteSuccess ||
           deleteError ||
-          appointmentSuccess ||
-          appointmentError ||
           imageSuccess ||
           imageError ||
           authError ||
@@ -308,8 +287,6 @@ const Records = () => {
           setDeleteError(false);
           setImageSuccess(false);
           setImageError(false);
-          setAppointmentError(false);
-          setAppointmentSuccess(false);
           setAuthError(false);
           setImageDeleteSuccess(false);
           setCommentError(false);
@@ -324,8 +301,6 @@ const Records = () => {
             setDeleteError(false);
             setImageSuccess(false);
             setImageError(false);
-            setAppointmentError(false);
-            setAppointmentSuccess(false);
             setAuthError(false);
             setImageDeleteSuccess(false);
             setCommentError(false);
@@ -335,7 +310,6 @@ const Records = () => {
           }}
           severity={
             deleteError ||
-            appointmentError ||
             imageError ||
             authError ||
             commentError ||
@@ -346,8 +320,6 @@ const Records = () => {
         >
           {deleteError && "Cannot delete the record !"}
           {deleteSuccess && "Successfully deleted the record !"}
-          {appointmentError && "Cannot set the new appointment !"}
-          {appointmentSuccess && "Appointment updated successfully !"}
           {imageError && "Cannot upload documents"}
           {imageSuccess && "Successfully uploaded the documents !"}
           {authError && "You are unauthorized user, please login first !"}
@@ -574,75 +546,7 @@ const Records = () => {
                 </>
               )}
               <br />
-              <Grid container justify="center" alignItems="center">
-                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-                  Next Appointment Date
-                </Grid>
-                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-                  <DateField
-                    value={selectedDate}
-                    label="Appointment Date"
-                    onChange={(date) => setSelectedDate(date)}
-                    minDate={new Date()}
-                  />
-                </Grid>
-              </Grid>
-              <br />
-              <Grid container justify="center" alignItems="center">
-                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-                  Next Appointment Time
-                </Grid>
-                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-                  <TimeField
-                    label="Appointment Time"
-                    value={selectedTime}
-                    onChange={(date) => {
-                      setSelectedTime(date);
-                      setSelectedTimeString(
-                        moment(date.getTime(), "x").format("hh:mm A")
-                      );
-                    }}
-                  />
-                </Grid>
-              </Grid>
-              <br />
-              <Grid container>
-                <Grid item xs={6}></Grid>
-                <Grid item xs={6}>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => setNextAppointment()}
-                  >
-                    Update
-                  </Button>
-                </Grid>
-              </Grid>
-              <br />
-              {!!patient.treatments && patient.treatments.length !== 0 && (
-                <>
-                  <Grid container style={{ marginTop: "30px" }}>
-                    <Grid item xs={6}>
-                      TREATMENTS
-                    </Grid>
-                    <Grid item xs={6}>
-                      CHARGES
-                    </Grid>
-                  </Grid>
-                  {patient.treatments.map((treatment, index) => {
-                    return (
-                      <Grid container key={index}>
-                        <Grid item xs={6}>
-                          <p>{treatment.treatment}</p>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <p>₹ {treatment.charges} /-</p>
-                        </Grid>
-                      </Grid>
-                    );
-                  })}
-                </>
-              )}
+              <VisitHistory patient={patient} onChanged={reloadPatient} />
               <hr />
 
               <div style={{ textAlign: "center" }}>

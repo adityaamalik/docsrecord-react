@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import moment from "moment";
 import * as S from "./styles";
 import { Grid, Button } from "../../components/glass";
 
 const PrintPrescription = (props) => {
-  const { patient } = props.location.state;
+  const { patient, visit } = props.location.state;
 
   const [doc, setDoc] = useState({});
 
@@ -62,11 +63,57 @@ const PrintPrescription = (props) => {
           <S.UnderlinedSpan>{patient.address}</S.UnderlinedSpan>
         </Grid>
         <Grid item xs={3}>
-          <strong>Date</strong> :
+          <strong>Date</strong> :{" "}
+          {!!visit && moment(visit.date).format("Do MMM YYYY")}
         </Grid>
       </Grid>
 
-      <S.EmptyDiv></S.EmptyDiv>
+      {visit ? (
+        <S.Prescription>
+          {!!visit.complaint && (
+            <p>
+              <strong>Complaint</strong> : {visit.complaint}
+            </p>
+          )}
+          {!!visit.diagnosis && (
+            <p>
+              <strong>Diagnosis</strong> : {visit.diagnosis}
+            </p>
+          )}
+
+          <S.Rx>℞</S.Rx>
+          <S.MedicineTable>
+            <thead>
+              <tr>
+                <th>Medicine</th>
+                <th>Dosage</th>
+                <th>Frequency</th>
+                <th>Duration</th>
+                <th>Instructions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visit.medicines.map((medicine, index) => (
+                <tr key={index}>
+                  <td>{medicine.name}</td>
+                  <td>{medicine.dosage}</td>
+                  <td>{medicine.frequency}</td>
+                  <td>{medicine.duration}</td>
+                  <td>{medicine.instructions}</td>
+                </tr>
+              ))}
+            </tbody>
+          </S.MedicineTable>
+
+          {!!visit.advice && (
+            <p>
+              <strong>Advice</strong> : {visit.advice}
+            </p>
+          )}
+        </S.Prescription>
+      ) : (
+        <S.EmptyDiv></S.EmptyDiv>
+      )}
       <br />
       <br />
       <div id="printBtn" style={{ textAlign: "center" }}>

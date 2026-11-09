@@ -6,6 +6,7 @@ import {
   Grid,
   Paper,
   Button,
+  Checkbox,
   CircularProgress,
   TextField,
   DateField,
@@ -29,6 +30,7 @@ const UpdatePatient = (props) => {
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
+  const [remindersOptIn, setRemindersOptIn] = useState(false);
 
   const [treatments, setTreatments] = useState([]);
 
@@ -43,6 +45,7 @@ const UpdatePatient = (props) => {
       axios
         .get(`/patients/${id}`)
         .then((response) => {
+          setRemindersOptIn(!!response.data.reminders_opt_in);
           setPatient(response.data);
           let t = [];
           if (response.data.treatments) {
@@ -125,6 +128,7 @@ const UpdatePatient = (props) => {
     data.treatments = t;
 
     data.date_of_birth = dateOfBirth;
+    data.reminders_opt_in = remindersOptIn;
 
     axios
       .put(`/patients/${id}`, data)
@@ -459,6 +463,12 @@ const UpdatePatient = (props) => {
               </Grid>
             );
           })}
+
+          <Checkbox
+            checked={remindersOptIn}
+            onChange={setRemindersOptIn}
+            label="Patient has agreed to WhatsApp/SMS appointment reminders"
+          />
 
           <div
             style={{
